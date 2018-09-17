@@ -1,0 +1,73 @@
+.result {
+  overflow: auto;
+  .ant-input-group-addon {
+    cursor: pointer;
+  }
+
+  .login-notice {
+    text-align: center;
+    margin-top: 10px;
+  }
+
+  .result-inner {
+    .bar {
+      color: #4990E2;
+      display: flex;
+      flex-direction: row;
+
+      div {
+        border: 1px solid #4990E2;
+        border-radius: 5px;
+        padding: 5px;
+      }
+
+      .url {
+        flex: auto;
+        width: 1px;
+        overflow: auto;
+        white-space: nowrap;
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+      .status {
+        width: 60px;
+        text-align: center;
+        margin-left: 10px;
+      }
+    }
+
+    .request-body {
+      overflow: auto;
+      height: 50%;
+    }
+
+    .result-content {
+      overflow: auto;
+      height: 50%;
+    }
+
+    h3 {
+      font-size: 12px;
+      color: #55A8FD;
+      margin: 20px 0 15px;
+      font-weight: normal;
+      padding-left: 5px;
+      border-left: 2px solid #55A8FD;
+    }
+
+    .code {
+      color: #55A8FD;
+      font-family: monospace;
+      //white-space: pre-wrap;       /* css-3 */
+      //white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+      //word-wrap: break-word;
+    }
+
+    .inittext {
+      color: #55A8FD;
+      text-align: center;
+      margin-top: 50px;
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "extends": "eslint-config-egg",
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react"
+  ],
+  "globals": {
+    "chrome": true
+  },
+  "rules": {
+    "react/jsx-uses-vars": "error",
+    "generator-star-spacing": "off",
+    "babel/generator-star-spacing": "off",
+    "no-eval": "off",
+    "no-empty-pattern": "off"
+  }
+}

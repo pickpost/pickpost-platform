@@ -1,0 +1,91 @@
+<script>
+
+const jsonData = {
+  "code": "200",
+  "success": true,
+  "errorCode": 0,
+  "errorInfo": null,
+  "data": {
+    "detailList": [
+      {
+        "id": "95310826-8a40-43ee-8ba6-f95d6739454d",
+        "goodsId": "ff625fbd-9963-416a-8075-99f170172eaf",
+        "goodsName": "葡萄",
+        "goodsSpec": null,
+        "ordUnitNum": 50,
+        "unitNum": 50,
+        "dualUnitNum": null,
+        "auditNum": 50,
+        "auditDualNum": null,
+        "ordUnitName": "公斤",
+        "unitName": "千克",
+        "dualUnitName": null,
+        "taxRatio": 0.17,
+        "ordPrice": 1
+      }
+    ],
+    "scmDirect": {
+      "id": "501d8c4f-b03e-4064-a593-5ff9282ca050",
+      "billNo": "ZY2180904000003",
+      "busiName": "十三供应商",
+      "status": 962,
+      "createTime": 1536019200000
+    }
+  },
+  "message": null,
+  "stackTrace": null
+};
+
+function isPlainObject(obj) {
+  return obj ? typeof obj === 'object' && Object.getPrototypeOf(obj) === Object.prototype : false;
+}
+
+const supportType = [ 'string', 'number', 'array', 'object', 'boolean', 'integer' ];
+
+function getType(type) {
+  if (!type) type = 'string';
+  if (supportType.indexOf(type) !== -1) {
+    return type;
+  }
+  return typeof type;
+}
+
+function json2schema(json) {
+  let schema;
+
+  if (isPlainObject(json)) {
+    schema = schema || {
+      title: '',
+      type: 'object',
+      properties: (function() {
+        const props = {};
+        Object.keys(json).forEach(key => {
+          props[key] = json2schema(json[key]);
+        });
+        return props;
+      })(),
+    };
+  } else if (Array.isArray(json)) {
+    schema = schema || {
+      title: '',
+      type: 'array',
+      items: (function() {
+        return json.length <= 0 ? null : json2schema(json[0]);
+      })(),
+    };
+  } else {
+    schema = {
+      title: '',
+      type: getType(json),
+      example: json,
+      enum: [],
+      remark: '',
+    };
+  }
+
+  return schema;
+}
+
+console.log(json2schema(jsonData));
+
+</script>

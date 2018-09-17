@@ -1,0 +1,20 @@
+{
+  "entry": "app/assets/*.jsx",
+  "theme": {},
+  "extraBabelPlugins": [
+    [ "import", { "libraryName": "antd", "style": true } ]
+  ],
+  "disableCSSModules": true,
+  "env": {
+    "development": {
+      "extraBabelPlugins": [
+        "dva-hmr"
+      ]
+    }
+  },
+  "outputPath": "app/public/assets/",
+  "hash": true,
+  "manifest": {
+    "fileName": "../../../config/manifest.json"
+  }
+}

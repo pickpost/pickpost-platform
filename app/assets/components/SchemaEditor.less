@@ -1,0 +1,196 @@
+
+.cm-s-material.CodeMirror .CodeMirror-activeline { background: #343a46 }
+.cm-s-material.CodeMirror .CodeMirror-activeline-background { background: #343a46 }
+// .cm-s-material.CodeMirror .CodeMirror-activeline-gutter { background: #343a46 }
+.cm-s-material.CodeMirror .CodeMirror-matchingbracket {
+  text-decoration: none;
+  // background: #000;
+  color: #40a9ff !important;
+}
+
+.CodeMirror-hscrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.schema-editor {
+  width: 100%;
+
+  .CodeMirror {
+    height: auto;
+    .CodeMirror-lines {
+      line-height: 24px;
+      padding: 0 0; /* Vertical padding around content */
+    }
+  }
+
+  .jsonErrorMessage {
+    margin: 10px 0;
+    pre {
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .submit {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #3C90F0;
+  }
+
+  .table-view {
+    border: 1px solid #ECEEF1;
+    position: relative;
+    table {
+      width: 100%;
+      color: #2C3E50;
+      border-collapse: collapse;
+      font-size: 14px;
+      table-layout: fixed;
+
+      .jsontd {
+        padding: 0;
+        vertical-align: top;
+        background: #263238;
+      }
+
+      th, td {
+        font-weight: normal;
+        border: 1px solid #ECEEF1;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 4px;
+        text-align: left;
+
+        &:focus {
+          border: none;
+          outline: 0;
+          box-shadow: inset 0 0 0 2px #5292f7;
+        }
+      }
+
+      td, th {
+        border-top: none;
+        border-bottom: none;
+      }
+
+      .key-style {
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .highlight-line {
+        td {
+          background: #ECEEF1;
+        }
+      }
+
+      .format-action {
+        display: block;
+        float: right;
+        cursor: pointer;
+        font-size: 12px;
+        color: #40a9ff;
+      }
+
+      .re-input {
+        border: none;
+        background: transparent;
+        width: 100%;
+        height: 24px;
+        line-height: 24px;
+
+        &:active, &:focus {
+          border: none;
+          outline: 0;
+          box-shadow: none;
+        }
+      }
+
+      .json-view {
+        line-height: 1;
+        vertical-align: top;
+        // .texteditor {
+        //   font-size: 13px;
+        //   tab-size: 2;
+        //   font-family: menlo, monospace, Tahoma;
+        //   color: #4A5560;
+        //   background: transparent;
+        //   white-space: nowrap; // 保证文本不换行
+        //   line-height: 24px;
+        //   display: block;
+        //   padding: 0 4px;
+        //   margin: 0;
+        //   width: 100%;
+        //   height: 100%;
+        //   border: none;
+        //   outline: 0;
+        //   box-shadow: none;
+        //   overflow-y: hidden;
+
+        //   &:active, &:focus {
+        //     border: none;
+        //     outline: 0;
+        //     box-shadow: none;
+        //   }
+        // }
+      }
+
+      .enum {
+        .enum-select {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          position: relative;
+          padding-right: 20px;
+          height: 24px;
+          line-height: 24px;
+
+          .enum-value {
+            font-size: 13px;
+            // background: #40a9ff;
+            border-radius: 2px;
+            display: inline-block;
+            margin-right: 3px;
+          }
+        }
+        .edit-icon {
+          cursor: pointer;
+          position: absolute;
+          right: 0;
+          margin-left: 15px;
+          color: #3C90F0;
+        }
+      }
+
+      th {
+        background: #F5F5F5;
+      }
+
+      tr:nth-child(2n) {
+        background: #F4F8FB;
+      }
+
+      select {
+        border: none;
+        background: transparent;
+
+        &:focus {
+          border: none;
+          outline: 0;
+        }
+      }
+
+      .type-selected {
+        width: 100%;
+      }
+
+      .required-td {
+        text-align: center;
+      }
+    }
+  }
+}

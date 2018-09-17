@@ -1,0 +1,295 @@
+.api-main-test {
+  background: #fff;
+
+  .c-header {
+    padding: 24px;
+    border-bottom: 1px solid #f2f4f5;
+  }
+
+  .api-content {
+    display: flex;
+
+    .test-panel-content {
+      padding: 24px;
+      flex: auto;
+      width: 1px;
+    }
+
+    .api-result-panel {
+      padding: 24px;
+      border-left: 1px solid #E8E8E8;
+      flex: auto;
+      width: 1px;
+    }
+  }
+
+
+  .ant-pagination {
+    margin-right: 16px;
+  }
+}
+
+
+.ml10 {
+  margin-left: 10px;
+}
+
+.urlpreview {
+  margin-bottom: 10px;
+  color: #999;
+  .urlpreview-key {
+    font-size: 10px;
+    color: #999;
+    font-weight: normal;
+    word-break: break-all;
+  }
+  .urlpreview-value {
+    // max-height: 3em;
+    padding: 2px 5px;
+    border: 1PX solid #e5e5e5;
+    word-break: break-all;
+    // &::-webkit-scrollbar {
+    //   display: none;
+    //   height: 0;
+    // }
+  }
+}
+
+.test-panel-content {
+  min-height: 500px;
+  .my-progress {
+    margin-bottom: -1px;
+    .ant-progress {
+      display: block;
+    }
+    .ant-progress-outer, .ant-progress-inner {
+      display: block;
+    }
+    .ant-progress-inner {
+      background-color: #E4E8F0;
+    }
+  }
+
+  .ant-alert.ant-alert-no-icon {
+    padding: 8px 10px;
+  }
+
+  .info {
+    position: relative;
+    padding: 6px 10px;
+    min-height: 48px;
+    .method {
+      color: #7ED321;
+      padding-right: 5px;
+    }
+    .path {
+      color: #4A4A4A;
+    }
+  }
+  .info-single {
+    padding: 0 10px;
+    line-height: 48px;
+  }
+  .desc {
+    color: #4990E2;
+  }
+
+  .toggle-view {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    img {
+      cursor: pointer;
+      height: 20px;
+      margin-top: 7px;
+    }
+  }
+
+  .ant-btn-primary {
+    background-color: #2CD174;
+    border-color: #2CD174;
+  }
+
+  .path-input {
+    .ant-input-group {
+      display: flex;
+      .settings {
+        cursor: pointer;
+        padding: 0 10px;
+        line-height: 30px;
+        text-align: center;
+        background-color: #fff;
+        border: 1px solid #d9d9d9;
+
+        &.gateway {
+          border-right: 0;
+          background-color: #fafafa;
+        }
+
+        .icon-span {
+          display: inline-block;
+          text-align: center;
+        }
+      }
+    }
+
+    input {
+      border-radius: 0;
+    }
+
+    .operate-type {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+    .ant-input-group-addon {
+      padding: 0;
+    }
+    .ant-input-group-addon .anticon {
+      cursor: pointer;
+      padding: 6px;
+    }
+  }
+
+  .ant-tabs {
+    .ant-tabs-bar {
+      margin: 5px 0 8px;
+    }
+  }
+
+
+  .actions {
+    display: flex;
+
+    .path-input-wrapper {
+      flex: auto;
+      width: 1px;
+    }
+
+    .path-input {
+      margin-bottom: 5px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+      .url-value {
+        width: 40%;
+        height: 32px;
+        line-height: 30px;
+        position: relative;
+        cursor: pointer;
+        border: 1px solid #d9d9d9;
+        border-left: none;
+        background-color: #eee;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        span {
+          height: 26px;
+          line-height: 26px;
+          display: inline-block;
+          margin-right: 5px;
+        }
+
+        .url-sub {
+          padding-left: 10px;
+        }
+      }
+    }
+    .buttons {
+      .ant-btn {
+        margin-left: 10px;
+        height: 100%;
+      }
+    }
+  }
+
+  .one-editor {
+    background: #fff;
+    margin-left: 10px;
+    margin-top: 10px;
+    padding: 0 8px;
+  }
+}
+
+.pull-left {
+  float: left;
+}
+
+.pull-right {
+  float: right;
+}
+
+.uri-row {
+  display: flex;
+  flex-flow: row;
+  flex-direction: column;
+  .uri-prefix {
+    flex: 1;
+    margin-right: 10px;
+  }
+  .ant-btn {
+    margin-left: 10px;
+  }
+}
+
+.params-btn {
+  cursor: pointer;
+}
+
+.caption {
+  margin: 10px 0 0 10px;
+  padding: 0 10px;
+  height: 34px;
+  line-height: 34px;
+  background: #fff;
+  color: #4990E2;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+.env-tips-wrapper {
+  .ant-tooltip-inner {
+    max-width: 100%;
+    background: #fff;
+    padding: 0;
+    color: #333;
+  }
+}
+
+.mock-switch {
+  position: relative;
+  margin-right: 10px;
+
+  .mock-label {
+    left: -2px;
+    top: -2px;
+    position: absolute;
+    transform: scale(0.8);
+  }
+  .ant-switch {
+    bottom: -9px;
+  }
+}
+
+.env-select {
+  position: absolute;
+  top: 32px;
+  right: 0px;
+}
+
+.flex-v {
+  display: flex;
+  flex-direction: column;
+}
+.flex-auto {
+  flex: auto;
+  height: 1px;
+}
+
+.spi-config {
+  padding: 10px 0 0;
+
+  .alert-message {
+    margin-bottom: 10px;
+  }
+}
