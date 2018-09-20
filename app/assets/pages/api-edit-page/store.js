@@ -1,5 +1,6 @@
 import ajax from 'xhr-plus';
 import { message } from 'antd';
+import { userInfo } from '../../utils/utils';
 
 export default {
   namespace: 'apiEditModel',
@@ -49,6 +50,7 @@ export default {
      */
     *saveAPI({ api }, { call }) {
       const url = api._id ? `/api/apis/${api._id}` : '/api/apis';
+      api.creater = userInfo();
       try {
         const { status, errMsg } = yield call(ajax, {
           url,

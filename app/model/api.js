@@ -21,6 +21,7 @@ module.exports = app => {
     responses: { type: Array },
     requestSchema: { type: Object },
     responseSchema: { type: Object },
+    creater: { type: Object },
   }, {
     timestamps: true,
   });

@@ -46,12 +46,14 @@ exports.apisIndex = async function (ctx) {
     projectId: 1,
     updatedAt: 1,
     createdAt: 1,
+    creater: 1,
   }).sort({ createdAt: -1 }).lean();
 
   apis = apis.map(item => ({
     ...item,
     projectName: projectMap[item.projectId] ? projectMap[item.projectId].name : '',
     projectDesc: projectMap[item.projectId] ? projectMap[item.projectId].desc : '',
+    creater: item.creater ? item.creater.cname : '',
   }));
 
   this.body = {
@@ -146,7 +148,7 @@ exports.apisNew = async function (ctx) {
       };
       errMsg = '';
     } else {
-      errMsg = '接口集中已存在路径规则为 ${newApi.url} 的接口';
+      errMsg = `接口集中已存在路径规则为 ${newApi.url} 的接口`;
     }
   }
 

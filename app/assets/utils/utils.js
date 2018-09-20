@@ -139,6 +139,13 @@ export function tpl(str, vars) {
   return result;
 }
 
+export function userInfo() {
+  const {
+    user,
+  } = window.context;
+  return user;
+}
+
 export function isOwner(data) {
   const {
     user,

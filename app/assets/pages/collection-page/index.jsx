@@ -78,6 +78,10 @@ class Collection extends React.PureComponent {
       return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
     },
   }, {
+    title: '创建人',
+    dataIndex: 'creater',
+    key: 'creater',
+  }, {
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
