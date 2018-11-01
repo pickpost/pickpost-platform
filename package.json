@@ -79,8 +79,7 @@
     "sftp-sync-deploy": "^0.7.1",
     "should": "8",
     "supertest": "1",
-    "webpack": "^2.2.0",
-    "webstorm-disable-index": "^1.2.0"
+    "webpack": "^2.2.0"
   },
   "scripts": {
     "start": "egg-scripts start --daemon --env prod",

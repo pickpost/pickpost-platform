@@ -55,12 +55,12 @@ export default class GlobalSearch extends React.PureComponent {
     ));
 
     return (
-      <div className="certain-category-search-wrapper" style={{ width: 250 }}>
+      <div className="certain-category-search-wrapper" style={{ width: 400 }}>
         <AutoComplete
           className="certain-category-search"
           dropdownClassName="certain-category-search-dropdown"
           dropdownMatchSelectWidth={false}
-          dropdownStyle={{ width: '400px' }}
+          dropdownStyle={{ width: '500px' }}
           size="default"
           style={{ width: '100%' }}
           dataSource={options}

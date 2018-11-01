@@ -5,6 +5,7 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const collectionSchema = new Schema({
+    parentId: { type: String },
     collectionId: { type: String },
     apiId: { type: String },
   }, {
