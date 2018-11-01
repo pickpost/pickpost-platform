@@ -54,12 +54,12 @@ function setSchemaData(schema, path, key, value2) {
   pathArr.forEach((i, idx) => {
     if (idx === 0) return;
 
-    if (/\d+/.test(i)) {
-      newPath.push('items');
-    } else {
-      newPath.push('properties');
-      newPath.push(i);
-    }
+    // if (/\d+/.test(i)) {
+    //   newPath.push('items');
+    // } else {
+    newPath.push('properties');
+    newPath.push(i);
+    // }
   });
   newPath.push(key);
 
@@ -190,6 +190,12 @@ class SchemaEditor extends React.Component {
   renderTable(rows, properties, str) {
     for (const prop in properties) {
       const path = str + '.' + prop + '';
+
+      // 如果没有remark，则不会更新当前行的备注信息
+      if (!properties[prop].remark) {
+        properties[prop].remark = '';
+      }
+
       rows.push({
         prop,
         path,
