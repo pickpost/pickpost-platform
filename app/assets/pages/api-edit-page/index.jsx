@@ -141,7 +141,10 @@ class Index extends React.PureComponent {
                     initialValue: editingAPI.projectId || projectId,
                     rules: [{ required: true, message: '请选择所属系统' }],
                   })(
-                    <Select>
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                    >
                       {
                         projectList.map(p => (<Option value={p._id} key={p._id}>{p.name}{p.desc ? `（${p.desc}）` : ''}</Option>))
                       }

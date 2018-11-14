@@ -54,12 +54,12 @@ function setSchemaData(schema, path, key, value2) {
   pathArr.forEach((i, idx) => {
     if (idx === 0) return;
 
-    // if (/\d+/.test(i)) {
-    //   newPath.push('items');
-    // } else {
-    newPath.push('properties');
-    newPath.push(i);
-    // }
+    if (/^\d+$/.test(i)) { // 如果是纯数字路径，说明是数组
+      newPath.push('items');
+    } else {
+      newPath.push('properties');
+      newPath.push(i);
+    }
   });
   newPath.push(key);
 
@@ -136,23 +136,31 @@ class SchemaEditor extends React.Component {
 
   schemaSync(newSchema, originSchema) {
     const pathMap = this.generatePathMap(originSchema);
-    this.sycnField(newSchema, pathMap);
-
-    return newSchema;
+    const result = this.sycnField(newSchema, pathMap);
+    return result;
   }
 
-  sycnField(schema, pathMap) {
-    if (schema.path && pathMap[schema.path]) {
+  hasChildren(prop) {
+    return prop.properties || prop.items;
+  }
+
+  // 递归遍历整个schema，去匹配pathMap，更新属性。
+  sycnField = (schema, pathMap) => {
+    if (pathMap[schema.path]) {
       schema = { ...schema, ...pathMap[schema.path] };
     }
 
-    if (schema.items) {
-      schema.items = { ...schema.items, ...pathMap[schema.items.path] };
-    } else if (schema.properties) {
-      for (const prop in schema.properties) {
-        schema.properties[prop] = { ...schema.properties[prop], ...pathMap[schema.properties[prop].path] };
-      }
+    if (schema.type === 'object') {
+      Object.keys(schema.properties).forEach(key => {
+        schema.properties[key] = this.sycnField(schema.properties[key], pathMap);
+      });
+    } else if (schema.type === 'array') {
+      schema.items.forEach((item, idx) => {
+        schema.items[idx] = this.sycnField(item, pathMap);
+      });
     }
+
+    return schema;
   }
 
   generatePathMap(schema) {
@@ -299,6 +307,7 @@ class SchemaEditor extends React.Component {
               <tr>
                 <th width="50%">
                   JSON
+                  <span className="fast-help">如何快速录入？</span>
                   <span className="format-action" onClick={this.formatJSON}> 格式化 </span>
                 </th>
                 <th width="8%" style={{ textAlign: 'center' }}>Key</th>
