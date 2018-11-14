@@ -94,11 +94,11 @@ class Collection extends React.PureComponent {
       );
       return (
         <div className="actions" onClick={e => e.stopPropagation()}>
-          <Link target="_blank" to={`/api-detail/${api._id}/doc?belong=collection_${this.props.params.collectionId}`}>文档</Link>
-          <Link target="_blank" to={`/api-detail/${api._id}/test?belong=collection_${this.props.params.collectionId}`}>测试</Link>
-          <Link target="_blank" to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>Mock</Link>
+          <Link to={`/api-detail/${api._id}/doc?belong=collection_${this.props.params.collectionId}`}>文档</Link>
+          <Link to={`/api-detail/${api._id}/test?belong=collection_${this.props.params.collectionId}`}>测试</Link>
+          <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>Mock</Link>
           <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-            <Link target="_blank" to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
+            <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
           </Popover>
         </div>
       );
@@ -169,7 +169,6 @@ class Collection extends React.PureComponent {
     const { members, owners } = collectionModel.collection;
     const newOwners = cloneDeep(owners);
     const newMembers = cloneDeep(members);
-    // console.log(collectionModel.collection, _api, e);
 
     if (e.key === '2') { // 从Owner -> Member
       owners.map((v, i) => {

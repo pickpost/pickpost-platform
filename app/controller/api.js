@@ -286,6 +286,7 @@ exports.globalSearch = async function (ctx) {
   const Collection = ctx.model.Collection;
   const Api = ctx.model.Api;
   const keywordPattern = new RegExp(keyword, 'gim');
+  const LIMITCOUNT = 6;
 
   const results = [];
   const projectList = await Project.find({
@@ -293,7 +294,7 @@ exports.globalSearch = async function (ctx) {
       { name: keywordPattern },
       { url: keywordPattern },
     ],
-  }).limit(3);
+  }).limit(LIMITCOUNT);
 
   results.push({
     type: 'project',
@@ -307,7 +308,7 @@ exports.globalSearch = async function (ctx) {
 
   const collectionList = await Collection.find({
     name: keywordPattern,
-  }).limit(3);
+  }).limit(LIMITCOUNT);
 
   results.push({
     type: 'collection',
@@ -324,7 +325,7 @@ exports.globalSearch = async function (ctx) {
       { name: keywordPattern },
       { url: keywordPattern },
     ],
-  }).limit(3);
+  }).limit(LIMITCOUNT);
 
   results.push({
     type: 'api-detail',

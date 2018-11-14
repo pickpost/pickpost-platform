@@ -103,11 +103,11 @@ class Project extends React.Component {
       );
       return (
         <div className="actions" onClick={e => e.stopPropagation()}>
-          <Link target="_blank" to={`/api-detail/${api._id}/doc`}>文档</Link>
-          <Link target="_blank" to={`/api-detail/${api._id}/test`}>测试</Link>
-          <Link target="_blank" to={`/api-detail/${api._id}/mock`}>Mock</Link>
+          <Link to={`/api-detail/${api._id}/doc`}>文档</Link>
+          <Link to={`/api-detail/${api._id}/test`}>测试</Link>
+          <Link to={`/api-detail/${api._id}/mock`}>Mock</Link>
           <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-            <Link target="_blank" to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
+            <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
           </Popover>
         </div>
       );

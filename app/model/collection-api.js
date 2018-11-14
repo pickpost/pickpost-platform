@@ -8,6 +8,7 @@ module.exports = app => {
     parentId: { type: String },
     collectionId: { type: String },
     apiId: { type: String },
+    type: { type: String },
   }, {
     timestamps: true,
   });
