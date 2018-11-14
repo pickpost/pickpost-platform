@@ -2,6 +2,7 @@ import React from 'react';
 import { Form, Select, Input, Button, Radio, Checkbox } from 'antd';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
+import { Link } from 'react-router';
 import Layout from '../../layout/default.jsx';
 
 import './index.less';
@@ -133,7 +134,7 @@ class Index extends React.PureComponent {
                   <Input type="hidden" />
                 )}
                 <FormItem
-                  label="所属应用"
+                  label={<span>所属应用 <Link className="help-tips" to="/projects/new">没有找到应用，去新建一个</Link></span>}
                   {...formItemLayout}
                   help={getFieldError('projectId')}
                 >
