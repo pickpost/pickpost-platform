@@ -1,4 +1,3 @@
-/* eslint-disable array-bracket-spacing */
 import React from 'react';
 import {
   Table, Icon, Button, Input, Popover,
@@ -7,9 +6,9 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
-import { Link } from 'react-router';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
+import { browserHistory, Link } from 'dva/router';
 
 import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
@@ -381,7 +380,6 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    window._t_ = this;
     const { params, collectionModel } = this.props;
     const { apis, collection } = collectionModel;
     const { collectionId } = params;
@@ -437,7 +435,12 @@ class Collection extends React.PureComponent {
                   onRow={api => {
                     return {
                       onClick: () => {
-                        window.open(`/api-detail/${api._id}/doc?belong=collection_${this.props.params.collectionId}`);
+                        browserHistory.push({
+                          pathname: `/api-detail/${api._id}/doc`,
+                          query: {
+                            belong: `collection_${this.props.params.collectionId}`,
+                          },
+                        });
                       },
                     };
                   }}

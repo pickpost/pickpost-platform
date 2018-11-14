@@ -7,6 +7,7 @@ import './app.less';
 
 // 0. Pages
 import APIEditPage from './pages/api-edit-page/index';
+import APIPage from './pages/api-page/index';
 import APIDocPage from './pages/api-doc-page/index';
 import APITestPage from './pages/api-test-page/index';
 import APIMockPage from './pages/api-mock-page/index';
@@ -21,6 +22,7 @@ import ProjectsPage from './pages/projects-page/index';
 
 // 0. Models
 import APIEditModel from './pages/api-edit-page/store';
+import APIPageModel from './pages/api-page/store';
 import APIDocModel from './pages/api-doc-page/store';
 import APITestModel from './pages/api-test-page/store';
 import APIMockModel from './pages/api-mock-page/store';
@@ -43,6 +45,7 @@ const app = dva({
 
 // 3. Model
 app.model(APIEditModel);
+app.model(APIPageModel);
 app.model(APIDocModel);
 app.model(APITestModel);
 app.model(APIMockModel);
@@ -61,19 +64,20 @@ export default class Container extends React.Component {
     app.router(({ history }) => {
       return (
         <Router history={history}>
-          <Route exact path="/workspace" component={CollectionsPage} context={context} />
-          <Route exact path="/collections" component={CollectionsPage} context={context} />
-          <Route exact path="/projects" component={ProjectsPage} context={context} />
-          <Route exact path="/collection/:collectionId" component={CollectionPage} context={context} />
-          <Route exact path="/collection/:collectionId/newapi" component={APIEditPage} context={context} />
-          <Route exact path="/collection/:collectionId/editapi/:apiId" component={APIEditPage} context={context} />
-          <Route exact path="/collections/new" component={CollectionEditPage} context={context} />
-          <Route exact path="/projects/new" component={ProjectEditPage} context={context} />
-          <Route exact path="/project/:projectId" component={ProjectPage} context={context} />
-          <Route exact path="/api-detail/:apiId" component={APIDocPage} context={context} />
-          <Route exact path="/api-detail/:apiId/doc" component={APIDocPage} context={context} />
-          <Route exact path="/api-detail/:apiId/test" component={APITestPage} context={context} />
-          <Route exact path="/api-detail/:apiId/mock" component={APIMockPage} context={context} />
+          <Route path="/workspace" component={CollectionsPage} context={context} />
+          <Route path="/collections" component={CollectionsPage} context={context} />
+          <Route path="/projects" component={ProjectsPage} context={context} />
+          <Route path="/collection/:collectionId" component={CollectionPage} context={context} />
+          <Route path="/collection/:collectionId/newapi" component={APIEditPage} context={context} />
+          <Route path="/collection/:collectionId/editapi/:apiId" component={APIEditPage} context={context} />
+          <Route path="/collections/new" component={CollectionEditPage} context={context} />
+          <Route path="/projects/new" component={ProjectEditPage} context={context} />
+          <Route path="/project/:projectId" component={ProjectPage} context={context} />
+          <Route path="/api-detail/:apiId" component={APIPage} context={context}>
+            <Route path="doc" component={APIDocPage} context={context} />
+            <Route path="test" component={APITestPage} context={context} />
+            <Route path="mock" component={APIMockPage} context={context} />
+          </Route>
         </Router>
       );
     });

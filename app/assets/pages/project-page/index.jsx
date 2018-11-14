@@ -6,7 +6,7 @@ import {
   Icon, Table, Tag, Popover,
 } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'react-router';
+import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
 import BulkEditor from '../../components/BulkEditor';

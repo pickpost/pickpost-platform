@@ -161,53 +161,50 @@ class Api extends React.PureComponent {
     );
 
     return (
-      <Layout uplevel={this.getUplevel()}>
-        <Aside belong={this.getBelongQuery()} apiId={apiId} />
-        <main className="api-main">
-          <div className="c-header">
-            <Info title={name} url={url} apiType={apiType}>
-              <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-            </Info>
-          </div>
-          <div className="api-content">
-            <div className="mock-panel-content">
-              <div className="bar">
-                <Input readOnly addonBefore="Mock访问地址：" addonAfter={copyBtn} value={previewUrl} onChange={() => { }} />
-              </div>
-              <div className="mock-tips-wrapper" onClick={this.toggleMockTips}>
-                <Alert
-                  message={mockTips}
-                  type="info"
-                  showIcon
-                />
-              </div>
-              <Editor
-                key="editorresponse"
-                data={responses}
-                selected={responseIndex}
-                type="responses"
-                onChange={this.handleEditorChange}
+      <div>
+        <div className="c-header">
+          <Info title={name} url={url} apiType={apiType}>
+            <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+          </Info>
+        </div>
+        <div className="api-content">
+          <div className="mock-panel-content">
+            <div className="bar">
+              <Input readOnly addonBefore="Mock访问地址：" addonAfter={copyBtn} value={previewUrl} onChange={() => { }} />
+            </div>
+            <div className="mock-tips-wrapper" onClick={this.toggleMockTips}>
+              <Alert
+                message={mockTips}
+                type="info"
+                showIcon
               />
             </div>
+            <Editor
+              key="editorresponse"
+              data={responses}
+              selected={responseIndex}
+              type="responses"
+              onChange={this.handleEditorChange}
+            />
           </div>
-          <Drawer
-            className="mock-code-drawer"
-            title="示例"
-            width={600}
-            placement="right"
-            closable={false}
-            onClose={this.toggleMockTips}
-            visible={showMockTips}
-          >
-            <pre>
-              <code>
-                {mockCode}
-              </code>
-            </pre>
-            <a href="http://mockjs.com/examples.html" className="pull-right" target="_blank">查看更多mockjs示例</a>
-          </Drawer>
-        </main>
-      </Layout>
+        </div>
+        <Drawer
+          className="mock-code-drawer"
+          title="示例"
+          width={600}
+          placement="right"
+          closable={false}
+          onClose={this.toggleMockTips}
+          visible={showMockTips}
+        >
+          <pre>
+            <code>
+              {mockCode}
+            </code>
+          </pre>
+          <a href="http://mockjs.com/examples.html" className="pull-right" target="_blank">查看更多mockjs示例</a>
+        </Drawer>
+      </div>
     );
   }
 }

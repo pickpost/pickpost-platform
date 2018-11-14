@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Icon } from 'antd';
-import { Link } from 'react-router';
+import { Link } from 'dva/router';
 import './Header.less';
 
 import GlobalSearch from '../components/GlobalSearch';

@@ -209,146 +209,143 @@ class Api extends React.PureComponent {
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
-      <Layout uplevel={this.getUplevel()}>
-        <Aside belong={this.getBelongQuery()} apiId={apiId} />
-        <main className="api-main-test">
-          <div className="c-header">
-            <Info title={apiTestModel.apiName} url={apiTestModel.url} apiType={apiTestModel.apiType}>
-              <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-            </Info>
-          </div>
-          <div className="api-content">
-            <div className="test-panel-content">
+      <div>
+        <div className="c-header">
+          <Info title={apiTestModel.apiName} url={apiTestModel.url} apiType={apiTestModel.apiType}>
+            <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+          </Info>
+        </div>
+        <div className="api-content">
+          <div className="test-panel-content">
+            {
+              apiType === 'SPI' || apiType === 'RPC' ? (
+                <div className="actions">
+                  <div className="path-input-wrapper">
+                    <div className="path-input">
+                      <InputGroup compact>
+                        <div className="ant-select ant-select-enabled settings gateway">
+                          网关服务器:
+                        </div>
+                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={gateway} onChange={this.handleSpigwChange}>
+                          <Select.Option value="">请选择服务器</Select.Option>
+                          {
+                            fullGateways.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                          }
+                        </Select>
+                        <div className="ant-select ant-select-enabled settings" onClick={this.toggleGatewayModal}>
+                          <Icon type="setting" className="icon-span" />
+                        </div>
+                      </InputGroup>
+                    </div>
+                    {
+                      getEnvByUrl(gateway) === 'dev' && (
+                        <div className="path-input">
+                          <InputGroup compact>
+                            <div className="ant-select ant-select-enabled settings gateway">
+                              业务服务器:
+                            </div>
+                            <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
+                              <Select.Option value="">请选择服务器</Select.Option>
+                              {
+                                envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                              }
+                            </Select>
+                            <div className="ant-select ant-select-enabled settings" onClick={this.toggleEnvModal}>
+                              <Icon type="setting" className="icon-span"/>
+                            </div>
+                          </InputGroup>
+                        </div>
+                      )
+                    }
+                  </div>
+                  <div className="buttons">
+                    <Button size="default" type="primary" icon="rocket" onClick={this.handleSendRequest}>
+                      发送
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="actions">
+                  <div className="path-input-wrapper">
+                    <div className="path-input">
+                      <InputGroup compact>
+                        <Select size="default" defaultValue="POST" style={{ width: 80 }} value={apiTestModel.method} onChange={this.handleMethodChange}>
+                          {
+                            apiTestModel.methods.map(m => <Select.Option key={m} value={m}>{m}</Select.Option>)
+                          }
+                        </Select>
+                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
+                          <Select.Option value="">请选择服务器</Select.Option>
+                          {
+                            envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                          }
+                        </Select>
+                        <div className="ant-select ant-select-enabled settings" onClick={this.toggleEnvModal}>
+                          <Icon type="setting" className="icon-span" />
+                        </div>
+                      </InputGroup>
+                    </div>
+                  </div>
+                  <div className="buttons">
+                    <Button size="default" type="primary" icon="rocket" onClick={this.handleSendRequest}>
+                      发送
+                    </Button>
+                  </div>
+                </div>
+              )
+            }
+
+            <MyTabs activeKey={apiTestModel.subType} method={apiTestModel.method} onTabClick={this.handleChangeSubType} />
+
+            <div className="main-content">
               {
-                apiType === 'SPI' || apiType === 'RPC' ? (
-                  <div className="actions">
-                    <div className="path-input-wrapper">
-                      <div className="path-input">
-                        <InputGroup compact>
-                          <div className="ant-select ant-select-enabled settings gateway">
-                            网关服务器:
-                          </div>
-                          <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={gateway} onChange={this.handleSpigwChange}>
-                            <Select.Option value="">请选择服务器</Select.Option>
-                            {
-                              fullGateways.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
-                            }
-                          </Select>
-                          <div className="ant-select ant-select-enabled settings" onClick={this.toggleGatewayModal}>
-                            <Icon type="setting" className="icon-span" />
-                          </div>
-                        </InputGroup>
-                      </div>
-                      {
-                        getEnvByUrl(gateway) === 'dev' && (
-                          <div className="path-input">
-                            <InputGroup compact>
-                              <div className="ant-select ant-select-enabled settings gateway">
-                                业务服务器:
-                              </div>
-                              <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
-                                <Select.Option value="">请选择服务器</Select.Option>
-                                {
-                                  envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
-                                }
-                              </Select>
-                              <div className="ant-select ant-select-enabled settings" onClick={this.toggleEnvModal}>
-                                <Icon type="setting" className="icon-span"/>
-                              </div>
-                            </InputGroup>
-                          </div>
-                        )
-                      }
-                    </div>
-                    <div className="buttons">
-                      <Button size="default" type="primary" icon="rocket" onClick={this.handleSendRequest}>
-                        发送
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="actions">
-                    <div className="path-input-wrapper">
-                      <div className="path-input">
-                        <InputGroup compact>
-                          <Select size="default" defaultValue="POST" style={{ width: 80 }} value={apiTestModel.method} onChange={this.handleMethodChange}>
-                            {
-                              apiTestModel.methods.map(m => <Select.Option key={m} value={m}>{m}</Select.Option>)
-                            }
-                          </Select>
-                          <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
-                            <Select.Option value="">请选择服务器</Select.Option>
-                            {
-                              envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
-                            }
-                          </Select>
-                          <div className="ant-select ant-select-enabled settings" onClick={this.toggleEnvModal}>
-                            <Icon type="setting" className="icon-span" />
-                          </div>
-                        </InputGroup>
-                      </div>
-                    </div>
-                    <div className="buttons">
-                      <Button size="default" type="primary" icon="rocket" onClick={this.handleSendRequest}>
-                        发送
-                      </Button>
-                    </div>
-                  </div>
+                apiTestModel.subType === '2' && (
+                  <Editor data={apiTestModel.requests} selected={apiTestModel.requestIndex} type="requests"
+                          onChange={this.handleEditorChange} />
                 )
               }
-
-              <MyTabs activeKey={apiTestModel.subType} method={apiTestModel.method} onTabClick={this.handleChangeSubType} />
-
-              <div className="main-content">
-                {
-                  apiTestModel.subType === '2' && (
-                    <Editor data={apiTestModel.requests} selected={apiTestModel.requestIndex} type="requests"
-                            onChange={this.handleEditorChange} />
-                  )
-                }
-                {
-                  apiTestModel.subType === '3' && (
-                    <AuthForm />
-                  )
-                }
-                {
-                  apiTestModel.subType === '1' && (
-                    <Editor
-                      mode="bulk"
-                      type="params"
-                      data={apiTestModel.params}
-                      selected={apiTestModel.paramsIndex}
-                      onChange={this.handleEditorChange}
-                    />
-                  )
-                }
-                {
-                  apiTestModel.subType === '4' && (
-                    <Editor data={apiTestModel.headers} mode="bulk" selected={apiTestModel.headerIndex} type="headers"
-                            onChange={this.handleEditorChange} />
-                  )
-                }
-              </div>
-            </div>
-
-            <div className="api-result-panel">
-              <Result apiTestModel={apiTestModel} progress={progress} method={method} url={displayUrl} result={result} isAuthing={isAuthing} />
+              {
+                apiTestModel.subType === '3' && (
+                  <AuthForm />
+                )
+              }
+              {
+                apiTestModel.subType === '1' && (
+                  <Editor
+                    mode="bulk"
+                    type="params"
+                    data={apiTestModel.params}
+                    selected={apiTestModel.paramsIndex}
+                    onChange={this.handleEditorChange}
+                  />
+                )
+              }
+              {
+                apiTestModel.subType === '4' && (
+                  <Editor data={apiTestModel.headers} mode="bulk" selected={apiTestModel.headerIndex} type="headers"
+                          onChange={this.handleEditorChange} />
+                )
+              }
             </div>
           </div>
-          <Modal title="业务服务器配置" visible={envModal}
-            onOk={this.handleUpdateEnvs}
-            onCancel={this.toggleEnvModal}
-          >
-            <BulkEditor configs={BulkEditorEnvs} value={modalEnvs || []} onChange={ list => { this.setState({ modalEnvs: list }); } } />
-          </Modal>
-          <Modal title="网关服务器配置" visible={gatewayModal}
-            onOk={this.handleUpdateGateways}
-            onCancel={this.toggleGatewayModal}
-          >
-            <BulkEditor configs={BulkEditorGateway} value={modalEnvs || []} onChange={ list => { this.setState({ modalEnvs: list }); } } />
-          </Modal>
-        </main>
-      </Layout>
+
+          <div className="api-result-panel">
+            <Result apiTestModel={apiTestModel} progress={progress} method={method} url={displayUrl} result={result} isAuthing={isAuthing} />
+          </div>
+        </div>
+        <Modal title="业务服务器配置" visible={envModal}
+          onOk={this.handleUpdateEnvs}
+          onCancel={this.toggleEnvModal}
+        >
+          <BulkEditor configs={BulkEditorEnvs} value={modalEnvs || []} onChange={ list => { this.setState({ modalEnvs: list }); } } />
+        </Modal>
+        <Modal title="网关服务器配置" visible={gatewayModal}
+          onOk={this.handleUpdateGateways}
+          onCancel={this.toggleGatewayModal}
+        >
+          <BulkEditor configs={BulkEditorGateway} value={modalEnvs || []} onChange={ list => { this.setState({ modalEnvs: list }); } } />
+        </Modal>
+      </div>
     );
   }
 }

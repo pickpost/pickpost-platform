@@ -1,7 +1,7 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 import { Icon } from 'antd';
-import { Link } from 'react-router';
+import { Link } from 'dva/router';
 
 @autobind
 class Aside extends React.Component {

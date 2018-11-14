@@ -2,10 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import { Form, Button, Input } from 'antd';
 
-import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
 import SchemaEditor from '../../components/SchemaEditor';
-import Aside from '../../components/Aside';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -64,7 +62,6 @@ class Api extends React.PureComponent {
     const { apiDocModel } = this.props;
     const { params: { apiId } } = this.props;
     const { currentAPI } = apiDocModel;
-
     if (!currentAPI._id) {
       return null;
     }
@@ -73,58 +70,56 @@ class Api extends React.PureComponent {
     const formItemLayoutFull = null;
 
     return (
-      <Layout uplevel={this.getUplevel()}>
-        <Aside belong={this.getBelongQuery()} apiId={apiId} />
-        <main className="api-main">
-          <div className="c-header">
-            <Info
-              title={currentAPI.name}
-              desc={currentAPI.desc}
-              url={currentAPI.url}
-              apiType={currentAPI.apiType}
+      <div>
+        <div className="c-header">
+          <Info
+            title={currentAPI.name}
+            desc={currentAPI.desc}
+            url={currentAPI.url}
+            apiType={currentAPI.apiType}
+          >
+            <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+          </Info>
+        </div>
+        <div className="api-content">
+          <Form layout="vertical">
+            {getFieldDecorator('_id', {
+              initialValue: apiId,
+            })(
+              <Input type="hidden" />
+            )}
+            <FormItem
+              label="请求参数："
+              {...formItemLayoutFull}
+              help={getFieldError('desc')}
             >
-              <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
-            </Info>
-          </div>
-          <div className="api-content">
-            <Form layout="vertical">
-              {getFieldDecorator('_id', {
-                initialValue: apiId,
+              {getFieldDecorator('requestSchema', {
+                initialValue: currentAPI.requestSchema || {},
               })(
-                <Input type="hidden" />
+                <SchemaEditor />
               )}
-              <FormItem
-                label="请求参数："
-                {...formItemLayoutFull}
-                help={getFieldError('desc')}
-              >
-                {getFieldDecorator('requestSchema', {
-                  initialValue: currentAPI.requestSchema || {},
-                })(
-                  <SchemaEditor />
-                )}
-              </FormItem>
-              <FormItem
-                label="返回数据："
-                {...formItemLayoutFull}
-                help={getFieldError('desc')}
-              >
-                {getFieldDecorator('responseSchema', {
-                  initialValue: currentAPI.responseSchema || {},
-                })(
-                  <SchemaEditor />
-                )}
-              </FormItem>
-            </Form>
-          </div>
-        </main>
-      </Layout>
+            </FormItem>
+            <FormItem
+              label="返回数据："
+              {...formItemLayoutFull}
+              help={getFieldError('desc')}
+            >
+              {getFieldDecorator('responseSchema', {
+                initialValue: currentAPI.responseSchema || {},
+              })(
+                <SchemaEditor />
+              )}
+            </FormItem>
+          </Form>
+        </div>
+      </div>
     );
   }
 }
 
-export default connect(({ apiDocModel }) => {
+export default connect(({ apiDocModel, collectionModel }) => {
   return {
     apiDocModel,
+    collectionModel,
   };
 })(createForm()(Api));

@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Select, Input, Button, Radio, Checkbox } from 'antd';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
-import { Link } from 'react-router';
+import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 
 import './index.less';

@@ -77,7 +77,6 @@ class SchemaEditor extends React.Component {
     super(props);
     this.instance = null;
     const json = schema2json(props.value);
-    console.log('json', json);
     const rows = (JSON.stringify(json, null, '\t') || '').split('\n').length;
     const defaultJsonStr = '{\n\t\n}'; // 默认三行
     this.state = {
