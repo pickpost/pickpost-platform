@@ -16,33 +16,6 @@ export default {
     projectName: '',
   },
   effects: {
-    *detail({ apiId }, { call, put }) {
-      const { status, data } = yield call(ajax, {
-        url: `/api/apis/${apiId}`,
-        method: 'get',
-        type: 'json',
-      });
-
-      if (status === 'success') {
-        yield put({
-          type: 'setData',
-          data: {
-            apiId,
-            name: data.name,
-            desc: data.desc,
-            apiType: data.apiType,
-            methods: data.methods,
-            url: data.url,
-            responses: data.responses,
-            responseIndex: data.responseIndex,
-            updatedAt: data.updatedAt,
-            projectName: data.projectName,
-            projectId: data.projectId,
-          },
-        });
-      }
-    },
-
     *changeEditor({ changeType, list, index = 0 }, { put }) {
       yield put({
         type: 'setData',

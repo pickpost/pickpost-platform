@@ -5,9 +5,7 @@ import { connect } from 'dva';
 import Mock from 'mockjs';
 import { getEnvByUrl } from '../../utils/utils';
 
-import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
-import Aside from '../../components/Aside';
 import Editor from '../../components/Editor';
 import AuthForm from './components/AuthForm';
 import MyTabs from './components/MyTabs';
@@ -43,13 +41,6 @@ const BulkEditorGateway = [{
 class Api extends React.PureComponent {
   state = {
     modalEnvs: [],
-  }
-  componentDidMount() {
-    const { params: { apiId } } = this.props;
-    this.props.dispatch({
-      type: 'apiTestModel/detail',
-      apiId,
-    });
   }
 
   handleSendRequest() {

@@ -11,14 +11,6 @@ const FormItem = Form.Item;
 import './index.less';
 
 class Api extends React.PureComponent {
-  componentDidMount() {
-    const { params: { apiId } } = this.props;
-    this.props.dispatch({
-      type: 'apiDocModel/detail',
-      apiId,
-    });
-  }
-
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
       // 新建API
@@ -49,7 +41,7 @@ class Api extends React.PureComponent {
 
   getBelong() {
     let { belong } = this.props.location.query;
-    const { currentAPI: { projectId } } = this.props.apiDocModel;
+    const { currentAPI: { projectId } } = this.props.apiPageModel;
     belong = belong || `project_${projectId}`;
     return belong;
   }
@@ -59,9 +51,9 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiDocModel } = this.props;
+    const { apiPageModel } = this.props;
     const { params: { apiId } } = this.props;
-    const { currentAPI } = apiDocModel;
+    const { currentAPI } = apiPageModel;
     if (!currentAPI._id) {
       return null;
     }
@@ -117,8 +109,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiDocModel, collectionModel }) => {
+export default connect(({ apiDocModel, collectionModel, apiPageModel }) => {
   return {
+    apiPageModel,
     apiDocModel,
     collectionModel,
   };

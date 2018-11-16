@@ -27,8 +27,7 @@ class Api extends React.PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { params: { apiId } } = this.props;
-    if (nextProps.params.apiId !== apiId) {
+    if (this.props.params.apiId !== nextProps.params.apiId) {
       this.props.dispatch({
         type: 'apiPageModel/detail',
         apiId: nextProps.params.apiId,
@@ -38,7 +37,6 @@ class Api extends React.PureComponent {
 
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
-      // 新建API
       this.props.dispatch({
         type: 'apiPageModel/saveAPI',
         api: values,
@@ -76,8 +74,13 @@ class Api extends React.PureComponent {
   }
 
   handleChangeAPIPage = item => {
+    const belong = this.getBelongQuery();
+
     browserHistory.push({
-      pathname: `/api-detail/${item[0]}/mock`,
+      pathname: `/api-detail/${item[0]}/doc`,
+      query: {
+        belong,
+      },
     });
   }
 
@@ -112,6 +115,7 @@ class Api extends React.PureComponent {
           <DirectoryTree
             multiple
             defaultExpandAll
+            selectedKeys={[ currentAPI._id ]}
             onSelect={this.handleChangeAPIPage}
             onExpand={this.onExpand}
           >
@@ -121,28 +125,19 @@ class Api extends React.PureComponent {
               ))
             }
           </DirectoryTree>
-          <div>
-            {
-              collectionModel.apis.map(api => (
-                <div key={api._id}>
-                  <Link to={`/api-detail/${api._id}/doc`} activeClassName="active">{api._id}</Link>
-                </div>
-              ))
-            }
-          </div>
         </div>
         <main className="api-main">
           <div className="tabs-header">
-            <Link to={'/api-detail/5bec0c0e2955395e8085b623/doc'} activeClassName="active">
+            <Link to={`/api-detail/${currentAPI._id}/doc?belong=${belong}`} activeClassName="active">
               <Icon type="profile" /> 文档
             </Link>
-            <Link to={'/api-detail/5bec0c0e2955395e8085b623/test'} activeClassName="active">
+            <Link to={`/api-detail/${currentAPI._id}/test?belong=${belong}`} activeClassName="active">
               <Icon type="rocket" /> 测试
             </Link>
-            <Link to={'/api-detail/5bec0c0e2955395e8085b623/mock'} activeClassName="active">
+            <Link to={`/api-detail/${currentAPI._id}/mock?belong=${belong}`} activeClassName="active">
               <Icon type="api" /> Mock
             </Link>
-            <Link to={'/collection/'} activeClassName="active">
+            <Link to={`/api-detail/${currentAPI._id}/setting?belong=${belong}`} activeClassName="active">
               <Icon type="setting" /> 设置
             </Link>
           </div>

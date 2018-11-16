@@ -6,9 +6,7 @@ import Mock from 'mockjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import hljs from 'highlight.js/lib/highlight';
 
-import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
-import Aside from '../../components/Aside';
 import Editor from '../../components/Editor';
 
 import './index.less';
@@ -69,14 +67,6 @@ class Api extends React.PureComponent {
   state = {
     modalEnvs: [],
     showMockTips: false,
-  }
-
-  componentDidMount() {
-    const { params: { apiId } } = this.props;
-    this.props.dispatch({
-      type: 'apiMockModel/detail',
-      apiId,
-    });
   }
 
   getPreviewUrl(api) {
@@ -143,16 +133,15 @@ class Api extends React.PureComponent {
 
   render() {
     const { showMockTips } = this.state;
-    const { apiMockModel } = this.props;
-    const { params: { apiId } } = this.props;
-    const { name, url, responses, responseIndex, apiType } = apiMockModel;
+    const { apiPageModel } = this.props;
+    const { currentAPI: { name, url, responses, responseIndex, apiType } } = apiPageModel;
     const mockTips = (
       <div className="mock-tips">
         支持高级功能: 响应式Mock, MockJS生成数据 <span className="pull-right">查看示例</span>
       </div>
     );
 
-    const previewUrl = this.getPreviewUrl(apiMockModel);
+    const previewUrl = this.getPreviewUrl(apiPageModel.currentAPI);
 
     const copyBtn = (
       <CopyToClipboard text={previewUrl} onCopy={() => message.success('复制成功')}>
@@ -209,8 +198,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiMockModel }) => {
+export default connect(({ apiMockModel, apiPageModel }) => {
   return {
+    apiPageModel,
     apiMockModel,
   };
 })(Api);

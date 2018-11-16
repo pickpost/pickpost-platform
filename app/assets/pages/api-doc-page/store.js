@@ -8,23 +8,6 @@ export default {
     currentAPI: {},
   },
   effects: {
-    *detail({ apiId }, { call, put }) {
-      yield put({
-        type: 'reset',
-      });
-      const { status, data } = yield call(ajax, {
-        url: `/api/apis/${apiId}`,
-        method: 'get',
-        type: 'json',
-      });
-
-      if (status === 'success') {
-        yield put({
-          type: 'changeCurrentAPI',
-          api: data,
-        });
-      }
-    },
     /**
      * 保存接口
      *
@@ -138,6 +121,18 @@ export default {
     },
     reset(state) {
       return { ...state, currentAPI: {} };
+    },
+  },
+  subscriptions: {
+    setup({ dispatch, history }) {
+      history.listen(({ pathname }) => {
+        console.log('api-doc-page', pathname);
+        if (pathname === '/users') {
+          dispatch({
+            type: 'users/fetch',
+          });
+        }
+      });
     },
   },
 };

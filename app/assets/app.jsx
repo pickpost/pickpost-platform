@@ -11,6 +11,7 @@ import APIPage from './pages/api-page/index';
 import APIDocPage from './pages/api-doc-page/index';
 import APITestPage from './pages/api-test-page/index';
 import APIMockPage from './pages/api-mock-page/index';
+import APISettingPage from './pages/api-setting-page/index';
 
 import CollectionEditPage from './pages/collection-edit-page/index';
 import CollectionPage from './pages/collection-page/index';
@@ -26,6 +27,7 @@ import APIPageModel from './pages/api-page/store';
 import APIDocModel from './pages/api-doc-page/store';
 import APITestModel from './pages/api-test-page/store';
 import APIMockModel from './pages/api-mock-page/store';
+import APISettingModel from './pages/api-setting-page/store';
 
 import CollectionEditModel from './pages/collection-edit-page/store';
 import CollectionModel from './pages/collection-page/store';
@@ -49,6 +51,7 @@ app.model(APIPageModel);
 app.model(APIDocModel);
 app.model(APITestModel);
 app.model(APIMockModel);
+app.model(APISettingModel);
 
 app.model(CollectionEditModel);
 app.model(CollectionModel);
@@ -77,6 +80,7 @@ export default class Container extends React.Component {
             <Route path="doc" component={APIDocPage} context={context} />
             <Route path="test" component={APITestPage} context={context} />
             <Route path="mock" component={APIMockPage} context={context} />
+            <Route path="setting" component={APISettingPage} context={context} />
           </Route>
         </Router>
       );
