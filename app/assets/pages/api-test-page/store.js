@@ -22,7 +22,7 @@ export default {
   state: {
     progress: 0, // 请求进度
     isAuthing: '', // 是否正在授权
-    subType: '2', // 默认选中 Mock Response Tab
+    subType: '2', // 默认选中 Body Tab
     projectName: '',
     projectId: '',
 
@@ -58,52 +58,6 @@ export default {
     result: null,
   },
   effects: {
-    // *detail({ apiId }, { call, put }) {
-    //   try {
-    //     const { status, data } = yield call(ajax, {
-    //       url: `/api/apis/${apiId}`,
-    //       method: 'get',
-    //       type: 'json',
-    //     });
-
-    //     if (status === 'success') {
-    //       yield put({
-    //         type: 'setData',
-    //         data: {
-    //           projectName: data.projectName,
-    //           projectId: data.projectId,
-    //           apiId: data._id,
-    //           apiName: data.name,
-    //           url: data.url,
-    //           desc: data.desc,
-    //           apiType: data.apiType, // HTTP RPC MGW
-    //           method: data.apiType === 'SPI' ? 'SPI' : data.methods ? data.methods[0] : 'GET',
-    //           methods: data.methods || [ 'GET' ],
-    //           requestIndex: data.requestIndex,
-    //           requests: data.requests,
-    //           paramIndex: data.paramIndex,
-    //           params: data.params,
-    //           headerIndex: data.headerIndex,
-    //           headers: data.headers,
-    //           updateAt: data.updateAt,
-    //           // 还需要更新 collection 相关的字段：accounts, envs
-    //           accounts: data.accounts || [],
-    //           envs: data.envs || [],
-    //           gateways: data.gateways || [],
-    //           serverUrl: get(data, 'envs[0].value'),
-    //           gateway: '',
-    //           result: null,
-    //         },
-    //       });
-    //       if (data.params && data.params.length > 0) {
-    //         yield put({ type: 'changeParams', url: data.url, list: data.params, index: data.paramIndex });
-    //       }
-    //     }
-    //   } catch (e) {
-    //     message.error('查询接口失败');
-    //   }
-    // },
-
     *updateAPI({ api }, { call }) {
       try {
         const { status } = yield call(ajax, {
@@ -371,6 +325,34 @@ export default {
   reducers: {
     setData(state, { data }) {
       return { ...state, ...data };
+    },
+
+    syncData(state, { data }) {
+      return {
+        projectName: data.projectName,
+        projectId: data.projectId,
+        _id: data._id,
+        apiName: data.name,
+        url: data.url,
+        desc: data.desc,
+        apiType: data.apiType, // HTTP RPC MGW
+        method: data.apiType === 'SPI' ? 'SPI' : data.methods ? data.methods[0] : 'GET',
+        methods: data.methods || [ 'GET' ],
+        requestIndex: data.requestIndex,
+        requests: data.requests,
+        paramIndex: data.paramIndex,
+        params: data.params,
+        headerIndex: data.headerIndex,
+        headers: data.headers,
+        updateAt: data.updateAt,
+        // 还需要更新 collection 相关的字段：accounts, envs
+        accounts: data.accounts || [],
+        envs: data.envs || [],
+        gateways: data.gateways || [],
+        serverUrl: get(data, 'envs[0].value'),
+        gateway: get(data, 'gateways[0]'),
+        result: null,
+      };
     },
     requestEnded(state, { data }) {
       return {

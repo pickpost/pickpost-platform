@@ -1,9 +1,7 @@
 'use strict';
 
 const utils = require('../common/utils');
-const schema = require('../common/schema');
 const { createFill, updateFill } = utils;
-const { APISchema } = schema;
 
 /* *
  * this.params获取url中的:xx

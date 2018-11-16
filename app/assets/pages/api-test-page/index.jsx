@@ -52,7 +52,7 @@ class Api extends React.PureComponent {
   handleSave() {
     const { apiTestModel } = this.props;
     const api = {
-      _id: apiTestModel.apiId,
+      _id: apiTestModel._id,
       params: apiTestModel.params,
       paramsIndex: apiTestModel.paramsIndex,
       requests: apiTestModel.requests,
@@ -191,18 +191,17 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiTestModel } = this.props;
-    const { params: { apiId } } = this.props;
+    const { apiTestModel, apiPageModel } = this.props;
+    const { currentAPI } = apiPageModel;
     const { modalEnvs } = this.state;
     const { gateways, result, isAuthing, displayUrl, method, apiType, gateway, gatewayModal, envModal, progress } = apiTestModel;
     const fullGateways = (gateways || []);
-
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
       <div>
         <div className="c-header">
-          <Info title={apiTestModel.apiName} url={apiTestModel.url} apiType={apiTestModel.apiType}>
+          <Info title={currentAPI.name} url={currentAPI.url} apiType={currentAPI.apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>
@@ -341,8 +340,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiTestModel }) => {
+export default connect(({ apiPageModel, apiTestModel }) => {
   return {
+    apiPageModel,
     apiTestModel,
   };
 })(Api);

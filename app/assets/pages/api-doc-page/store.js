@@ -1,12 +1,9 @@
 import ajax from 'xhr-plus';
 import { message } from 'antd';
-import { routerRedux } from 'dva/router';
 
 export default {
   namespace: 'apiDocModel',
-  state: {
-    currentAPI: {},
-  },
+  state: {},
   effects: {
     /**
      * 保存接口
@@ -35,104 +32,6 @@ export default {
       } catch (e) {
         message.error(api._id ? '更新失败' : '创建失败');
       }
-    },
-    // 物理删除API，要删除关联该API的CollectionAPI
-    *deleteAPI({ apiId, projectId, collectionId, nextId }, { call, put }) { // 如果删除的是当前展示的
-      try {
-        const { status } = yield call(ajax, {
-          url: `/api/apis/${apiId}`,
-          method: 'DELETE',
-          type: 'json',
-        });
-        if (status === 'success') {
-          message.success('删除成功');
-          if (collectionId) {
-            yield put({ type: 'project/collections', id: collectionId, apiId: nextId });
-            yield put(routerRedux.push({
-              pathname: `/collection/${collectionId}/${nextId || ''}`,
-              query: {},
-            }));
-          } else {
-            yield put({ type: 'project/projects', id: collectionId, apiId: nextId });
-            yield put(routerRedux.push({
-              pathname: `/project/${projectId}/${nextId || ''}`,
-              query: {},
-            }));
-          }
-        }
-      } catch (e) {
-        message.error('删除失败');
-      }
-    },
-    *unlinkAPI({ apiId, projectId, collectionId, nextId }, { call, put }) {
-      try {
-        const { status } = yield call(ajax, {
-          url: '/api/apisUnlink',
-          method: 'POST',
-          type: 'json',
-          data: {
-            apiId,
-            collectionId,
-          },
-        });
-
-        if (status === 'success') {
-          message.success('移除成功');
-          if (collectionId) {
-            yield put({ type: 'project/collections', id: collectionId, apiId: nextId });
-            yield put(routerRedux.push({
-              pathname: `/collection/${collectionId}/${nextId || ''}`,
-              query: {},
-            }));
-          } else {
-            yield put({ type: 'project/projects', id: collectionId, apiId: nextId });
-            yield put(routerRedux.push({
-              pathname: `/project/${projectId}/${nextId || ''}`,
-              query: {},
-            }));
-          }
-        }
-      } catch (e) {
-        message.error('移除失败');
-      }
-    },
-    *fetchProjectList({ }, { call, put }) {
-      try {
-        const { status, data } = yield call(ajax, {
-          url: '/api/projects',
-          method: 'get',
-          type: 'json',
-        });
-
-        if (status === 'success') {
-          yield put({
-            type: 'changeProjectList',
-            projectList: data,
-          });
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  },
-  reducers: {
-    changeCurrentAPI(state, { api }) {
-      return { ...state, currentAPI: api };
-    },
-    reset(state) {
-      return { ...state, currentAPI: {} };
-    },
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        console.log('api-doc-page', pathname);
-        if (pathname === '/users') {
-          dispatch({
-            type: 'users/fetch',
-          });
-        }
-      });
     },
   },
 };

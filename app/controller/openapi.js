@@ -18,11 +18,6 @@ function getCtoken(cookieStr) {
   return '';
 }
 
-// Todo
-function getEnvByUrl(url) {
-  return 'dev';
-}
-
 exports.spiTest = async function () {
   const { bizType, requestData, auth, gateway, server } = this.request.body;
   let cookieStr = '';

@@ -23,6 +23,10 @@ export default {
           type: 'changeCurrentAPI',
           api: data,
         });
+        // yield put({
+        //   type: 'apiTestModel/syncData',
+        //   data,
+        // });
       }
     },
     /**

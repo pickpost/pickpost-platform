@@ -109,10 +109,8 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiDocModel, collectionModel, apiPageModel }) => {
+export default connect(({ apiPageModel }) => {
   return {
     apiPageModel,
-    apiDocModel,
-    collectionModel,
   };
 })(createForm()(Api));

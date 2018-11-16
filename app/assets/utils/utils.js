@@ -196,11 +196,6 @@ export function isBelong(data) {
   return (data.owners || []).concat(data.members || []).find(o => o.key === user.workid);
 }
 
-// Todo
-export function getEnvByUrl(url) {
-  return 'dev';
-}
-
 export class StorageUtil {
   static setItem(key, val, isSession = false) {
     const adapter = isSession ? sessionStorage : localStorage;

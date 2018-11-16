@@ -29,13 +29,13 @@ function load(method, url, data, cookieStr) {
       method,
       url: encodeURI(url),
       data: JSON.parse(data),
-      transformRequest: [function (data) {
+      transformRequest: [ function(data) {
         let ret = '';
         for (const it in data) {
           ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
         }
         return ret;
-      }],
+      } ],
       headers: {
         'Cache-Control': 'no-cache',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
