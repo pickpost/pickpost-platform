@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'dva';
 import { Input, Tree, Icon } from 'antd';
 import { Link, browserHistory } from 'dva/router';
+import { debounce } from 'lodash';
 
 import Layout from '../../layout/default.jsx';
 
@@ -20,10 +21,27 @@ class Api extends React.PureComponent {
       type: 'apiPageModel/detail',
       apiId,
     });
+
     this.props.dispatch({
       type: 'collectionModel/collectionApis',
       id: belong.split('_')[1],
     });
+
+    this.handleFilterDebounced = e => {
+      console.log(e.target.value);
+      this.props.dispatch({
+        type: 'apiPageModel/changeKeywords',
+        keywords: e.target.value,
+      });
+    };
+
+    // this.handleFilterDebounced = debounce(e => {
+    //   e.persist();
+    //   this.props.dispatch({
+    //     type: 'apiPageModel/changeKeywords',
+    //     keywords: e.target.value,
+    //   });
+    // }, 300);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -86,13 +104,14 @@ class Api extends React.PureComponent {
 
   render() {
     const { apiPageModel, collectionModel } = this.props;
-    const { currentAPI } = apiPageModel;
+    const { currentAPI, filterApis, keywords } = apiPageModel;
     if (!currentAPI._id) {
       return null;
     }
 
     const belong = this.getBelongQuery();
     const collectionId = belong.split('_')[1];
+    const showApis = keywords ? filterApis : collectionModel.apis;
 
     return (
       <Layout uplevel={this.getUplevel()}>
@@ -111,7 +130,7 @@ class Api extends React.PureComponent {
           </Link>
         </aside>
         <div className="folder-tree">
-          <Search style={{ marginBottom: 8 }} placeholder="Search" />
+          <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleFilterDebounced} />
           <DirectoryTree
             multiple
             defaultExpandAll
@@ -120,7 +139,7 @@ class Api extends React.PureComponent {
             onExpand={this.onExpand}
           >
             {
-              collectionModel.apis.map(api => (
+              showApis.map(api => (
                 <TreeNode title={api.url} key={api._id} isLeaf />
               ))
             }

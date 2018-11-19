@@ -66,7 +66,7 @@ class Index extends React.PureComponent {
     return 'HTTP';
   }
 
-  // Todo: 添加完一个接口，立即又添加一个相同的接口，校验不到。
+  // 添加完一个接口，立即又添加一个相同的接口，校验不到。
   // RPC 和 SPI 接口存放的项目地址需要探讨一下，在A应用里有a接口，然后在B应用里新建a接口，会提示接口已存在，这是因为RPC和SPI接口匹配规则忽略所在应用。
   validateUrl = (rule, value, callback) => {
     const { editingAPI } = this.props.apiSettingModel;

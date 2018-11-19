@@ -62,8 +62,6 @@ export default {
         });
         if (status === 'success') {
           message.success(api._id ? '保存成功' : '创建成功');
-          // 跳转列表页
-          history.back();
         } else {
           message.error(errMsg || '操作失败');
         }

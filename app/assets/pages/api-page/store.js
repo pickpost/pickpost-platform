@@ -5,7 +5,9 @@ import { routerRedux } from 'dva/router';
 export default {
   namespace: 'apiPageModel',
   state: {
+    keywords: '',
     currentAPI: {},
+    filterApis: [],
   },
   effects: {
     *detail({ apiId }, { call, put }) {
@@ -135,6 +137,17 @@ export default {
         console.log(e);
       }
     },
+    *changeKeywords({ keywords }, { select, put }) {
+      // 搜索关键词变化，设置关键词，且设置过滤结果。
+      const { collectionModel } = yield select();
+      const filterApis = collectionModel.apis.filter(item => item.url && item.url.toLowerCase().indexOf(keywords.toLowerCase()) >= 0);
+      yield put({
+        type: 'updateSearch',
+        filterApis,
+        keywords,
+      });
+    },
+
   },
   reducers: {
     changeCurrentAPI(state, { api }) {
@@ -142,6 +155,9 @@ export default {
     },
     reset(state) {
       return { ...state, currentAPI: {} };
+    },
+    updateSearch(state, { filterApis, keywords }) {
+      return { ...state, filterApis, keywords };
     },
   },
   subscriptions: {
