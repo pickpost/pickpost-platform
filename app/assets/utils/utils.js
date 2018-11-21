@@ -216,3 +216,7 @@ export class StorageUtil {
     adapter.removeItem(key);
   }
 }
+
+export function getEnvByUrl() {
+  return '';
+}

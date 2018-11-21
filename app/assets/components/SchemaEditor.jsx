@@ -3,7 +3,7 @@ import autobind from 'autobind-decorator';
 import set from 'lodash/set';
 import { Modal, Icon, Tooltip } from 'antd';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import json2schema from '../utils/json2schema';
+import json2schema from '../utils/json2schemav2';
 import schema2json from '../utils/schema2json';
 import JSON5 from 'json5';
 import stringToPath from '../utils/stringToPath';
@@ -90,7 +90,10 @@ class SchemaEditor extends React.Component {
       leftRowCount: rows,
       hightLightLine: 0,
     };
+    this.generatePathMap(props.value);
   }
+
+  pathMap = {}
 
   // 左侧JSON改变时，只同步整个 Schema 结构，不同步额外信息。
   handleJSONChange = value => {
@@ -101,10 +104,8 @@ class SchemaEditor extends React.Component {
     });
     if (this.props && this.props.onChange) {
       try {
-        const { schema } = this.state;
         const json = JSON5.parse(value);
-        const leftSchema = json2schema(json);
-        const newSchema = this.schemaSync(leftSchema, schema);
+        const newSchema = json2schema(json, this.pathMap, 'root');
         this.setState({
           schema: newSchema,
           jsonErrorMessage: '',
@@ -133,12 +134,6 @@ class SchemaEditor extends React.Component {
     }
   }
 
-  schemaSync(newSchema, originSchema) {
-    const pathMap = this.generatePathMap(originSchema);
-    const result = this.sycnField(newSchema, pathMap);
-    return result;
-  }
-
   hasChildren(prop) {
     return prop.properties || prop.items;
   }
@@ -162,9 +157,10 @@ class SchemaEditor extends React.Component {
     return schema;
   }
 
-  generatePathMap(schema) {
-    let pathMap = {};
-    pathMap[schema.path] = {
+  generatePathMap(schema, parentsPath) {
+    const newParentsPath = parentsPath || 'root';
+
+    this.pathMap[newParentsPath] = {
       required: schema.required,
       title: schema.title,
       remark: schema.remark,
@@ -172,14 +168,12 @@ class SchemaEditor extends React.Component {
     };
 
     if (schema.items) {
-      pathMap = { ...pathMap, ...this.generatePathMap(schema.items) };
+      this.pathMap = { ...this.pathMap, ...this.generatePathMap(schema.items, newParentsPath + '[0]') };
     } else if (schema.properties) {
       for (const prop in schema.properties) {
-        pathMap = { ...pathMap, ...this.generatePathMap(schema.properties[prop]) };
+        this.pathMap = { ...this.pathMap, ...this.generatePathMap(schema.properties[prop], newParentsPath + '.' + prop) };
       }
     }
-
-    return pathMap;
   }
 
   showEnumsModal = () => {
@@ -233,21 +227,25 @@ class SchemaEditor extends React.Component {
     }
   }
 
-  blurFx(item, e) { // 备注的修改
+  handleRemarkChange(item, e) { // 备注的修改
     const { schema } = this.state;
     const value = e.target.value;
     setSchemaData(schema, item.path, 'remark', value);
+    // 同步 pathMap
+    this.pathMap[item.path] = this.pathMap[item.path] ? { ...this.pathMap[item.path], remark: value } : { remark: value };
     this.setState({
       schema,
     });
     this.props.onChange(schema);
   }
 
-  changFx(item, e) { // 数值的修改
-    const { schema } = this.state;
-    const value = e.target.value;
-    setSchemaData(schema, item.path, 'example', value);
+  handleSaveEnums = () => {
+    const { path, list, schema } = this.state;
+    setSchemaData(schema, path, 'enum', list);
+    // 同步 pathMap
+    this.pathMap[path] = this.pathMap[path] ? { ...this.pathMap[path], enum: list } : { enum: list };
     this.setState({
+      enumsModal: false,
       schema,
     });
     this.props.onChange(schema);
@@ -259,16 +257,6 @@ class SchemaEditor extends React.Component {
       path,
       enumsModal: true,
     });
-  }
-
-  handleSaveEnums = () => {
-    const { path, list, schema } = this.state;
-    setSchemaData(schema, path, 'enum', list);
-    this.setState({
-      enumsModal: false,
-      schema,
-    });
-    this.props.onChange(schema);
   }
 
   fullFillRow(rows, maxCount) {
@@ -362,7 +350,7 @@ class SchemaEditor extends React.Component {
                     }
                     {
                       item.type ? <td>
-                        <input className="re-input" type="text" value={item.remark} data-line={idx + 1} onFocus={this.handleSyncTableHightlight} onChange={e => { this.blurFx(item, e); }} />
+                        <input className="re-input" type="text" value={item.remark} data-line={idx + 1} onFocus={this.handleSyncTableHightlight} onChange={e => { this.handleRemarkChange(item, e); }} />
                       </td> : <td></td>
                     }
                   </tr>

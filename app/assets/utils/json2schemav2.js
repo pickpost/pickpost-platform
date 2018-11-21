@@ -11,8 +11,10 @@ function getType(type) {
   return typeof type;
 }
 
-function json2schema(json) {
+function json2schema(json, pathMap, parentsPath) {
   let schema;
+  pathMap = pathMap || {};
+  const newParentsPath = parentsPath || 'root';
 
   if (isPlainObject(json)) {
     schema = schema || {
@@ -21,20 +23,22 @@ function json2schema(json) {
       properties: (function() {
         const props = {};
         Object.keys(json).forEach(key => {
-          props[key] = json2schema(json[key]);
+          props[key] = json2schema(json[key], pathMap, newParentsPath + '.' + key);
         });
         return props;
       })(),
       remark: '',
+      path: newParentsPath,
     };
   } else if (Array.isArray(json)) {
     schema = schema || {
       title: '',
       type: 'array',
       items: (function() {
-        return json.length <= 0 ? null : json2schema(json[0]);
+        return json.length <= 0 ? null : json2schema(json[0], pathMap, newParentsPath + '[0]');
       })(),
       remark: '',
+      path: newParentsPath,
     };
   } else {
     schema = {
@@ -43,7 +47,12 @@ function json2schema(json) {
       example: json,
       enum: [],
       remark: '',
+      path: newParentsPath,
     };
+  }
+
+  if (pathMap[schema.path]) {
+    schema = { ...schema, ...pathMap[schema.path] };
   }
 
   return schema;
