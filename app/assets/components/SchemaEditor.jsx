@@ -90,7 +90,7 @@ class SchemaEditor extends React.Component {
       leftRowCount: rows,
       hightLightLine: 0,
     };
-    this.generatePathMap(props.value);
+    this.pathMap = this.generatePathMap(props.value, 'root', {});
   }
 
   pathMap = {}
@@ -129,8 +129,7 @@ class SchemaEditor extends React.Component {
         jsonStr: JSON.stringify(execute(jsonStr), null, '\t'),
       });
     } catch (err) {
-      // console.log(err);
-      console.log('JSON 格式解析失败');
+      console.log('JSON 格式解析失败:', err);
     }
   }
 
@@ -157,10 +156,11 @@ class SchemaEditor extends React.Component {
     return schema;
   }
 
-  generatePathMap(schema, parentsPath) {
+  generatePathMap(schema, parentsPath, pathMap) {
     const newParentsPath = parentsPath || 'root';
+    let innerPathMap = pathMap || {};
 
-    this.pathMap[newParentsPath] = {
+    innerPathMap[newParentsPath] = {
       required: schema.required,
       title: schema.title,
       remark: schema.remark,
@@ -168,12 +168,14 @@ class SchemaEditor extends React.Component {
     };
 
     if (schema.items) {
-      this.pathMap = { ...this.pathMap, ...this.generatePathMap(schema.items, newParentsPath + '[0]') };
+      innerPathMap = { ...innerPathMap, ...this.generatePathMap(schema.items, newParentsPath + '[0]') };
     } else if (schema.properties) {
       for (const prop in schema.properties) {
-        this.pathMap = { ...this.pathMap, ...this.generatePathMap(schema.properties[prop], newParentsPath + '.' + prop) };
+        innerPathMap = { ...innerPathMap, ...this.generatePathMap(schema.properties[prop], newParentsPath + '.' + prop) };
       }
     }
+
+    return innerPathMap;
   }
 
   showEnumsModal = () => {
