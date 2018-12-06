@@ -69,6 +69,18 @@ class Api extends React.PureComponent {
     showMockTips: false,
   }
 
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { responses, responseIndex } = this.props.apiPageModel.currentAPI;
+    dispatch({
+      type: 'apiMockModel/setData',
+      data: {
+        responses,
+        responseIndex,
+      },
+    });
+  }
+
   getPreviewUrl(api) {
     const prefix = `${location.protocol}//${location.host}`;
     const { apiType, projectName, url } = api;
@@ -134,8 +146,9 @@ class Api extends React.PureComponent {
 
   render() {
     const { showMockTips } = this.state;
-    const { apiPageModel } = this.props;
-    const { currentAPI: { name, url, responses, responseIndex, apiType } } = apiPageModel;
+    const { apiPageModel, apiMockModel } = this.props;
+    const { currentAPI: { name, url, apiType } } = apiPageModel;
+    const { responses, responseIndex } = apiMockModel;
     const mockTips = (
       <div className="mock-tips">
         支持高级功能: 响应式Mock, MockJS生成数据 <span className="pull-right">查看示例</span>

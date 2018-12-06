@@ -27,7 +27,6 @@ export default {
     },
 
     *saveMock({ api }, { call }) {
-      debugger;
       const { status } = yield call(ajax, {
         url: `/api/apis/${api._id}`,
         method: 'put',
