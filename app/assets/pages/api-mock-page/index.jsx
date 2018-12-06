@@ -85,7 +85,8 @@ class Api extends React.PureComponent {
   }
 
   handleSave() {
-    const { apiId, responses, responseIndex } = this.props.apiMockModel;
+    const { responses, responseIndex } = this.props.apiMockModel;
+    const { params: { apiId } } = this.props;
 
     this.props.dispatch({
       type: 'apiMockModel/saveMock',
