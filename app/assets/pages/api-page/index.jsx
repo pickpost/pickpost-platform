@@ -1,13 +1,17 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Input, Tree, Icon } from 'antd';
+import {
+  Input,
+  // Tree,
+  Icon,
+} from 'antd';
 import { Link, browserHistory } from 'dva/router';
-import { debounce } from 'lodash';
-
 import Layout from '../../layout/default.jsx';
+import Folder from '../../components/folder';
+import File from '../../components/file';
 
-const DirectoryTree = Tree.DirectoryTree;
-const TreeNode = Tree.TreeNode;
+// const DirectoryTree = Tree.DirectoryTree;
+// const TreeNode = Tree.TreeNode;
 const Search = Input.Search;
 
 import './index.less';
@@ -112,6 +116,10 @@ class Api extends React.PureComponent {
     const belong = this.getBelongQuery();
     const collectionId = belong.split('_')[1];
     const showApis = keywords ? filterApis : collectionModel.apis;
+    const folder = {
+      name: '默认接口',
+      apis: showApis,
+    };
 
     return (
       <Layout uplevel={this.getUplevel()}>
@@ -131,19 +139,21 @@ class Api extends React.PureComponent {
         </aside>
         <div className="folder-tree">
           <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleFilterDebounced} />
-          <DirectoryTree
-            multiple
-            defaultExpandAll
-            selectedKeys={[ currentAPI._id ]}
-            onSelect={this.handleChangeAPIPage}
-            onExpand={this.onExpand}
+          <Folder
+            folder={folder}
+            isCollapsed={false}
+            handleToggleFolder={this.handleToggleCollection}
+            handleEditFolder={this.handleEditCollection}
+            handleDeleteFolder={this.handleDeleteCollection}
+            handleAddFile={this.handleAddFile}
+            handleSetFolder={this.handleSetFolder}
           >
             {
-              showApis.map(api => (
-                <TreeNode title={api.url} key={api._id} isLeaf />
+              folder.apis.map(api => (
+                <File key={api._id} file={api} linkUrl={`/api-detail/${api._id}/doc?belong=${belong}`} />
               ))
             }
-          </DirectoryTree>
+          </Folder>
         </div>
         <main className="api-main">
           <div className="tabs-header">

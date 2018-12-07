@@ -21,35 +21,6 @@ class Api extends React.PureComponent {
     });
   }
 
-  getTypeByMethods(methods) {
-    if (!Array.isArray(methods)) {
-      return 'HTTP';
-    }
-
-    if (methods.indexOf('RPC') >= 0) {
-      return 'RPC';
-    } else if (methods.indexOf('SPI') >= 0) {
-      return 'SPI';
-    }
-    return 'HTTP';
-  }
-
-  getBelongQuery() {
-    const { belong } = this.props.location.query;
-    return belong || '';
-  }
-
-  getBelong() {
-    let { belong } = this.props.location.query;
-    const { currentAPI: { projectId } } = this.props.apiPageModel;
-    belong = belong || `project_${projectId}`;
-    return belong;
-  }
-
-  getUplevel() {
-    return '/' + this.getBelong().replace('_', '/') + '?tab=api';
-  }
-
   render() {
     const { apiPageModel } = this.props;
     const { params: { apiId } } = this.props;
