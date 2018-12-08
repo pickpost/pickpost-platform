@@ -1,18 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import {
-  Input,
-  // Tree,
-  Icon,
-} from 'antd';
+import { Input, Menu, Dropdown, Button, Icon } from 'antd';
 import { Link, browserHistory } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 import Folder from '../../components/folder';
 import File from '../../components/file';
-
-// const DirectoryTree = Tree.DirectoryTree;
-// const TreeNode = Tree.TreeNode;
-const Search = Input.Search;
+import FolderCreate from './components/folder-create';
 
 import './index.less';
 
@@ -27,12 +20,18 @@ class Api extends React.PureComponent {
     });
 
     this.props.dispatch({
-      type: 'collectionModel/collectionApis',
-      id: belong.split('_')[1],
+      type: 'apiPageModel/setData',
+      payload: {
+        collectionId: belong.split('_')[1],
+      },
+    });
+
+    this.props.dispatch({
+      type: 'apiPageModel/getApisTree',
+      collectionId: belong.split('_')[1],
     });
 
     this.handleFilterDebounced = e => {
-      console.log(e.target.value);
       this.props.dispatch({
         type: 'apiPageModel/changeKeywords',
         keywords: e.target.value,
@@ -106,20 +105,84 @@ class Api extends React.PureComponent {
     });
   }
 
+  handleMenuClick = e => {
+    if (e.key === 'file') {
+      const { collectionId } = this.props.apiPageModel;
+      const url = `/collection/${collectionId}/newapi`;
+
+      browserHistory.push({
+        pathname: url,
+      });
+    } else if (e.key === 'folder') {
+      this.props.dispatch({
+        type: 'apiPageModel/setFolderModal',
+        visible: true,
+      });
+    }
+  }
+
+  saveFormRef = formRef => {
+    this.formRef = formRef;
+  }
+
+  handleCancel = () => {
+    this.props.dispatch({
+      type: 'apiPageModel/setFolderModal',
+      visible: false,
+    });
+  }
+
+  handleCreateFolder = () => {
+    const form = this.formRef.props.form;
+    const { collectionId } = this.props.apiPageModel;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      this.props.dispatch({
+        type: 'apiPageModel/createFolder',
+        form,
+        parentId: '',
+        collectionId,
+        name: values.title,
+      });
+    });
+  }
+
+  handleToggleCollection = (id, collapsed) => {
+    const { collectionApis } = this.props.apiPageModel;
+    this.props.dispatch({
+      type: 'apiPageModel/setData',
+      payload: {
+        collectionApis: collectionApis.map(item => ({
+          ...item,
+          isCollapsed: item._id === id ? !!collapsed : !!item.isCollapsed,
+        })),
+      },
+    });
+  }
+
   render() {
     const { apiPageModel, collectionModel } = this.props;
-    const { currentAPI, filterApis, keywords } = apiPageModel;
+    const { currentAPI, filterApis, keywords, showFolderModal, collectionId, collectionApis } = apiPageModel;
     if (!currentAPI._id) {
       return null;
     }
 
     const belong = this.getBelongQuery();
-    const collectionId = belong.split('_')[1];
     const showApis = keywords ? filterApis : collectionModel.apis;
     const folder = {
       name: '默认接口',
       apis: showApis,
     };
+
+    const menu = (
+      <Menu onClick={this.handleMenuClick}>
+        <Menu.Item key="file"><Icon type="plus-circle" theme="twoTone" />新增接口</Menu.Item>
+        <Menu.Item key="folder"><Icon type="folder" theme="twoTone" />新增分组</Menu.Item>
+      </Menu>
+    );
 
     return (
       <Layout uplevel={this.getUplevel()}>
@@ -138,22 +201,35 @@ class Api extends React.PureComponent {
           </Link>
         </aside>
         <div className="folder-tree">
-          <Search style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleFilterDebounced} />
-          <Folder
-            folder={folder}
-            isCollapsed={false}
-            handleToggleFolder={this.handleToggleCollection}
-            handleEditFolder={this.handleEditCollection}
-            handleDeleteFolder={this.handleDeleteCollection}
-            handleAddFile={this.handleAddFile}
-            handleSetFolder={this.handleSetFolder}
-          >
-            {
-              folder.apis.map(api => (
-                <File key={api._id} file={api} linkUrl={`/api-detail/${api._id}/doc?belong=${belong}`} />
-              ))
-            }
-          </Folder>
+          <div className="search-row">
+            <Input style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleFilterDebounced} />
+            <Dropdown overlay={menu} placement="bottomRight">
+              <Button className="dropdown-btn" type="dashed">
+                <Icon className="add-entrance" type="plus-circle" theme="twoTone" />
+                <Icon className="dropdown-icon" type="caret-down" />
+              </Button>
+            </Dropdown>
+          </div>
+          {
+            collectionApis.map(folder => (
+              <Folder
+                key={folder._id}
+                folder={folder}
+                isCollapsed={folder.isCollapsed}
+                handleToggleFolder={this.handleToggleCollection}
+                handleEditFolder={this.handleEditCollection}
+                handleDeleteFolder={this.handleDeleteCollection}
+                handleAddFile={this.handleAddFile}
+                handleSetFolder={this.handleSetFolder}
+              >
+                {
+                  (folder.children || []).map(api => (
+                    <File key={api._id} file={api} linkUrl={`/api-detail/${api.apiId}/doc?belong=${belong}`} />
+                  ))
+                }
+              </Folder>
+            ))
+          }
         </div>
         <main className="api-main">
           <div className="tabs-header">
@@ -174,6 +250,12 @@ class Api extends React.PureComponent {
             {this.props.children}
           </div>
         </main>
+        <FolderCreate
+          wrappedComponentRef={this.saveFormRef}
+          visible={showFolderModal}
+          onCancel={this.handleCancel}
+          onCreate={this.handleCreateFolder}
+        />
       </Layout>
     );
   }

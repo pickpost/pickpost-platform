@@ -81,7 +81,7 @@ class Folder extends React.PureComponent {
           <div className="detail">
             <h5>{folder.name}</h5>
             <p>
-              {folder.apis.length}个接口 {folder.desc ? `(${folder.desc})` : ''}
+              {(folder.children || []).length}个接口 {folder.desc ? `(${folder.desc})` : ''}
             </p>
           </div>
           <div className="more-action" onClick={this._stopPrevent}>
@@ -101,7 +101,7 @@ class Folder extends React.PureComponent {
 Folder.propTypes = {
   folder: PropTypes.object,
   isActive: PropTypes.bool,
-  isCollapsed: PropTypes.bool.isRequired,
+  isCollapsed: PropTypes.bool,
 
   handleToggleFolder: PropTypes.func,
   handleEditFolder: PropTypes.func,

@@ -6,11 +6,14 @@ export default {
   namespace: 'apiPageModel',
   state: {
     keywords: '',
+    collectionId: '',
+    collectionApis: [],
     currentAPI: {},
     filterApis: [],
+    showFolderModal: false,
   },
   effects: {
-    *detail({ apiId }, { call, put }) {
+    *detail({ apiId, collectionId }, { call, put }) {
       yield put({
         type: 'reset',
       });
@@ -25,10 +28,28 @@ export default {
           type: 'changeCurrentAPI',
           api: data,
         });
-        // yield put({
-        //   type: 'apiTestModel/syncData',
-        //   data,
-        // });
+      }
+    },
+    *getApisTree({ collectionId }, { call, put }) {
+      yield put({
+        type: 'reset',
+      });
+      const { status, data } = yield call(ajax, {
+        url: '/api/collection-apis',
+        method: 'get',
+        type: 'json',
+        data: {
+          collectionId,
+        },
+      });
+      console.log(data);
+      if (status === 'success') {
+        yield put({
+          type: 'setData',
+          payload: {
+            collectionApis: data,
+          },
+        });
       }
     },
     /**
@@ -147,9 +168,36 @@ export default {
         keywords,
       });
     },
+    *createFolder({ form, name, parentId, collectionId }, { call, put }) {
+      try {
+        const { status } = yield call(ajax, {
+          url: '/api/collection-apis',
+          method: 'POST',
+          type: 'json',
+          data: {
+            parentId,
+            collectionId,
+            name,
+          },
+        });
 
+        if (status === 'success') {
+          message.success('创建成功');
+          yield put({
+            type: 'setFolderModal',
+            visible: false,
+          });
+          form.resetFields();
+        }
+      } catch (e) {
+        message.error('创建失败');
+      }
+    },
   },
   reducers: {
+    setData(state, { payload }) {
+      return { ...state, ...payload };
+    },
     changeCurrentAPI(state, { api }) {
       return { ...state, currentAPI: api };
     },
@@ -158,6 +206,12 @@ export default {
     },
     updateSearch(state, { filterApis, keywords }) {
       return { ...state, filterApis, keywords };
+    },
+    setFolderModal(state, { visible }) {
+      return {
+        ...state,
+        showFolderModal: visible,
+      };
     },
   },
   subscriptions: {

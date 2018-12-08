@@ -16,6 +16,11 @@ module.exports = app => {
   router.delete('/api/collections/:id', controller.collection.collectionsDestroy);
   router.put('/api/collections/:id', controller.collection.collectionsUpdate);
 
+  router.get('/api/collection-apis', controller.collectionApi.getCollectionApis);
+  router.post('/api/collection-apis', controller.collectionApi.create);
+  router.delete('/api/collection-apis/:id', controller.collectionApi.destroy);
+  router.put('/api/collection-apis/:id', controller.collectionApi.update);
+
   router.get('/api/apis', controller.api.apisIndex);
   router.post('/api/apis', controller.api.apisNew);
   router.delete('/api/apis/:id', controller.api.apisDestroy);
