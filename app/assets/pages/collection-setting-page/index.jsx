@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  Table, Icon, Button, Input, Popover,
-  Tag, Form, Dropdown, Modal, Menu,
-  AutoComplete, message, Popconfirm,
-} from 'antd';
+import { Icon, Button, Input, Popover, Tag, Form, Dropdown, Modal, Menu, message, Popconfirm } from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { browserHistory, Link } from 'dva/router';
-
-import Layout from '../../layout/default.jsx';
-import Info from '../../components/Info';
-import { getQueryParamByName } from '../../utils/utils';
+import { Link } from 'dva/router';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';
@@ -380,12 +372,8 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params, collectionModel } = this.props;
-    const { apis, collection } = collectionModel;
-    const { collectionId } = params;
+    const { collectionModel: { collection } } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { memberList } = this.state;
-    const currentTab = getQueryParamByName('tab') || 'api';
 
     const owners = collection.owners ? collection.owners.map(v => {
       v.role = 'OWNER';

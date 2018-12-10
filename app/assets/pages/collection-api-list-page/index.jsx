@@ -1,24 +1,17 @@
 import React from 'react';
 import {
-  Table, Icon, Button, Input, Popover,
-  Tag, Form, Dropdown, Modal, Menu,
-  AutoComplete, message, Popconfirm,
+  Table, Icon, Button, Popover, Tag, Form, Dropdown, Menu, message, Popconfirm,
 } from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
 import { browserHistory, Link } from 'dva/router';
-
-import Layout from '../../layout/default.jsx';
 import Info from '../../components/Info';
-import { getQueryParamByName } from '../../utils/utils';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';
 
-const FormItem = Form.Item;
-const { TextArea } = Input;
 
 const mySelf = window.context.user;
 
@@ -31,6 +24,64 @@ class Collection extends React.PureComponent {
       showModal: false,
       memberList: [],
     };
+
+    const { collectionId } = props.params;
+    this.apisColumns = [{
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
+      width: '260px',
+    }, {
+      title: '类型',
+      dataIndex: 'methods',
+      key: 'methods',
+      render: methods => {
+        return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
+      },
+    }, {
+      title: '地址',
+      dataIndex: 'url',
+      key: 'url',
+      width: '400px',
+    }, {
+      title: '所属应用',
+      dataIndex: 'projectName',
+      key: 'projectName',
+    }, {
+      title: '最近更新',
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      render: updatedAt => {
+        return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
+      },
+    }, {
+      title: '创建人',
+      dataIndex: 'creater',
+      key: 'creater',
+    }, {
+      title: '操作',
+      dataIndex: 'operation',
+      key: 'operation',
+      render: (_, api) => {
+        const DeleteFileButtons = (
+          <div className="action-btns">
+            <Button type="default" onClick={this.handleRemoveAPI.bind(this, api)}>从需求移除接口</Button>
+            <Button type="danger" onClick={this.handleDeleteAPI.bind(this, api)}>从应用删除接口</Button>
+          </div>
+        );
+        return (
+          <div className="actions" onClick={e => e.stopPropagation()}>
+            <Link to={`/collection/${collectionId}/apis/doc/${api._id}`}>文档</Link>
+            <Link to={`/collection/${collectionId}/apis/test/${api._id}`}>测试</Link>
+            <Link to={`/collection/${collectionId}/apis/mock/${api._id}`}>Mock</Link>
+            <Link to={`/collection/${collectionId}/apis/setting/${api._id}`}>设置</Link>
+            <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
+              <Link to="">删除</Link>
+            </Popover>
+          </div>
+        );
+      },
+    }];
   }
 
   componentDidMount() {
@@ -47,62 +98,6 @@ class Collection extends React.PureComponent {
       id: collectionId,
     });
   }
-
-  apisColumns = [{
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-    width: '260px',
-  }, {
-    title: '类型',
-    dataIndex: 'methods',
-    key: 'methods',
-    render: methods => {
-      return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
-    },
-  }, {
-    title: '地址',
-    dataIndex: 'url',
-    key: 'url',
-    width: '400px',
-  }, {
-    title: '所属应用',
-    dataIndex: 'projectName',
-    key: 'projectName',
-  }, {
-    title: '最近更新',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
-    render: updatedAt => {
-      return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
-    },
-  }, {
-    title: '创建人',
-    dataIndex: 'creater',
-    key: 'creater',
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    key: 'operation',
-    render: (_, api) => {
-      const DeleteFileButtons = (
-        <div className="action-btns">
-          <Button type="default" onClick={this.handleRemoveAPI.bind(this, api)}>从需求移除接口</Button>
-          <Button type="danger" onClick={this.handleDeleteAPI.bind(this, api)}>从应用删除接口</Button>
-        </div>
-      );
-      return (
-        <div className="actions" onClick={e => e.stopPropagation()}>
-          <Link to={`/api-detail/${api._id}/doc?belong=collection_${this.props.params.collectionId}`}>文档</Link>
-          <Link to={`/api-detail/${api._id}/test?belong=collection_${this.props.params.collectionId}`}>测试</Link>
-          <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>Mock</Link>
-          <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-            <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
-          </Popover>
-        </div>
-      );
-    },
-  }];
 
   memberColumns = [
     {
@@ -122,7 +117,7 @@ class Collection extends React.PureComponent {
       align: 'center',
       render: (v, api) => {
         if (this.props.collectionModel.collection.owners.map(v => v.key).includes(mySelf.workid)) {
-          return (<Dropdown overlay={this.generateMenu(api)} trigger={['click']}>
+          return (<Dropdown overlay={this.generateMenu(api)} trigger={[ 'click' ]}>
             <a href="#">
               {v} <Icon type="down" />
             </a>
@@ -380,23 +375,7 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params, collectionModel } = this.props;
-    const { apis, collection } = collectionModel;
-    const { collectionId } = params;
-    const { getFieldDecorator } = this.props.form;
-    const { memberList } = this.state;
-    const currentTab = getQueryParamByName('tab') || 'api';
-
-    const owners = collection.owners ? collection.owners.map(v => {
-      v.role = 'OWNER';
-      return v;
-    }) : [];
-    const members = collection.members ? collection.members.map(v => {
-      v.role = 'MEMBER';
-      return v;
-    }) : [];
-
-    const users = (owners).concat(members);
+    const { params: { collectionId }, collectionModel: { apis, collection } } = this.props;
 
     return (
       <div>
@@ -418,10 +397,7 @@ class Collection extends React.PureComponent {
             return {
               onClick: () => {
                 browserHistory.push({
-                  pathname: `/api-detail/${api._id}/doc`,
-                  query: {
-                    belong: `collection_${this.props.params.collectionId}`,
-                  },
+                  pathname: `/collection/${collectionId}/apis/doc/${api._id}`,
                 });
               },
             };

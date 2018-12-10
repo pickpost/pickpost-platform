@@ -50,7 +50,7 @@ $ open http://localhost:7001
 
 - 接口类型支持自定义
 - 接口支持树形管理
-
+- xhr-plus 替换成 axios
 
 比如在语雀使用这样一个格式：
 
