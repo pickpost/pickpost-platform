@@ -210,6 +210,10 @@ class Api extends React.PureComponent {
               </Button>
             </Dropdown>
           </div>
+          <Folder
+            folder={{ name: '全部接口' }}
+          >
+          </Folder>
           {
             collectionApis.map(folder => (
               <Folder

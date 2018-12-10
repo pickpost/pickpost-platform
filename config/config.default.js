@@ -65,13 +65,13 @@ module.exports = appInfo => {
     templateViewEngine: 'nunjucks',
     devServer: {
       debug: false,
-      command: 'roadhog dev',
-      port: 8000,
+      command: 'cross-env PORT=8787 roadhog dev',
+      port: 8787,
       env: {
         BROWSER: 'none',
         ESLINT: 'none',
-        SOCKET_SERVER: 'http://127.0.0.1:8000',
-        PUBLIC_PATH: 'http://127.0.0.1:8000',
+        SOCKET_SERVER: 'http://127.0.0.1:8787',
+        PUBLIC_PATH: 'http://127.0.0.1:8787',
       },
     },
   };

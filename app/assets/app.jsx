@@ -70,13 +70,14 @@ export default class Container extends React.Component {
           <Route path="/workspace" component={CollectionsPage} context={context} />
           <Route path="/collections" component={CollectionsPage} context={context} />
           <Route path="/projects" component={ProjectsPage} context={context} />
-          <Route path="/collection/:collectionId" component={CollectionPage} context={context} />
           <Route path="/collection/:collectionId/newapi" component={APIEditPage} context={context} />
           <Route path="/collection/:collectionId/editapi/:apiId" component={APIEditPage} context={context} />
           <Route path="/collections/new" component={CollectionEditPage} context={context} />
           <Route path="/projects/new" component={ProjectEditPage} context={context} />
           <Route path="/project/:projectId" component={ProjectPage} context={context} />
+          <Route path="/collection/:collectionId" component={CollectionPage} context={context} />
           <Route path="/api-detail/:apiId" component={APIPage} context={context}>
+            <Route path="list" component={CollectionPage} context={context} />
             <Route path="doc" component={APIDocPage} context={context} />
             <Route path="test" component={APITestPage} context={context} />
             <Route path="mock" component={APIMockPage} context={context} />

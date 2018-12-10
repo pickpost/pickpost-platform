@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
-import { Icon } from 'antd';
+import { Icon, message, Popconfirm } from 'antd';
 
 import './style.less';
 
@@ -14,6 +14,10 @@ class Folder extends React.PureComponent {
 
   _handleDeleteFolder() {
     const { folder } = this.props;
+    if (folder.children && folder.children.length > 0) {
+      message.warn('删除失败，目前只能删除空分组。');
+      return;
+    }
     this.props.handleDeleteFolder(folder._id);
   }
 
@@ -85,6 +89,14 @@ class Folder extends React.PureComponent {
             </p>
           </div>
           <div className="more-action" onClick={this._stopPrevent}>
+            {
+              <Icon type="setting" onClick={this._handleEditFolder} />
+            }
+            {
+              <Popconfirm title="确定移除该分组?" onConfirm={this._handleDeleteFolder}>
+                <Icon type="delete" />
+              </Popconfirm>
+            }
             <Icon type="file-add" onClick={this._handleAddFile} />
           </div>
         </dt>
