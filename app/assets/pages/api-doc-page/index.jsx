@@ -22,9 +22,9 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiPageModel } = this.props;
+    const { collectionApisModel } = this.props;
     const { params: { apiId } } = this.props;
-    const { currentAPI } = apiPageModel;
+    const { currentAPI } = collectionApisModel;
     if (!currentAPI._id) {
       return null;
     }
@@ -80,8 +80,8 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiPageModel }) => {
+export default connect(({ collectionApisModel }) => {
   return {
-    apiPageModel,
+    collectionApisModel,
   };
 })(createForm()(Api));

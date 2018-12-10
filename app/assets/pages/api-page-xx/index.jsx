@@ -15,25 +15,25 @@ class Api extends React.PureComponent {
     // 根据 collection_id 请求列表数据
     const belong = this.getBelongQuery();
     this.props.dispatch({
-      type: 'apiPageModel/detail',
+      type: 'collectionApisModel/detail',
       apiId,
     });
 
     this.props.dispatch({
-      type: 'apiPageModel/setData',
+      type: 'collectionApisModel/setData',
       payload: {
         collectionId: belong.split('_')[1],
       },
     });
 
     this.props.dispatch({
-      type: 'apiPageModel/getApisTree',
+      type: 'collectionApisModel/getApisTree',
       collectionId: belong.split('_')[1],
     });
 
     this.handleFilterDebounced = e => {
       this.props.dispatch({
-        type: 'apiPageModel/changeKeywords',
+        type: 'collectionApisModel/changeKeywords',
         keywords: e.target.value,
       });
     };
@@ -41,7 +41,7 @@ class Api extends React.PureComponent {
     // this.handleFilterDebounced = debounce(e => {
     //   e.persist();
     //   this.props.dispatch({
-    //     type: 'apiPageModel/changeKeywords',
+    //     type: 'collectionApisModel/changeKeywords',
     //     keywords: e.target.value,
     //   });
     // }, 300);
@@ -50,7 +50,7 @@ class Api extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (this.props.params.apiId !== nextProps.params.apiId) {
       this.props.dispatch({
-        type: 'apiPageModel/detail',
+        type: 'collectionApisModel/detail',
         apiId: nextProps.params.apiId,
       });
     }
@@ -59,7 +59,7 @@ class Api extends React.PureComponent {
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
       this.props.dispatch({
-        type: 'apiPageModel/saveAPI',
+        type: 'collectionApisModel/saveAPI',
         api: values,
       });
     });
@@ -85,7 +85,7 @@ class Api extends React.PureComponent {
 
   getBelong() {
     let { belong } = this.props.location.query;
-    const { currentAPI: { projectId } } = this.props.apiPageModel;
+    const { currentAPI: { projectId } } = this.props.collectionApisModel;
     belong = belong || `project_${projectId}`;
     return belong;
   }
@@ -107,7 +107,7 @@ class Api extends React.PureComponent {
 
   handleMenuClick = e => {
     if (e.key === 'file') {
-      const { collectionId } = this.props.apiPageModel;
+      const { collectionId } = this.props.collectionApisModel;
       const url = `/collection/${collectionId}/newapi`;
 
       browserHistory.push({
@@ -115,7 +115,7 @@ class Api extends React.PureComponent {
       });
     } else if (e.key === 'folder') {
       this.props.dispatch({
-        type: 'apiPageModel/setFolderModal',
+        type: 'collectionApisModel/setFolderModal',
         visible: true,
       });
     }
@@ -127,21 +127,21 @@ class Api extends React.PureComponent {
 
   handleCancel = () => {
     this.props.dispatch({
-      type: 'apiPageModel/setFolderModal',
+      type: 'collectionApisModel/setFolderModal',
       visible: false,
     });
   }
 
   handleCreateFolder = () => {
     const form = this.formRef.props.form;
-    const { collectionId } = this.props.apiPageModel;
+    const { collectionId } = this.props.collectionApisModel;
     form.validateFields((err, values) => {
       if (err) {
         return;
       }
 
       this.props.dispatch({
-        type: 'apiPageModel/createFolder',
+        type: 'collectionApisModel/createFolder',
         form,
         parentId: '',
         collectionId,
@@ -151,9 +151,9 @@ class Api extends React.PureComponent {
   }
 
   handleToggleCollection = (id, collapsed) => {
-    const { collectionApis } = this.props.apiPageModel;
+    const { collectionApis } = this.props.collectionApisModel;
     this.props.dispatch({
-      type: 'apiPageModel/setData',
+      type: 'collectionApisModel/setData',
       payload: {
         collectionApis: collectionApis.map(item => ({
           ...item,
@@ -164,8 +164,8 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiPageModel, collectionModel } = this.props;
-    const { currentAPI, filterApis, keywords, showFolderModal, collectionId, collectionApis } = apiPageModel;
+    const { collectionApisModel, collectionModel } = this.props;
+    const { currentAPI, filterApis, keywords, showFolderModal, collectionId, collectionApis } = collectionApisModel;
     if (!currentAPI._id) {
       return null;
     }
@@ -265,9 +265,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiPageModel, collectionModel }) => {
+export default connect(({ collectionApisModel, collectionModel }) => {
   return {
-    apiPageModel,
+    collectionApisModel,
     collectionModel,
   };
 })(Api);

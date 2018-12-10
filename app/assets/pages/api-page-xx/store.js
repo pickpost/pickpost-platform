@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { routerRedux } from 'dva/router';
 
 export default {
-  namespace: 'apiPageModel',
+  namespace: 'collectionApisModel',
   state: {
     keywords: '',
     collectionId: '',

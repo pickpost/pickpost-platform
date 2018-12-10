@@ -71,7 +71,7 @@ class Api extends React.PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    const { responses, responseIndex } = this.props.apiPageModel.currentAPI;
+    const { responses, responseIndex } = this.props.collectionApisModel.currentAPI;
     dispatch({
       type: 'apiMockModel/setData',
       data: {
@@ -146,8 +146,8 @@ class Api extends React.PureComponent {
 
   render() {
     const { showMockTips } = this.state;
-    const { apiPageModel, apiMockModel } = this.props;
-    const { currentAPI: { name, url, apiType } } = apiPageModel;
+    const { collectionApisModel, apiMockModel } = this.props;
+    const { currentAPI: { name, url, apiType } } = collectionApisModel;
     const { responses, responseIndex } = apiMockModel;
     const mockTips = (
       <div className="mock-tips">
@@ -155,7 +155,7 @@ class Api extends React.PureComponent {
       </div>
     );
 
-    const previewUrl = this.getPreviewUrl(apiPageModel.currentAPI);
+    const previewUrl = this.getPreviewUrl(collectionApisModel.currentAPI);
 
     const copyBtn = (
       <CopyToClipboard text={previewUrl} onCopy={() => message.success('复制成功')}>
@@ -212,9 +212,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiMockModel, apiPageModel }) => {
+export default connect(({ apiMockModel, collectionApisModel }) => {
   return {
-    apiPageModel,
+    collectionApisModel,
     apiMockModel,
   };
 })(Api);

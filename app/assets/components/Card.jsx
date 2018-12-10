@@ -7,7 +7,7 @@ export default class Card extends React.PureComponent {
   render() {
     const { name, desc, updatedAt, owners, _id, apisCount } = this.props.collection;
     return (
-      <Link to={`/collection/${_id}?tab=api`}>
+      <Link to={`/collection/${_id}/apis/list`}>
         <div className="index-card">
           <div className="tit ellipsis">{name}</div>
           <div className="desc ellipsis">{desc ? desc + ' | ' : ''} {apisCount}个接口</div>

@@ -1,15 +1,24 @@
 import React from 'react';
-import { Icon, Button, Popover, Tag, Form, Dropdown, Menu, message, Popconfirm } from 'antd';
+import {
+  Table, Icon, Button, Input, Popover,
+  Tag, Form, Dropdown, Modal, Menu,
+  AutoComplete, message, Popconfirm,
+} from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { Link } from 'dva/router';
+import { browserHistory, Link } from 'dva/router';
 
 import Layout from '../../layout/default.jsx';
+import Info from '../../components/Info';
+import { getQueryParamByName } from '../../utils/utils';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';
+
+const FormItem = Form.Item;
+const { TextArea } = Input;
 
 const mySelf = window.context.user;
 
@@ -371,29 +380,62 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, collectionModel } = this.props;
+    const { apis, collection } = collectionModel;
     const { collectionId } = params;
+    const { getFieldDecorator } = this.props.form;
+    const { memberList } = this.state;
+    const currentTab = getQueryParamByName('tab') || 'api';
+
+    const owners = collection.owners ? collection.owners.map(v => {
+      v.role = 'OWNER';
+      return v;
+    }) : [];
+    const members = collection.members ? collection.members.map(v => {
+      v.role = 'MEMBER';
+      return v;
+    }) : [];
+
+    const users = (owners).concat(members);
 
     return (
-      <Layout uplevel={'/collections'}>
-        <aside>
-          <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
-            <Icon type="bars" />
-            <div>接口</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/members`} activeClassName="active">
-            <Icon type="team" />
-            <div>成员</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/setting`} activeClassName="active">
-            <Icon type="setting" />
-            <div>设置</div>
-          </Link>
-        </aside>
-        <main className="collection-main">
-          {this.props.children}
-        </main>
-      </Layout>
+      <div className="setting-wrapper">
+        <Form className="form-wrapper" layout="vertical" hideRequiredMark={true}>
+          <FormItem label="名称">
+            {
+              getFieldDecorator('name', {
+                initialValue: collection.name,
+                rules: [{ required: true, message: '需求名称不能为空' }],
+              })(<Input className="setting-input" placeholder="请写入需求名称" />)
+            }
+          </FormItem>
+          <FormItem label="描述">
+            {
+              getFieldDecorator('desc', {
+                initialValue: collection.desc,
+              })(<TextArea className="setting-input" placeholder="请写入需求描述" autosize={{ minRows: 3, maxRows: 6 }} />)
+            }
+          </FormItem>
+          <FormItem style={{ paddingTop: '20px' }}>
+            <Button disabled={!users.map(v => v.key).includes(mySelf.workid)} className="submit" type="primary" size="default" htmlType="submit" onClick={this.validateForm}>更新</Button>
+          </FormItem>
+          <FormItem style={{ borderTop: '1px solid #f2f4f5', paddingTop: '20px' }} label="废弃需求">
+            <p>注意，仅需求 Owner 可以进行废弃，废弃后，将不可恢复，请务必慎重</p>
+            <Button disabled={!owners.map(v => v.key).includes(mySelf.workid)} style={{ paddingÎTop: '20px' }} type="danger" size="default" onClick={this.handleAbandon}>废弃</Button>
+          </FormItem>
+        </Form>
+        <Modal
+          visible={this.state.showModal}
+          title="废弃"
+          okText="确认废弃"
+          cancelText="取消"
+          onOk={this.handleOk}
+          onCancel={() => { this.setState({ showModal: false }); }}
+          okButtonProps={{ type: 'danger' }}
+        >
+          <p>废弃后，将不可恢复，请务必慎重 !</p>
+        </Modal>
+      </div>
     );
   }
 }

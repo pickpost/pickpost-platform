@@ -1,15 +1,24 @@
 import React from 'react';
-import { Icon, Button, Popover, Tag, Form, Dropdown, Menu, message, Popconfirm } from 'antd';
+import {
+  Table, Icon, Button, Input, Popover,
+  Tag, Form, Dropdown, Modal, Menu,
+  AutoComplete, message, Popconfirm,
+} from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { Link } from 'dva/router';
+import { browserHistory, Link } from 'dva/router';
 
 import Layout from '../../layout/default.jsx';
+import Info from '../../components/Info';
+import { getQueryParamByName } from '../../utils/utils';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';
+
+const FormItem = Form.Item;
+const { TextArea } = Input;
 
 const mySelf = window.context.user;
 
@@ -371,29 +380,43 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, collectionModel } = this.props;
+    const { apis, collection } = collectionModel;
     const { collectionId } = params;
+    const { getFieldDecorator } = this.props.form;
+    const { memberList } = this.state;
+    const currentTab = getQueryParamByName('tab') || 'api';
+
+    const owners = collection.owners ? collection.owners.map(v => {
+      v.role = 'OWNER';
+      return v;
+    }) : [];
+    const members = collection.members ? collection.members.map(v => {
+      v.role = 'MEMBER';
+      return v;
+    }) : [];
+
+    const users = (owners).concat(members);
 
     return (
-      <Layout uplevel={'/collections'}>
-        <aside>
-          <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
-            <Icon type="bars" />
-            <div>接口</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/members`} activeClassName="active">
-            <Icon type="team" />
-            <div>成员</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/setting`} activeClassName="active">
-            <Icon type="setting" />
-            <div>设置</div>
-          </Link>
-        </aside>
-        <main className="collection-main">
-          {this.props.children}
-        </main>
-      </Layout>
+      <div className="member-wrapper">
+        <div className="member-top">
+          <h2 className="title">{`需求成员 ${users.length} 人`}</h2>
+          {users.map(v => v.key).includes(mySelf.workid) &&
+            <AutoComplete
+              className="memeber-search"
+              size="default"
+              dataSource={memberList}
+              optionLabelProp="backfill"
+              onSearch={keyword => { this.handleSearchMembers(keyword); }}
+              onSelect={value => { this.handleSearchSelect(value); }}
+            >
+              <Input placeholder="搜索用户并添加" suffix={<Icon type="search" className="certain-category-icon" />} />
+            </AutoComplete>
+          }
+        </div>
+        <Table pagination={false} showHeader={false} columns={this.memberColumns} dataSource={users} />
+      </div>
     );
   }
 }

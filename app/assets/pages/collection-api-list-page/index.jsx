@@ -1,15 +1,24 @@
 import React from 'react';
-import { Icon, Button, Popover, Tag, Form, Dropdown, Menu, message, Popconfirm } from 'antd';
+import {
+  Table, Icon, Button, Input, Popover,
+  Tag, Form, Dropdown, Modal, Menu,
+  AutoComplete, message, Popconfirm,
+} from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { Link } from 'dva/router';
+import { browserHistory, Link } from 'dva/router';
 
 import Layout from '../../layout/default.jsx';
+import Info from '../../components/Info';
+import { getQueryParamByName } from '../../utils/utils';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';
+
+const FormItem = Form.Item;
+const { TextArea } = Input;
 
 const mySelf = window.context.user;
 
@@ -371,35 +380,61 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, collectionModel } = this.props;
+    const { apis, collection } = collectionModel;
     const { collectionId } = params;
+    const { getFieldDecorator } = this.props.form;
+    const { memberList } = this.state;
+    const currentTab = getQueryParamByName('tab') || 'api';
+
+    const owners = collection.owners ? collection.owners.map(v => {
+      v.role = 'OWNER';
+      return v;
+    }) : [];
+    const members = collection.members ? collection.members.map(v => {
+      v.role = 'MEMBER';
+      return v;
+    }) : [];
+
+    const users = (owners).concat(members);
 
     return (
-      <Layout uplevel={'/collections'}>
-        <aside>
-          <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
-            <Icon type="bars" />
-            <div>接口</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/members`} activeClassName="active">
-            <Icon type="team" />
-            <div>成员</div>
-          </Link>
-          <Link to={`/collection/${collectionId}/setting`} activeClassName="active">
-            <Icon type="setting" />
-            <div>设置</div>
-          </Link>
-        </aside>
-        <main className="collection-main">
-          {this.props.children}
-        </main>
-      </Layout>
+      <div>
+        <div className="c-header">
+          <Info title={collection.name} desc={collection.desc}>
+            <Link to={`/collection/${collectionId}/newapi`}>
+              <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
+                新建接口
+              </Button>
+            </Link>
+          </Info>
+        </div>
+        <Table
+          dataSource={apis}
+          columns={this.apisColumns}
+          rowKey="_id"
+          locale={{ emptyText: '暂无数据' }}
+          onRow={api => {
+            return {
+              onClick: () => {
+                browserHistory.push({
+                  pathname: `/api-detail/${api._id}/doc`,
+                  query: {
+                    belong: `collection_${this.props.params.collectionId}`,
+                  },
+                });
+              },
+            };
+          }}
+        />
+      </div>
     );
   }
 }
 
-export default connect(({ collectionModel }) => {
+export default connect(({ collectionModel, collectionApiListModel }) => {
   return {
     collectionModel,
+    collectionApiListModel,
   };
 })(Form.create()(Collection));

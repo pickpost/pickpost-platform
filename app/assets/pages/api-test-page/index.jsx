@@ -191,8 +191,8 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiTestModel, apiPageModel } = this.props;
-    const { currentAPI } = apiPageModel;
+    const { apiTestModel, collectionApisModel } = this.props;
+    const { currentAPI } = collectionApisModel;
     const { modalEnvs } = this.state;
     const { gateways, result, isAuthing, displayUrl, method, apiType, gateway, gatewayModal, envModal, progress } = apiTestModel;
     const fullGateways = (gateways || []);
@@ -340,9 +340,9 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiPageModel, apiTestModel }) => {
+export default connect(({ collectionApisModel, apiTestModel }) => {
   return {
-    apiPageModel,
+    collectionApisModel,
     apiTestModel,
   };
 })(Api);
