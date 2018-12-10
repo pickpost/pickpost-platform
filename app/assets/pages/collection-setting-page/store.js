@@ -116,7 +116,6 @@ export default {
     },
 
     *unlinkAPI({ apiId, projectId, collectionId }, { call, put }) {
-      console.log('collectionId', collectionId);
       try {
         const { status } = yield call(ajax, {
           url: '/api/apisUnlink',

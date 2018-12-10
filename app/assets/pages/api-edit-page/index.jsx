@@ -36,6 +36,15 @@ class Index extends React.PureComponent {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'collectionApisModel/detail',
+        apiId: nextProps.params.apiId,
+      });
+    }
+  }
+
   handleSaveAPI() {
     this.props.form.validateFields((err, values) => {
       if (values.url) {

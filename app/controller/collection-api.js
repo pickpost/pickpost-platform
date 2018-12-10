@@ -2,32 +2,6 @@
 
 const arrayToTree = require('array-to-tree');
 
-exports.create = async function (ctx) {
-  const CollectionAPI = ctx.model.CollectionApi;
-  const { name, collectionId, parentId } = this.request.body;
-
-  if (!name || !collectionId) {
-    this.body = {
-      status: 'fail',
-      msg: '创建失败，目录名称未填写或者没有指定需求ID',
-    };
-    return;
-  }
-
-  const result = await CollectionAPI.create({
-    parentId,
-    collectionId,
-    apiId: '',
-    type: 'folder',
-    name,
-  });
-
-  this.body = {
-    status: 'success',
-    data: result,
-  };
-};
-
 exports.getCollectionApis = async function (ctx) {
   const CollectionAPI = ctx.model.CollectionApi;
   const API = ctx.model.Api;
@@ -79,14 +53,37 @@ exports.getCollectionApis = async function (ctx) {
   };
 };
 
+exports.create = async function (ctx) {
+  const CollectionAPI = ctx.model.CollectionApi;
+  const { name, collectionId, parentId } = this.request.body;
+
+  if (!name || !collectionId) {
+    this.body = {
+      status: 'fail',
+      msg: '创建失败，目录名称未填写或者没有指定需求ID',
+    };
+    return;
+  }
+
+  const result = await CollectionAPI.create({
+    parentId,
+    collectionId,
+    apiId: '',
+    type: 'folder',
+    name,
+  });
+
+  this.body = {
+    status: 'success',
+    data: result,
+  };
+};
+
 exports.update = async function (ctx) {
   const CollectionAPI = ctx.model.CollectionApi;
-  const collectionStr = this.request.body.collection;
-  const c = JSON.parse(collectionStr);
-  delete c._id;
+  const { name } = this.request.body;
   const result = await CollectionAPI.updateOne({ _id: this.params.id }, { $set: {
-    parentId: '',
-    collectionId: '',
+    name,
   } });
 
   this.body = {

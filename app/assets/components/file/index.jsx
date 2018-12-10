@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
-import { Link } from 'react-router';
+import { Link } from 'dva/router';
 
 import './style.less';
 
@@ -26,10 +26,9 @@ class File extends React.PureComponent {
 
   render() {
     const { file, linkUrl } = this.props;
-
     return (
       <dd>
-        <Link className={location.href.includes(linkUrl) ? 'active' : ''} to={linkUrl}>
+        <Link activeClassName="active" to={linkUrl}>
           <div className="itemurl">
             {
               file.name && [

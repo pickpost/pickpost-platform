@@ -43,6 +43,7 @@ exports.apisIndex = async function (ctx) {
     name: 1,
     url: 1,
     methods: 1,
+    apiType: 1,
     projectId: 1,
     updatedAt: 1,
     createdAt: 1,

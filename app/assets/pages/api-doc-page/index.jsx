@@ -11,36 +11,49 @@ const FormItem = Form.Item;
 import './index.less';
 
 class Api extends React.PureComponent {
+  componentDidMount() {
+    const { dispatch, params: { collectionId, apiId } } = this.props;
+    dispatch({
+      type: 'apiDocModel/detail',
+      collectionId,
+      apiId,
+      form: this.props.form,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'apiDocModel/detail',
+        apiId: nextProps.params.apiId,
+        form: nextProps.form,
+      });
+    }
+  }
+
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
-      // 新建API
       this.props.dispatch({
-        type: 'apiDocModel/saveAPI',
+        type: 'collectionApisModel/saveAPI',
         api: values,
       });
     });
   }
 
   render() {
-    const { collectionApisModel } = this.props;
-    const { params: { apiId } } = this.props;
-    const { currentAPI } = collectionApisModel;
-    if (!currentAPI._id) {
-      return null;
-    }
-
+    const { apiDocModel, params: { apiId } } = this.props;
+    const { _id, name, desc, url, apiType, requestSchema, responseSchema } = apiDocModel;
     const { getFieldDecorator, getFieldError } = this.props.form;
     const formItemLayoutFull = null;
+
+    if (!_id) {
+      return null;
+    }
 
     return (
       <div>
         <div className="c-header">
-          <Info
-            title={currentAPI.name}
-            desc={currentAPI.desc}
-            url={currentAPI.url}
-            apiType={currentAPI.apiType}
-          >
+          <Info title={name} desc={desc} url={url} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>
@@ -57,7 +70,7 @@ class Api extends React.PureComponent {
               help={getFieldError('desc')}
             >
               {getFieldDecorator('requestSchema', {
-                initialValue: currentAPI.requestSchema || {},
+                initialValue: requestSchema || {},
               })(
                 <SchemaEditor />
               )}
@@ -68,7 +81,7 @@ class Api extends React.PureComponent {
               help={getFieldError('desc')}
             >
               {getFieldDecorator('responseSchema', {
-                initialValue: currentAPI.responseSchema || {},
+                initialValue: responseSchema || {},
               })(
                 <SchemaEditor />
               )}
@@ -80,8 +93,8 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ collectionApisModel }) => {
+export default connect(({ apiDocModel }) => {
   return {
-    collectionApisModel,
+    apiDocModel,
   };
 })(createForm()(Api));

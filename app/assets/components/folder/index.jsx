@@ -23,7 +23,7 @@ class Folder extends React.PureComponent {
 
   _handleEditFolder() {
     const { folder } = this.props;
-    this.props.handleEditFolder(folder._id);
+    this.props.handleEditFolder(folder);
   }
 
   _handleAddFile() {

@@ -1,3 +1,11 @@
+a {
+  text-decoration: none!important;
+
+  &:visited, &:active {
+    text-decoration: none!important;
+  }
+}
+
 .folder-tree {
   position: fixed;
   left: 104px;
@@ -11,6 +19,8 @@
 
   .search-row {
     display: flex;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f2f4f5;
 
     .dropdown-btn {
       margin-left: 8px;
@@ -25,6 +35,26 @@
     .dropdown-icon {
       margin-left: 5px;
       color: #40a9ff;
+    }
+  }
+
+  .all-apis {
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 10px;
+
+    &.active {
+      background: #40a9ff;
+      color: #fff;
+    }
+
+    &:hover {
+      background: rgba(74, 144, 226, 0.2);
+    }
+
+    .anticon {
+      margin-right: 10px;
     }
   }
 }

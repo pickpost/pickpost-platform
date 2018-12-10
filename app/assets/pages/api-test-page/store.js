@@ -58,24 +58,21 @@ export default {
     result: null,
   },
   effects: {
-    *updateAPI({ api }, { call }) {
-      try {
-        const { status } = yield call(ajax, {
-          url: `/api/apis/${api._id}`,
-          method: 'PUT',
-          type: 'json',
-          data: {
-            api: JSON.stringify({
-              ...api,
-            }),
-          },
-        });
+    *detail({ apiId, collectionId }, { call, put }) {
+      yield put({
+        type: 'reset',
+      });
+      const { status, data } = yield call(ajax, {
+        url: `/api/apis/${apiId}`,
+        method: 'get',
+        type: 'json',
+      });
 
-        if (status === 'success') {
-          message.success('保存成功');
-        }
-      } catch (errMsg) {
-        message.error(errMsg || '更新失败');
+      if (status === 'success') {
+        yield put({
+          type: 'setData',
+          data,
+        });
       }
     },
 

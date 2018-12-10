@@ -30,19 +30,14 @@ class Collection extends React.PureComponent {
       title: '名称',
       dataIndex: 'name',
       key: 'name',
-      width: '260px',
     }, {
-      title: '类型',
-      dataIndex: 'methods',
-      key: 'methods',
-      render: methods => {
-        return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
-      },
-    }, {
-      title: '地址',
+      title: '唯一标识',
       dataIndex: 'url',
+      width: '240px',
       key: 'url',
-      width: '400px',
+      render: (_, item) => {
+        return (<div className="ellipsis" title={item.url}><Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>{item.url}</div>);
+      },
     }, {
       title: '所属应用',
       dataIndex: 'projectName',
@@ -57,10 +52,12 @@ class Collection extends React.PureComponent {
     }, {
       title: '创建人',
       dataIndex: 'creater',
+      width: '80px',
       key: 'creater',
     }, {
       title: '操作',
       dataIndex: 'operation',
+      width: '120px',
       key: 'operation',
       render: (_, api) => {
         const DeleteFileButtons = (
@@ -71,10 +68,7 @@ class Collection extends React.PureComponent {
         );
         return (
           <div className="actions" onClick={e => e.stopPropagation()}>
-            <Link to={`/collection/${collectionId}/apis/doc/${api._id}`}>文档</Link>
-            <Link to={`/collection/${collectionId}/apis/test/${api._id}`}>测试</Link>
-            <Link to={`/collection/${collectionId}/apis/mock/${api._id}`}>Mock</Link>
-            <Link to={`/collection/${collectionId}/apis/setting/${api._id}`}>设置</Link>
+            <Link to={`/collection/${collectionId}/apis/doc/${api._id}`}>详情</Link>
             <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
               <Link to="">删除</Link>
             </Popover>
@@ -378,7 +372,7 @@ class Collection extends React.PureComponent {
     const { params: { collectionId }, collectionModel: { apis, collection } } = this.props;
 
     return (
-      <div>
+      <div className="api-list-page">
         <div className="c-header">
           <Info title={collection.name} desc={collection.desc}>
             <Link to={`/collection/${collectionId}/newapi`}>

@@ -43,6 +43,24 @@ class Api extends React.PureComponent {
     modalEnvs: [],
   }
 
+  componentDidMount() {
+    const { dispatch, params: { collectionId, apiId } } = this.props;
+    dispatch({
+      type: 'apiTestModel/detail',
+      collectionId,
+      apiId,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'apiTestModel/detail',
+        apiId: nextProps.params.apiId,
+      });
+    }
+  }
+
   handleSendRequest() {
     this.props.dispatch({
       type: 'apiTestModel/sendRequest',
@@ -62,7 +80,7 @@ class Api extends React.PureComponent {
     };
 
     this.props.dispatch({
-      type: 'apiTestModel/updateAPI',
+      type: 'collectionApisModel/saveAPI',
       api,
     });
   }
@@ -191,17 +209,16 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { apiTestModel, collectionApisModel } = this.props;
-    const { currentAPI } = collectionApisModel;
+    const { apiTestModel } = this.props;
     const { modalEnvs } = this.state;
-    const { gateways, result, isAuthing, displayUrl, method, apiType, gateway, gatewayModal, envModal, progress } = apiTestModel;
+    const { name, url, desc, apiType, gateways, result, isAuthing, displayUrl, method, gateway, gatewayModal, envModal, progress } = apiTestModel;
     const fullGateways = (gateways || []);
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
       <div>
         <div className="c-header">
-          <Info title={currentAPI.name} url={currentAPI.url} apiType={currentAPI.apiType}>
+          <Info title={name} url={url} desc={desc} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>

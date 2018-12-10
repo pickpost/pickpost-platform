@@ -17,8 +17,11 @@ const FolderCreateForm = Form.create()(
           onOk={onCreate}
         >
           <Form layout="vertical">
+            {getFieldDecorator('folderId')(
+              <Input type="hidden" />
+            )}
             <FormItem label="名称">
-              {getFieldDecorator('title', {
+              {getFieldDecorator('name', {
                 rules: [{ required: true, message: '请填写分组名称' }],
               })(
                 <Input />

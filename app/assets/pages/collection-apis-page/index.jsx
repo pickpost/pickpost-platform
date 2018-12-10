@@ -12,12 +12,12 @@ class Api extends React.PureComponent {
   componentDidMount() {
     const { params: { collectionId, apiId } } = this.props;
 
-    if (apiId) {
-      this.props.dispatch({
-        type: 'collectionApisModel/detail',
-        apiId,
-      });
-    }
+    // if (apiId) {
+    //   this.props.dispatch({
+    //     type: 'collectionApisModel/detail',
+    //     apiId,
+    //   });
+    // }
 
     this.props.dispatch({
       type: 'collectionApisModel/setData',
@@ -47,23 +47,14 @@ class Api extends React.PureComponent {
     // }, 300);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
-      this.props.dispatch({
-        type: 'collectionApisModel/detail',
-        apiId: nextProps.params.apiId,
-      });
-    }
-  }
-
-  handleSave = () => {
-    this.props.form.validateFields((err, values) => {
-      this.props.dispatch({
-        type: 'collectionApisModel/saveAPI',
-        api: values,
-      });
-    });
-  }
+  // componentWillReceiveProps(nextProps) {
+  //   if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+  //     this.props.dispatch({
+  //       type: 'collectionApisModel/detail',
+  //       apiId: nextProps.params.apiId,
+  //     });
+  //   }
+  // }
 
   getTypeByMethods(methods) {
     if (!Array.isArray(methods)) {
@@ -141,11 +132,12 @@ class Api extends React.PureComponent {
       }
 
       this.props.dispatch({
-        type: 'collectionApisModel/createFolder',
+        type: values.folderId ? 'collectionApisModel/updateFolder' : 'collectionApisModel/createFolder',
         form,
         parentId: '',
         collectionId,
-        name: values.title,
+        name: values.name,
+        folderId: values.folderId,
       });
     });
   }
@@ -163,9 +155,20 @@ class Api extends React.PureComponent {
     });
   }
 
+  handleEditCollection = folder => {
+    this.props.dispatch({
+      type: 'collectionApisModel/setFolderModal',
+      visible: true,
+    });
+    this.formRef.props.form.setFieldsValue({
+      folderId: folder._id,
+      name: folder.name,
+    });
+  }
+
   render() {
     const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
-    const { filterApis, keywords, showFolderModal, collectionApis } = collectionApisModel;
+    const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
 
     const showApis = keywords ? filterApis : collectionModel.apis;
     const folder = {
@@ -184,7 +187,7 @@ class Api extends React.PureComponent {
       <div>
         <div className="folder-tree">
           <div className="search-row">
-            <Input style={{ marginBottom: 8 }} placeholder="Search" onChange={this.handleFilterDebounced} />
+            <Input placeholder="Search" onChange={this.handleFilterDebounced} />
             <Dropdown overlay={menu} placement="bottomRight">
               <Button className="dropdown-btn" type="dashed">
                 <Icon className="add-entrance" type="plus-circle" theme="twoTone" />
@@ -192,7 +195,10 @@ class Api extends React.PureComponent {
               </Button>
             </Dropdown>
           </div>
-          <Link className="help-tips" to={`/collection/${collectionId}/apis/list`}>全部接口</Link>
+          <Link className="all-apis" activeClassName="active" to={`/collection/${collectionId}/apis/list`}>
+            <Icon type="bars" />
+            全部接口
+          </Link>
           {
             collectionApis.map(folder => (
               <Folder
@@ -238,6 +244,7 @@ class Api extends React.PureComponent {
         </main>
         <FolderCreate
           wrappedComponentRef={this.saveFormRef}
+          folderId={folderId}
           visible={showFolderModal}
           onCancel={this.handleCancel}
           onCreate={this.handleCreateFolder}

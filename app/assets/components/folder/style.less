@@ -9,25 +9,29 @@
 
   dt {
     display: flex;
-    height: 52px;
     cursor: pointer;
     padding: 0 10px;
     border-top: 1px solid #f2f4f5;
+
     .anticon {
       color: #314659;
       margin-top: 12px;
     }
+
     .detail {
       width: 1PX; // 防止被撑开
       flex: auto;
       padding-left: 10px;
+
       h5 {
         margin-top: 9px;
         color: #314659;
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
+        font-weight: 400;
       }
+
       p {
         color: #C4CDE1;
         font-size: 10px;
@@ -35,6 +39,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         margin: 0;
+        padding-bottom: 5px;
       }
     }
 
@@ -42,6 +47,7 @@
       position: absolute;
       right: 15px;
       display: none;
+
       .anticon {
         margin-left: 8px;
       }
@@ -55,10 +61,5 @@
         display: block;
       }
     }
-  }
-
-  dd {
-    margin: 0;
-    padding: 0;
   }
 }

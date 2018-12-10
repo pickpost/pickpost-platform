@@ -42,7 +42,6 @@ export default {
           collectionId,
         },
       });
-      console.log(data);
       if (status === 'success') {
         yield put({
           type: 'setData',
@@ -140,24 +139,6 @@ export default {
         message.error('移除失败');
       }
     },
-    *fetchProjectList({ }, { call, put }) {
-      try {
-        const { status, data } = yield call(ajax, {
-          url: '/api/projects',
-          method: 'get',
-          type: 'json',
-        });
-
-        if (status === 'success') {
-          yield put({
-            type: 'changeProjectList',
-            projectList: data,
-          });
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
     *changeKeywords({ keywords }, { select, put }) {
       // 搜索关键词变化，设置关键词，且设置过滤结果。
       const { collectionModel } = yield select();
@@ -168,7 +149,7 @@ export default {
         keywords,
       });
     },
-    *createFolder({ form, name, parentId, collectionId }, { call, put }) {
+    *createFolder({ form, name, folderId, parentId, collectionId }, { call, put, select }) {
       try {
         const { status } = yield call(ajax, {
           url: '/api/collection-apis',
@@ -188,9 +169,42 @@ export default {
             visible: false,
           });
           form.resetFields();
+          const { collectionApisModel: { collectionId } } = yield select();
+          yield put({
+            type: 'getApisTree',
+            collectionId,
+          });
         }
       } catch (e) {
         message.error('创建失败');
+      }
+    },
+    *updateFolder({ form, name, folderId, parentId, collectionId }, { call, put, select }) {
+      try {
+        const { status } = yield call(ajax, {
+          url: `/api/collection-apis/${folderId}`,
+          method: 'PUT',
+          type: 'json',
+          data: {
+            name,
+          },
+        });
+
+        if (status === 'success') {
+          message.success('更新成功');
+          yield put({
+            type: 'setFolderModal',
+            visible: false,
+          });
+          form.resetFields();
+          const { collectionApisModel: { collectionId } } = yield select();
+          yield put({
+            type: 'getApisTree',
+            collectionId,
+          });
+        }
+      } catch (e) {
+        message.error('更新失败');
       }
     },
   },
@@ -214,16 +228,16 @@ export default {
       };
     },
   },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      history.listen(({ pathname }) => {
-        console.log('api-page', pathname);
-        if (pathname === '/users') {
-          dispatch({
-            type: 'users/fetch',
-          });
-        }
-      });
-    },
-  },
+  // subscriptions: {
+  //   setup({ dispatch, history }) {
+  //     history.listen(({ pathname }) => {
+  //       console.log('api-page', pathname);
+  //       if (pathname === '/users') {
+  //         dispatch({
+  //           type: 'users/fetch',
+  //         });
+  //       }
+  //     });
+  //   },
+  // },
 };
