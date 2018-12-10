@@ -382,21 +382,23 @@ class Collection extends React.PureComponent {
             </Link>
           </Info>
         </div>
-        <Table
-          dataSource={apis}
-          columns={this.apisColumns}
-          rowKey="_id"
-          locale={{ emptyText: '暂无数据' }}
-          onRow={api => {
-            return {
-              onClick: () => {
-                browserHistory.push({
-                  pathname: `/collection/${collectionId}/apis/doc/${api._id}`,
-                });
-              },
-            };
-          }}
-        />
+        <div className="apis-table-wrapper">
+          <Table
+            dataSource={apis}
+            columns={this.apisColumns}
+            rowKey="_id"
+            locale={{ emptyText: '暂无数据' }}
+            onRow={api => {
+              return {
+                onClick: () => {
+                  browserHistory.push({
+                    pathname: `/collection/${collectionId}/apis/doc/${api._id}`,
+                  });
+                },
+              };
+            }}
+          />
+        </div>
       </div>
     );
   }

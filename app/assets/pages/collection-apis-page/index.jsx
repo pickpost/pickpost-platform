@@ -10,14 +10,7 @@ import './index.less';
 
 class Api extends React.PureComponent {
   componentDidMount() {
-    const { params: { collectionId, apiId } } = this.props;
-
-    // if (apiId) {
-    //   this.props.dispatch({
-    //     type: 'collectionApisModel/detail',
-    //     apiId,
-    //   });
-    // }
+    const { params: { collectionId } } = this.props;
 
     this.props.dispatch({
       type: 'collectionApisModel/setData',
@@ -47,15 +40,6 @@ class Api extends React.PureComponent {
     // }, 300);
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
-  //     this.props.dispatch({
-  //       type: 'collectionApisModel/detail',
-  //       apiId: nextProps.params.apiId,
-  //     });
-  //   }
-  // }
-
   getTypeByMethods(methods) {
     if (!Array.isArray(methods)) {
       return 'HTTP';
@@ -67,33 +51,6 @@ class Api extends React.PureComponent {
       return 'SPI';
     }
     return 'HTTP';
-  }
-
-  getBelongQuery() {
-    const { belong } = this.props.location.query;
-    return belong || '';
-  }
-
-  getBelong() {
-    let { belong } = this.props.location.query;
-    const { currentAPI: { projectId } } = this.props.collectionApisModel;
-    belong = belong || `project_${projectId}`;
-    return belong;
-  }
-
-  getUplevel() {
-    return '/' + this.getBelong().replace('_', '/') + '?tab=api';
-  }
-
-  handleChangeAPIPage = item => {
-    const belong = this.getBelongQuery();
-
-    browserHistory.push({
-      pathname: `/api-detail/${item[0]}/doc`,
-      query: {
-        belong,
-      },
-    });
   }
 
   handleMenuClick = e => {
@@ -166,6 +123,13 @@ class Api extends React.PureComponent {
     });
   }
 
+  handleDeleteCollection = folderId => {
+    this.props.dispatch({
+      type: 'collectionApisModel/deleteFolder',
+      folderId,
+    });
+  }
+
   render() {
     const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
@@ -184,7 +148,7 @@ class Api extends React.PureComponent {
     );
 
     return (
-      <div>
+      <div className="collection-apis-page">
         <div className="folder-tree">
           <div className="search-row">
             <Input placeholder="Search" onChange={this.handleFilterDebounced} />
@@ -220,7 +184,7 @@ class Api extends React.PureComponent {
             ))
           }
         </div>
-        <main className="api-main">
+        <div className="api-main">
           {
             apiId && (
               <div className="tabs-header">
@@ -241,7 +205,7 @@ class Api extends React.PureComponent {
           }
 
           {this.props.children}
-        </main>
+        </div>
         <FolderCreate
           wrappedComponentRef={this.saveFormRef}
           folderId={folderId}

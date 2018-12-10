@@ -46,7 +46,7 @@ export default {
         yield put({
           type: 'setData',
           payload: {
-            collectionApis: data,
+            collectionApis: data.map(item => ({ ...item, isCollapsed: true })),
           },
         });
       }
@@ -205,6 +205,29 @@ export default {
         }
       } catch (e) {
         message.error('更新失败');
+      }
+    },
+    *deleteFolder({ folderId }, { call, put, select }) {
+      try {
+        const { status } = yield call(ajax, {
+          url: `/api/collection-apis/${folderId}`,
+          method: 'DELETE',
+          type: 'json',
+          data: {
+            name,
+          },
+        });
+
+        if (status === 'success') {
+          message.success('移除成功');
+          const { collectionApisModel: { collectionId } } = yield select();
+          yield put({
+            type: 'getApisTree',
+            collectionId,
+          });
+        }
+      } catch (e) {
+        message.error('移除失败');
       }
     },
   },

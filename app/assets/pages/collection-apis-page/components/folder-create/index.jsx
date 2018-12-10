@@ -7,12 +7,14 @@ const FolderCreateForm = Form.create()(
   class extends React.Component {
     render() {
       const { visible, onCancel, onCreate, form } = this.props;
-      const { getFieldDecorator } = form;
+      const { getFieldDecorator, getFieldValue } = form;
+      const isEdit = getFieldValue('folderId');
       return (
         <Modal
           visible={visible}
-          title="新建分组"
-          okText="创建"
+          title={isEdit ? '修改分组' : '新建分组'}
+          okText={isEdit ? '更新' : '创建'}
+          cancelText="取消"
           onCancel={onCancel}
           onOk={onCreate}
         >

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
-import { Icon, message, Popconfirm } from 'antd';
+import { Icon, message, Menu, Dropdown } from 'antd';
 
 import './style.less';
 
@@ -12,69 +12,33 @@ class Folder extends React.PureComponent {
     this.props.handleToggleFolder(folder._id, !isCollapsed);
   }
 
-  _handleDeleteFolder() {
+  _handleMenuClick(e) {
     const { folder } = this.props;
-    if (folder.children && folder.children.length > 0) {
-      message.warn('删除失败，目前只能删除空分组。');
-      return;
+    if (e.key === 'edit') {
+      this.props.handleEditFolder(folder);
+    } else if (e.key === 'delete') {
+      if (folder.children && folder.children.length > 0) {
+        message.warn('删除失败，目前只能删除空分组。');
+        return;
+      }
+      this.props.handleDeleteFolder(folder._id);
+    } else if (e.key === 'file-add') {
+      this.props.handleAddFile({
+        id: folder._id,
+      });
     }
-    this.props.handleDeleteFolder(folder._id);
-  }
-
-  _handleEditFolder() {
-    const { folder } = this.props;
-    this.props.handleEditFolder(folder);
-  }
-
-  _handleAddFile() {
-    const { folder } = this.props;
-    this.props.handleAddFile({
-      id: folder._id,
-    });
-  }
-
-  _handleEditFile(file) {
-    const { folder, type } = this.props;
-    this.props.handleEditFile({
-      collectionId: type === 'collection' ? folder._id : '',
-      projectId: file.projectId,
-      apiId: file._id,
-    });
-  }
-
-  _handleRemoveFile(file) {
-    this.props.handleRemoveFile({
-      id: file._id,
-      projectId: file.projectId,
-      collectionId: file.collectionId,
-    });
-  }
-
-  _handleDeleteFile(file) {
-    const { folder, type } = this.props;
-    this.props.handleDeleteFile({
-      id: file._id,
-      projectId: file.projectId,
-      collectionId: type === 'collection' ? folder._id : '',
-      nextId: folder.apis[file._index + 1] ? folder.apis[file._index + 1]._id : '',
-    });
-  }
-
-  _handleSetFolder() {
-    const { folder } = this.props;
-    this.props.handleSetFolder({
-      id: folder._id,
-      name: folder.name,
-    });
-  }
-
-  _stopPrevent(e) {
-    e.preventDefault();
-    e.stopPropagation();
   }
 
   render() {
     const { folder, isCollapsed } = this.props;
+
+    const menu = (
+      <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key="edit"><Icon type="edit" theme="twoTone" />修改分组</Menu.Item>
+        <Menu.Item key="delete"><Icon type="delete" theme="twoTone" />移除分组</Menu.Item>
+        <Menu.Item key="file-add"><Icon type="file-add" theme="twoTone" />添加接口</Menu.Item>
+      </Menu>
+    );
 
     return (
       <dl key={folder._id} className="file-tree">
@@ -88,17 +52,12 @@ class Folder extends React.PureComponent {
               {(folder.children || []).length}个接口 {folder.desc ? `(${folder.desc})` : ''}
             </p>
           </div>
-          <div className="more-action" onClick={this._stopPrevent}>
-            {
-              <Icon type="setting" onClick={this._handleEditFolder} />
-            }
-            {
-              <Popconfirm title="确定移除该分组?" onConfirm={this._handleDeleteFolder}>
-                <Icon type="delete" />
-              </Popconfirm>
-            }
-            <Icon type="file-add" onClick={this._handleAddFile} />
-          </div>
+          <Dropdown overlay={menu} placement="bottomRight">
+            <div className="more-action">
+              <Icon type="ellipsis" />
+            </div>
+          </Dropdown>
+
         </dt>
         {
           !isCollapsed && (
@@ -119,9 +78,6 @@ Folder.propTypes = {
   handleEditFolder: PropTypes.func,
   handleDeleteFolder: PropTypes.func,
   handleAddFile: PropTypes.func,
-  handleRemoveFile: PropTypes.func,
-  handleDeleteFile: PropTypes.func,
-  handleSetFolder: PropTypes.func,
 };
 
 export default Folder;
