@@ -164,7 +164,7 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { collectionApisModel, collectionModel, params: { collectionId } } = this.props;
+    const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis } = collectionApisModel;
 
     const showApis = keywords ? filterApis : collectionModel.apis;
@@ -215,6 +215,25 @@ class Api extends React.PureComponent {
           }
         </div>
         <main className="api-main">
+          {
+            apiId && (
+              <div className="tabs-header">
+                <Link to={`/collection/${collectionId}/apis/doc/${apiId}`} activeClassName="active">
+                  <Icon type="profile" /> 文档
+                </Link>
+                <Link to={`/collection/${collectionId}/apis/test/${apiId}`} activeClassName="active">
+                  <Icon type="rocket" /> 测试
+                </Link>
+                <Link to={`/collection/${collectionId}/apis/mock/${apiId}`} activeClassName="active">
+                  <Icon type="api" /> Mock
+                </Link>
+                <Link to={`/collection/${collectionId}/apis/setting/${apiId}`} activeClassName="active">
+                  <Icon type="setting" /> 设置
+                </Link>
+              </div>
+            )
+          }
+
           {this.props.children}
         </main>
         <FolderCreate
