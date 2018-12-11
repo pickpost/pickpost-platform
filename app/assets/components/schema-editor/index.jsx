@@ -3,12 +3,13 @@ import autobind from 'autobind-decorator';
 import set from 'lodash/set';
 import { Modal, Icon, Tooltip } from 'antd';
 import { Controlled as CodeMirror } from 'react-codemirror2';
-import json2schema from '../utils/json2schemav2';
-import schema2json from '../utils/schema2json';
+import json2schema from '../../utils/json2schemav2';
+import schema2json from '../../utils/schema2json';
 import JSON5 from 'json5';
-import stringToPath from '../utils/stringToPath';
-import BulkEditor from './BulkEditor';
-import './SchemaEditor.less';
+import stringToPath from '../../utils/stringToPath';
+import BulkEditor from '../bulk-editor/index';
+
+import './index.less';
 
 // CodeMirror packages
 require('codemirror/mode/javascript/javascript');
@@ -18,7 +19,7 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/selection/active-line');
 require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/javascript-lint');
-require('../utils/codemirror-json-lint');
+require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
 
 const CodeMirrorConfig = {

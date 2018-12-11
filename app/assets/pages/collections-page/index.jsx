@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { isBelong } from '../../utils/utils';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
-import Card from '../../components/Card';
+import Card from '../../components/card/index';
 
 import './index.less';
 

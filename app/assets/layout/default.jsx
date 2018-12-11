@@ -1,6 +1,6 @@
 // 框架布局
 import React from 'react';
-import Header from '../components/Header';
+import Header from '../components/header/index';
 
 import './default.less';
 

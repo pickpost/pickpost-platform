@@ -5,11 +5,11 @@ import { connect } from 'dva';
 import Mock from 'mockjs';
 import { getEnvByUrl } from '../../utils/utils';
 
-import Info from '../../components/Info';
-import Editor from '../../components/Editor';
+import Info from '../../components/info/index';
+import Editor from '../../components/editor/index';
 import AuthForm from './components/AuthForm';
 import MyTabs from './components/MyTabs';
-import BulkEditor from '../../components/BulkEditor';
+import BulkEditor from '../../components/bulk-editor/index';
 import Result from './components/Result';
 
 import './index.less';

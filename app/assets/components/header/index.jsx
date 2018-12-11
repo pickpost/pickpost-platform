@@ -1,9 +1,9 @@
 import React from 'react';
 import { Avatar, Icon } from 'antd';
 import { Link } from 'dva/router';
-import './Header.less';
+import GlobalSearch from '../global-search';
 
-import GlobalSearch from '../components/GlobalSearch';
+import './index.less';
 
 const user = window.context.user;
 class Header extends React.Component {

@@ -1,9 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import { Tag } from 'antd';
-import { TypeColorMap } from '../utils/constants';
+import { TypeColorMap } from '../../utils/constants';
 
-import './Info.less';
+import './index.less';
 
 class Info extends React.Component {
   render() {

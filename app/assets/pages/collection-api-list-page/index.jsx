@@ -7,7 +7,7 @@ import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
 import { browserHistory, Link } from 'dva/router';
-import Info from '../../components/Info';
+import Info from '../../components/info/index';
 import { TypeColorMap } from '../../utils/constants';
 
 import './index.less';

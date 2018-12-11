@@ -2,7 +2,7 @@ import React from 'react';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Form, Input, Radio, Icon, Dropdown, Menu, Modal } from 'antd';
-import BulkEditor from '../../../components/BulkEditor';
+import BulkEditor from '../../../components/bulk-editor';
 
 import './AuthForm.less';
 

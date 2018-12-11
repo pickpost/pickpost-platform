@@ -3,7 +3,7 @@ import autobind from 'autobind-decorator';
 import { Tag, message, Modal, Input, Tooltip } from 'antd';
 import CopyToClipboard from 'react-copy-to-clipboard';
 const beautify = require('js-beautify').js_beautify;
-import BulkEditor from './BulkEditor';
+import BulkEditor from '../bulk-editor';
 
 import { Controlled as CodeMirror } from 'react-codemirror2';
 require('codemirror/mode/javascript/javascript');
@@ -13,10 +13,10 @@ require('codemirror/addon/edit/matchbrackets');
 require('codemirror/addon/selection/active-line');
 require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/javascript-lint');
-require('../utils/codemirror-json-lint');
+require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
 
-import './Editor.less';
+import './index.less';
 
 const CodeMirrorConfig = {
   mode: { name: 'javascript', json: true },
