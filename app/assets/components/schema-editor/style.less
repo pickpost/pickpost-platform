@@ -1,6 +1,11 @@
+.cm-s-material.CodeMirror .CodeMirror-activeline {
+  background: #343a46
+}
 
-.cm-s-material.CodeMirror .CodeMirror-activeline { background: #343a46 }
-.cm-s-material.CodeMirror .CodeMirror-activeline-background { background: #343a46 }
+.cm-s-material.CodeMirror .CodeMirror-activeline-background {
+  background: #343a46
+}
+
 // .cm-s-material.CodeMirror .CodeMirror-activeline-gutter { background: #343a46 }
 .cm-s-material.CodeMirror .CodeMirror-matchingbracket {
   text-decoration: none;
@@ -19,14 +24,16 @@
 
   .CodeMirror {
     height: auto;
+
     .CodeMirror-lines {
       line-height: 24px;
-      padding: 0 0; /* Vertical padding around content */
+      padding: 0 0;
     }
   }
 
   .jsonErrorMessage {
     margin: 10px 0;
+
     pre {
       margin: 0;
       padding: 0;
@@ -43,6 +50,7 @@
   .table-view {
     border: 1px solid #ECEEF1;
     position: relative;
+
     table {
       width: 100%;
       color: #2C3E50;
@@ -56,7 +64,8 @@
         background: #263238;
       }
 
-      th, td {
+      th,
+      td {
         font-weight: normal;
         border: 1px solid #ECEEF1;
         height: 24px;
@@ -71,7 +80,8 @@
         }
       }
 
-      td, th {
+      td,
+      th {
         border-top: none;
         border-bottom: none;
       }
@@ -110,7 +120,8 @@
         height: 24px;
         line-height: 24px;
 
-        &:active, &:focus {
+        &:active,
+        &:focus {
           border: none;
           outline: 0;
           box-shadow: none;
@@ -164,6 +175,7 @@
             margin-right: 3px;
           }
         }
+
         .edit-icon {
           cursor: pointer;
           position: absolute;
