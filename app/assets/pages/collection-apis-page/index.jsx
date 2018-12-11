@@ -188,6 +188,10 @@ class Api extends React.PureComponent {
           {
             apiId && (
               <div className="tabs-header">
+                <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
+                  <Icon type="left" /> 返回列表
+                </Link>
+                <div className="split-line"></div>
                 <Link to={`/collection/${collectionId}/apis/doc/${apiId}`} activeClassName="active">
                   <Icon type="profile" /> 文档
                 </Link>
