@@ -6,8 +6,8 @@ import Mock from 'mockjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import hljs from 'highlight.js/lib/highlight';
 
-import Info from '../../components/info/index';
-import Editor from '../../components/editor/index';
+import Info from '../../components/info';
+import Editor from '../../components/editor';
 
 import './style.less';
 import 'highlight.js/styles/googlecode.css';

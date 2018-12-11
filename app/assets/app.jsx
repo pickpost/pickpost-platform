@@ -6,23 +6,23 @@ import { Router, Route, browserHistory } from 'dva/router';
 import './app.less';
 
 // 0. Pages
-import APIEditPage from './pages/api-edit-page/index';
-import APIDocPage from './pages/api-doc-page/index';
-import APITestPage from './pages/api-test-page/index';
-import APIMockPage from './pages/api-mock-page/index';
-import APISettingPage from './pages/api-setting-page/index';
+import APIEditPage from './pages/api-edit-page';
+import APIDocPage from './pages/api-doc-page';
+import APITestPage from './pages/api-test-page';
+import APIMockPage from './pages/api-mock-page';
+import APISettingPage from './pages/api-setting-page';
 
-import CollectionEditPage from './pages/collection-edit-page/index';
-import CollectionsPage from './pages/collections-page/index';
-import CollectionPage from './pages/collection-page/index';
-import CollectionApisPage from './pages/collection-apis-page/index';
-import CollectionMemebersPage from './pages/collection-members-page/index';
-import CollectionApiListPage from './pages/collection-api-list-page/index';
-import CollectionSettingPage from './pages/collection-setting-page/index';
+import CollectionEditPage from './pages/collection-edit-page';
+import CollectionsPage from './pages/collections-page';
+import CollectionPage from './pages/collection-page';
+import CollectionApisPage from './pages/collection-apis-page';
+import CollectionMemebersPage from './pages/collection-members-page';
+import CollectionApiListPage from './pages/collection-api-list-page';
+import CollectionSettingPage from './pages/collection-setting-page';
 
-import ProjectEditPage from './pages/project-edit-page/index';
-import ProjectPage from './pages/project-page/index';
-import ProjectsPage from './pages/projects-page/index';
+import ProjectEditPage from './pages/project-edit-page';
+import ProjectPage from './pages/project-page';
+import ProjectsPage from './pages/projects-page';
 
 // 0. Models
 import APIEditModel from './pages/api-edit-page/store';
@@ -34,7 +34,6 @@ import APISettingModel from './pages/api-setting-page/store';
 import CollectionEditModel from './pages/collection-edit-page/store';
 import CollectionModel from './pages/collection-page/store';
 import CollectionsModel from './pages/collections-page/store';
-
 import CollectionApisModel from './pages/collection-apis-page/store';
 import CollectionMemebersModel from './pages/collection-members-page/store';
 import CollectionApiListModel from './pages/collection-api-list-page/store';

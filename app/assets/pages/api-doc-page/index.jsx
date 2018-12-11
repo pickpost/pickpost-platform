@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'dva';
 import { Form, Button, Input } from 'antd';
 
-import Info from '../../components/info/index';
-import SchemaEditor from '../../components/schema-editor/index';
+import Info from '../../components/info';
+import SchemaEditor from '../../components/schema-editor';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

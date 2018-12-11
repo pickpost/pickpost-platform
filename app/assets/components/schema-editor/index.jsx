@@ -7,7 +7,7 @@ import json2schema from '../../utils/json2schema';
 import schema2json from '../../utils/schema2json';
 import JSON5 from 'json5';
 import stringToPath from '../../utils/stringToPath';
-import BulkEditor from '../bulk-editor/index';
+import BulkEditor from '../bulk-editor';
 
 import './style.less';
 

@@ -5,12 +5,12 @@ import { connect } from 'dva';
 import Mock from 'mockjs';
 import { getEnvByUrl } from '../../utils/utils';
 
-import Info from '../../components/info/index';
-import Editor from '../../components/editor/index';
-import AuthForm from './components/auth-form/index';
-import MyTabs from './components/my-tabs/index';
-import BulkEditor from '../../components/bulk-editor/index';
-import Result from './components/result/index';
+import Info from '../../components/info';
+import Editor from '../../components/editor';
+import AuthForm from './components/auth-form';
+import MyTabs from './components/my-tabs';
+import BulkEditor from '../../components/bulk-editor';
+import Result from './components/result';
 
 import './style.less';
 
