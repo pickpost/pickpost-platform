@@ -2,9 +2,9 @@ import React from 'react';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Form, Input, Radio, Icon, Dropdown, Menu, Modal } from 'antd';
-import BulkEditor from '../../../components/bulk-editor';
+import BulkEditor from '../../../../components/bulk-editor';
 
-import './AuthForm.less';
+import './index.less';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;

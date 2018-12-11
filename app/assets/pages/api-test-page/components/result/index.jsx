@@ -2,9 +2,8 @@ import React from 'react';
 import { Icon, Input, message, Spin } from 'antd';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Mock from 'mockjs';
-// import { mockParse } from '../../../utils/utils';
 
-import './Result.less';
+import './index.less';
 
 window.Mock = Mock;
 

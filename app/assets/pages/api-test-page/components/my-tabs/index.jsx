@@ -1,6 +1,7 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
-import './MyTabs.less';
+
+import './index.less';
 
 @autobind
 class MyTabs extends React.Component {
