@@ -8,8 +8,8 @@ import {
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
-import Info from '../../components/info/index';
-import BulkEditor from '../../components/bulk-editor/index';
+import Info from '../../components/info';
+import BulkEditor from '../../components/bulk-editor';
 import { getQueryParamByName } from '../../utils/utils';
 
 import './style.less';
