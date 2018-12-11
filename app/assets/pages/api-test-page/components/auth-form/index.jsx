@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { Form, Input, Radio, Icon, Dropdown, Menu, Modal } from 'antd';
 import BulkEditor from '../../../../components/bulk-editor';
 
-import './index.less';
+import './style.less';
 
 const FormItem = Form.Item;
 const InputGroup = Input.Group;

@@ -8,8 +8,6 @@ import SchemaEditor from '../../components/schema-editor/index';
 const createForm = Form.create;
 const FormItem = Form.Item;
 
-import './index.less';
-
 class Api extends React.PureComponent {
   componentDidMount() {
     const { dispatch, params: { collectionId, apiId } } = this.props;

@@ -10,7 +10,7 @@ import { browserHistory, Link } from 'dva/router';
 import Info from '../../components/info/index';
 import { TypeColorMap } from '../../utils/constants';
 
-import './index.less';
+import './style.less';
 
 
 const mySelf = window.context.user;

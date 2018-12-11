@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'dva/router';
 import moment from 'moment';
-import './index.less';
+import './style.less';
 
 export default class Card extends React.PureComponent {
   render() {

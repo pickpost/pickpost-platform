@@ -11,7 +11,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import { Link } from 'dva/router';
 import { TypeColorMap } from '../../utils/constants';
 
-import './index.less';
+import './style.less';
 
 const mySelf = window.context.user;
 

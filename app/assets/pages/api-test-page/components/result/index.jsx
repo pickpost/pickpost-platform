@@ -3,7 +3,7 @@ import { Icon, Input, message, Spin } from 'antd';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Mock from 'mockjs';
 
-import './index.less';
+import './style.less';
 
 window.Mock = Mock;
 

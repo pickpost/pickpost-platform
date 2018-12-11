@@ -6,7 +6,7 @@ import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 import Card from '../../components/card/index';
 
-import './index.less';
+import './style.less';
 
 const TabPane = Tabs.TabPane;
 

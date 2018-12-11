@@ -8,7 +8,7 @@ import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 import { TypeColorMap } from '../../utils/constants';
 
-import './index.less';
+import './style.less';
 
 const mySelf = window.context.user;
 

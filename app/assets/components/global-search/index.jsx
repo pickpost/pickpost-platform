@@ -2,7 +2,7 @@ import React from 'react';
 import { Icon, Input, AutoComplete } from 'antd';
 import ajax from 'xhr-plus';
 
-import './index.less';
+import './style.less';
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;

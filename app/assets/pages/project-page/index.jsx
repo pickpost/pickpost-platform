@@ -12,7 +12,7 @@ import Info from '../../components/info/index';
 import BulkEditor from '../../components/bulk-editor/index';
 import { getQueryParamByName } from '../../utils/utils';
 
-import './index.less';
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

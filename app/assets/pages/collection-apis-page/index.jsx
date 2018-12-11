@@ -6,7 +6,7 @@ import Folder from '../../components/folder';
 import File from '../../components/file';
 import FolderCreate from './components/folder-create';
 
-import './index.less';
+import './style.less';
 
 class Api extends React.PureComponent {
   componentDidMount() {

@@ -12,7 +12,7 @@ import MyTabs from './components/my-tabs/index';
 import BulkEditor from '../../components/bulk-editor/index';
 import Result from './components/result/index';
 
-import './index.less';
+import './style.less';
 
 const InputGroup = Input.Group;
 window.Mock = Mock;

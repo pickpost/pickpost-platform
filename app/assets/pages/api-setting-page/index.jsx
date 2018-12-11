@@ -4,7 +4,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 
-import './index.less';
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

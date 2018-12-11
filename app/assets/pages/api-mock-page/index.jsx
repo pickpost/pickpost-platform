@@ -9,7 +9,7 @@ import hljs from 'highlight.js/lib/highlight';
 import Info from '../../components/info/index';
 import Editor from '../../components/editor/index';
 
-import './index.less';
+import './style.less';
 import 'highlight.js/styles/googlecode.css';
 
 // highlight.js 高亮插件注册语言包

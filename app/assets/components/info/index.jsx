@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Tag } from 'antd';
 import { TypeColorMap } from '../../utils/constants';
 
-import './index.less';
+import './style.less';
 
 class Info extends React.Component {
   render() {

@@ -5,7 +5,7 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 
-import './index.less';
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

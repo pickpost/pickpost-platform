@@ -16,7 +16,7 @@ require('codemirror/addon/lint/javascript-lint');
 require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
 
-import './index.less';
+import './style.less';
 
 const CodeMirrorConfig = {
   mode: { name: 'javascript', json: true },
