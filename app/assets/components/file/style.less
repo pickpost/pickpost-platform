@@ -1,85 +1,86 @@
-dd {
+.api-file {
   margin: 0;
   padding: 0;
-}
+  font-size: 13px;
 
-dd a {
-  text-decoration: none;
-  min-height: 36px;
-  padding: 5px 10px 5px 33px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  color: #314659;
+  a {
+    text-decoration: none;
+    min-height: 36px;
+    padding: 5px 10px 5px 33px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: #314659;
 
-  .method {
-    color: #B8E986;
-    overflow: hidden;
-    margin-right: 5px;
-    width: 40px;
-  }
-
-  .itemurl {
-    flex: auto;
-    width: 1px;
-    line-height: 1.3;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    padding-right: 10px;
-    word-break: break-all;
-    white-space: nowrap;
-  }
-
-  .methods {
-    color: #7ED321;
-    font-style: normal;
-    padding-right: 3px;
-  }
-
-  .sub-action {
-    display: none;
-
-    .anticon {
-      margin-left: 8px;
+    .method {
+      color: #B8E986;
+      overflow: hidden;
+      margin-right: 5px;
+      width: 40px;
     }
-  }
 
-  &:hover {
-    background: rgba(74, 144, 226, 0.2);
-    color: #40a9ff;
+    .itemurl {
+      flex: auto;
+      width: 1px;
+      line-height: 1.3;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      padding-right: 10px;
+      word-break: break-all;
+      white-space: nowrap;
+    }
+
+    .methods {
+      color: #7ED321;
+      font-style: normal;
+      padding-right: 3px;
+    }
 
     .sub-action {
-      display: inline;
+      display: none;
+
+      .anticon {
+        margin-left: 8px;
+      }
     }
-  }
 
-  &.active {
-    background: #40a9ff;
-    // border-left: 2px solid #2CD174;
-    color: #fff;
-    text-decoration: none;
+    &:hover {
+      background: rgba(74, 144, 226, 0.2);
+      color: #40a9ff;
 
-    .itemname {
+      .sub-action {
+        display: inline;
+      }
+    }
+
+    &.active {
+      background: #40a9ff;
+      // border-left: 2px solid #2CD174;
       color: #fff;
+      text-decoration: none;
+
+      .itemname {
+        color: #fff;
+      }
     }
   }
-}
 
-.action-btns-wrapper {
-  .ant-popover-inner-content {
-    padding: 10px;
+  .action-btns-wrapper {
+    .ant-popover-inner-content {
+      padding: 10px;
+    }
   }
-}
 
-.action-btns {
-  .ant-btn {
-    display: block;
-    width: 100%;
+  .action-btns {
+    .ant-btn {
+      display: block;
+      width: 100%;
 
-    margin-bottom: 10px;
+      margin-bottom: 10px;
 
-    &:last-child {
-      margin-bottom: 0;
+      &:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 }

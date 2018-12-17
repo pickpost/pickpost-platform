@@ -1,10 +1,10 @@
 import React from 'react';
 import { Icon, Button, Input, Popover, Tag, Form, Dropdown, Modal, Menu, message, Popconfirm } from 'antd';
 import { connect } from 'dva';
+import { Link } from 'dva/router';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { Link } from 'dva/router';
 import { TypeColorMap } from '../../utils/constants';
 
 import './style.less';

@@ -27,7 +27,7 @@ class File extends React.PureComponent {
   render() {
     const { file, linkUrl } = this.props;
     return (
-      <dd>
+      <dd className="api-file">
         <Link activeClassName="active" to={linkUrl}>
           <div className="itemurl">
             {

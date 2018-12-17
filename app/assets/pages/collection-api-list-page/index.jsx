@@ -7,6 +7,8 @@ import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
 import { browserHistory, Link } from 'dva/router';
+import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 import Info from '../../components/info';
 import { TypeColorMap } from '../../utils/constants';
 
@@ -47,7 +49,7 @@ class Collection extends React.PureComponent {
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: updatedAt => {
-        return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
+        return moment(updatedAt).format('YYYY-MM-DD HH:mm');
       },
     }, {
       title: '创建人',
