@@ -306,7 +306,7 @@ class SchemaEditor extends React.Component {
             </thead>
             <tbody>
               <tr>
-                <td className="jsontd" rowSpan={100}>
+                <td className="jsontd" rowSpan={10000}>
                   <div className="json-view" ref="inputWrapper">
                     <CodeMirror
                       value={jsonStr}
