@@ -29,17 +29,9 @@ exports.getCollectionApis = async function (ctx) {
   const newResult = result.map(item => ({
     ...item,
     _id: item._id.toString(),
-    parentId: item.type !== 'folder' && !item.parentId ? 'none_group_id' : item.parentId,
+    // parentId: item.type !== 'folder' && !item.parentId ? 'none_group_id' : item.parentId,
     ...apiMap[item.apiId],
   }));
-
-  // 把无分组的归类到默认分组
-  newResult.push({
-    name: '默认分组',
-    parentId: '',
-    _id: 'none_group_id',
-    type: 'folder',
-  });
 
   // 将 list 转换为 tree
   const tree = arrayToTree(newResult, {
@@ -47,9 +39,21 @@ exports.getCollectionApis = async function (ctx) {
     customID: '_id',
   });
 
+  // 把无分组的归类到默认分组
+  const defaultGroup = {
+    name: '默认分组',
+    parentId: '',
+    _id: '',
+    type: 'folder',
+    children: tree.filter(item => item.type !== 'folder'),
+  };
+
+  const last = tree.filter(item => item.type === 'folder');
+  last.push(defaultGroup);
+
   this.body = {
     status: 'success',
-    data: tree,
+    data: last,
   };
 };
 

@@ -345,7 +345,7 @@ export default {
         headers: data.headers,
         updateAt: data.updateAt,
         // 还需要更新 collection 相关的字段：accounts, envs
-        accounts: data.accounts || [],
+        accounts: (data.accounts || []).filter(item => item),
         envs: data.envs || [],
         gateways: data.gateways || [],
         serverUrl: get(data, 'envs[0].value'),

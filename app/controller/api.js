@@ -17,7 +17,7 @@ exports.apisIndex = async function (ctx) {
   const API = ctx.model.Api;
   const CollectionAPI = ctx.model.CollectionApi;
   const Project = ctx.model.Project;
-  const { projectId, collectionId } = this.query;
+  const { projectId, collectionId, groupId } = this.query;
 
   const params = {};
   if (projectId) {
@@ -34,7 +34,18 @@ exports.apisIndex = async function (ctx) {
     const collectionAPIList = await CollectionAPI.find({
       collectionId,
     });
-    const apiIds = collectionAPIList.filter(item => item.apiId).map(item => item.apiId);
+    const apiIds = collectionAPIList.filter(item => {
+      if (!item.apiId) return false;
+      if (groupId) {
+        if (groupId === 'none' && item.parentId) {
+          return false;
+        }
+        if (groupId !== 'none' && item.parentId !== groupId) {
+          return false;
+        }
+      }
+      return true;
+    }).map(item => item.apiId);
     params._id = { $in: apiIds };
   }
   let apis = await API.find({
@@ -143,6 +154,7 @@ exports.apisNew = async function (ctx) {
       await CollectionAPI.create(createFill({
         apiId,
         collectionId: api.collectionId,
+        parentId: api.groupId || '',
       }));
       result = {
         insertedId: apiId,

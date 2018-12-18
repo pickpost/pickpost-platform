@@ -10,7 +10,7 @@ import './style.less';
 
 class Api extends React.PureComponent {
   componentDidMount() {
-    const { params: { collectionId } } = this.props;
+    const { params: { collectionId }, location: { query: { groupId } } } = this.props;
 
     this.props.dispatch({
       type: 'collectionApisModel/setData',
@@ -30,14 +30,6 @@ class Api extends React.PureComponent {
         keywords: e.target.value,
       });
     };
-
-    // this.handleFilterDebounced = debounce(e => {
-    //   e.persist();
-    //   this.props.dispatch({
-    //     type: 'collectionApisModel/changeKeywords',
-    //     keywords: e.target.value,
-    //   });
-    // }, 300);
   }
 
   handleMenuClick = e => {
@@ -99,6 +91,18 @@ class Api extends React.PureComponent {
     });
   }
 
+  handleToggleCollection = id => {
+    const { collectionId } = this.props.collectionApisModel;
+    // 跳转带分组信息的列表
+    browserHistory.push({
+      pathname: `/collection/${collectionId}/apis/list`,
+      query: {
+        groupId: id || 'none',
+      },
+    });
+    this.groupId = id || 'none';
+  }
+
   handleEditCollection = folder => {
     this.props.dispatch({
       type: 'collectionApisModel/setFolderModal',
@@ -114,6 +118,18 @@ class Api extends React.PureComponent {
     this.props.dispatch({
       type: 'collectionApisModel/deleteFolder',
       folderId,
+    });
+  }
+
+  handleAddFile = folder => {
+    const { collectionId } = this.props.collectionApisModel;
+    const url = `/collection/${collectionId}/newapi`;
+
+    browserHistory.push({
+      pathname: url,
+      query: {
+        groupId: folder._id,
+      },
     });
   }
 
@@ -175,7 +191,7 @@ class Api extends React.PureComponent {
           {
             apiId && (
               <div className="tabs-header">
-                <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
+                <Link to={`/collection/${collectionId}/apis/list?groupId=${this.groupId || ''}`} activeClassName="active">
                   <Icon type="left" /> 返回列表
                 </Link>
                 <div className="split-line"></div>

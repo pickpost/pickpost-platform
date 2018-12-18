@@ -23,9 +23,7 @@ class Folder extends React.PureComponent {
       }
       this.props.handleDeleteFolder(folder._id);
     } else if (e.key === 'file-add') {
-      this.props.handleAddFile({
-        id: folder._id,
-      });
+      this.props.handleAddFile(folder);
     }
   }
 

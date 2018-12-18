@@ -49,12 +49,6 @@ class Index extends React.PureComponent {
   handleSaveAPI() {
     this.props.form.validateFields((err, values) => {
       if (values.url) {
-        if (values.apiType === 'HTTP') {
-          values.methods = values.apiSubType;
-        } else {
-          values.methods = [ values.apiType ];
-        }
-
         // 新建API
         this.props.dispatch({
           type: 'apiEditModel/saveAPI',
@@ -78,7 +72,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { apiEditModel, params: { collectionId, projectId, apiId } } = this.props;
+    const { apiEditModel, params: { collectionId, projectId, apiId }, location: { query: { groupId } } } = this.props;
     const { editingAPI, projectList } = apiEditModel;
 
     const formItemLayout = {
@@ -112,6 +106,12 @@ class Index extends React.PureComponent {
               <Form layout="vertical" hideRequiredMark={true}>
                 {getFieldDecorator('collectionId', {
                   initialValue: collectionId,
+                })(
+                  <Input type="hidden" />
+                )}
+
+                {getFieldDecorator('groupId', {
+                  initialValue: groupId,
                 })(
                   <Input type="hidden" />
                 )}
@@ -161,9 +161,9 @@ class Index extends React.PureComponent {
                     <FormItem
                       label="Allow Methods"
                       {...formItemLayout}
-                      help={getFieldError('apiSubType')}
+                      help={getFieldError('methods')}
                     >
-                      {getFieldDecorator('apiSubType', {
+                      {getFieldDecorator('methods', {
                         initialValue: editingAPI.methods,
                         rules: [{ required: true, message: '请选择Allow Methods' }],
                       })(

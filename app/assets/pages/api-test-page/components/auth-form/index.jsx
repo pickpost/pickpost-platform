@@ -3,6 +3,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Form, Input, Radio, Icon, Dropdown, Menu, Modal } from 'antd';
 import BulkEditor from '../../../../components/bulk-editor';
+import { AuthTypes } from '../../../../../common/constants';
 
 import './style.less';
 
@@ -88,7 +89,7 @@ class AuthForm extends React.Component {
     const menu = (
       <Menu onClick={this.handleAccountChange}>
         {
-          (accounts || []).map((item, index) => (
+          (accounts || []).filter(item => item).map((item, index) => (
             <Menu.Item key={index}>
               {item.username} {item.remark ? `(${item.remark})` : ''}
             </Menu.Item>
@@ -113,8 +114,9 @@ class AuthForm extends React.Component {
                   initialValue: authStrategy,
                 })(
                   <Radio.Group>
-                    <Radio value="auth">A</Radio>
-                    <Radio value="buc">B</Radio>
+                    {
+                      AuthTypes.map(item => <Radio key={item.type} value={item.type}>{item.name}</Radio>)
+                    }
                   </Radio.Group>
                 )}
               </FormItem>

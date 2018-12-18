@@ -74,8 +74,7 @@ export default {
     },
 
     // 获取需求内接口列表
-    *collectionApis({ id }, { call, put }) {
-      // console.log('id', id);
+    *collectionApis({ id, groupId }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
@@ -83,6 +82,7 @@ export default {
           type: 'json',
           data: {
             collectionId: id,
+            groupId,
           },
         });
         if (status === 'success') {

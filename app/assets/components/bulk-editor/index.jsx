@@ -59,7 +59,7 @@ export default class BulkEditor extends React.Component {
                 configs.map(item => <td key={item.placeholder}>{item.placeholder}</td>)
               }
             </tr>
-          {(list || []).map((item, index) =>
+          {(list || []).filter(item => item).map((item, index) =>
             <tr key={index}>
               {
                 configs.map((c, findex) =>

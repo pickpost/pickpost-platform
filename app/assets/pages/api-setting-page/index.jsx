@@ -39,12 +39,6 @@ class Index extends React.PureComponent {
   handleSaveAPI() {
     this.props.form.validateFields((err, values) => {
       if (values.url) {
-        if (values.apiType === 'HTTP') {
-          values.methods = values.apiSubType;
-        } else {
-          values.methods = [ values.apiType ];
-        }
-
         // 新建API
         this.props.dispatch({
           type: 'apiSettingModel/saveAPI',
@@ -139,9 +133,9 @@ class Index extends React.PureComponent {
                 <FormItem
                   label="Allow Methods"
                   {...formItemLayout}
-                  help={getFieldError('apiSubType')}
+                  help={getFieldError('methods')}
                 >
-                  {getFieldDecorator('apiSubType', {
+                  {getFieldDecorator('methods', {
                     initialValue: editingAPI.methods,
                     rules: [{ required: true, message: '请选择Allow Methods' }],
                   })(

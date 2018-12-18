@@ -35,5 +35,17 @@ apiTypes.forEach(item => {
   TypeColorMap[item.type] = item.color;
 });
 
+const AuthTypes = [
+  {
+    type: 'auth',
+    name: '商家中心',
+  },
+  {
+    type: 'buc',
+    name: 'buc',
+  },
+];
+
 exports.apiTypes = apiTypes;
 exports.TypeColorMap = TypeColorMap;
+exports.AuthTypes = AuthTypes;
