@@ -70,7 +70,7 @@ export default {
 
       if (status === 'success') {
         yield put({
-          type: 'setData',
+          type: 'syncData',
           data,
         });
       }
@@ -325,6 +325,7 @@ export default {
     },
 
     syncData(state, { data }) {
+      const method = data.apiType === 'HTTP' && data.methods && data.methods[0] ? data.methods[0] : 'GET';
       return {
         projectName: data.projectName,
         projectId: data.projectId,
@@ -332,9 +333,10 @@ export default {
         apiName: data.name,
         url: data.url,
         desc: data.desc,
-        apiType: data.apiType, // HTTP RPC MGW
-        method: data.apiType === 'SPI' ? 'SPI' : data.methods ? data.methods[0] : 'GET',
-        methods: data.methods || [ 'GET' ],
+        apiType: data.apiType,
+        method,
+        methods: data.methods || [ 'GET', 'POST' ],
+        subType: data.apiType === 'HTTP' && method === 'GET' ? '1' : '2',
         requestIndex: data.requestIndex,
         requests: data.requests,
         paramIndex: data.paramIndex,

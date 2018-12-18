@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import dva from 'dva';
 import { Router, Route, browserHistory } from 'dva/router';
+// import createLoading from 'dva-loading';
 import './app.less';
 
 // 0. Pages
@@ -50,7 +51,7 @@ const app = dva({
 });
 
 // 2. Plugins
-// app.use({});
+// app.use(createLoading());
 
 // 3. Model
 app.model(APIEditModel);

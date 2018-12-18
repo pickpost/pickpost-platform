@@ -86,7 +86,6 @@ class Api extends React.PureComponent {
   }
 
   handleMGWChange(value) {
-    localStorage.setItem('pp_serverUrl', value);
     this.props.dispatch({
       type: 'apiTestModel/changeServerUrl',
       serverUrl: value,
@@ -186,26 +185,6 @@ class Api extends React.PureComponent {
       url: `/api/projects/${apiTestModel.projectId}`,
       gateways: this.state.modalEnvs,
     });
-  }
-
-  getBelongQuery() {
-    const { belong } = this.props.location.query;
-    return belong || '';
-  }
-
-  getBelong() {
-    let { belong } = this.props.location.query;
-    const { projectId } = this.props.apiTestModel;
-    belong = belong || `project_${projectId}`;
-    return belong;
-  }
-
-  getUplevel() {
-    return '/' + this.getBelong().replace('_', '/') + '?tab=api';
-  }
-
-  renderSPIView() {
-
   }
 
   render() {
@@ -322,7 +301,7 @@ class Api extends React.PureComponent {
                     mode="bulk"
                     type="params"
                     data={apiTestModel.params}
-                    selected={apiTestModel.paramsIndex}
+                    selected={apiTestModel.paramIndex}
                     onChange={this.handleEditorChange}
                   />
                 )

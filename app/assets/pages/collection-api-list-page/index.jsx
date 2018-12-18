@@ -85,12 +85,12 @@ class Collection extends React.PureComponent {
 
     // 获取需求信息
     this.props.dispatch({
-      type: 'collectionModel/collection',
+      type: 'collectionApiListModel/collection',
       id: collectionId,
     });
     // 获取需求内接口列表
     this.props.dispatch({
-      type: 'collectionModel/collectionApis',
+      type: 'collectionApiListModel/collectionApis',
       id: collectionId,
     });
   }

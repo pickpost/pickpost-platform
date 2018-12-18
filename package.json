@@ -17,6 +17,7 @@
     "codemirror": "^5.39.0",
     "cookie-parse": "^0.4.0",
     "dva": "^1.2.1",
+    "dva-loading": "^2.0.6",
     "egg": "^2.4.1",
     "egg-cors": "^2.1.0",
     "egg-jsonp": "^1.1.1",

@@ -160,6 +160,7 @@ export default class Editor extends React.Component {
     }];
 
     const codemirrorValue = list && list[selected] ? list[selected].content : '';
+
     return (
       <div className="editor">
         <div className="category">
