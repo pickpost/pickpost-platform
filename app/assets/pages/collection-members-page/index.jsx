@@ -9,7 +9,7 @@ import { Link } from 'dva/router';
 import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { TypeColorMap } from '../../utils/constants';
+import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 

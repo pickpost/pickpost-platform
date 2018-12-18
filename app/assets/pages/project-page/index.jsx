@@ -11,19 +11,13 @@ import Layout from '../../layout/default.jsx';
 import Info from '../../components/info';
 import BulkEditor from '../../components/bulk-editor';
 import { getQueryParamByName } from '../../utils/utils';
+import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
 const Option = Select.Option;
-
-const typeColorMap = {
-  SPI: 'green',
-  RPC: 'purple',
-  GET: 'blue',
-  POST: 'blue',
-};
 
 const BulkEditorAccounts = [{
   field: 'username',
@@ -77,7 +71,7 @@ class Project extends React.Component {
     dataIndex: 'methods',
     key: 'methods',
     render: methods => {
-      return methods.map(m => (<Tag key={m} color={typeColorMap[m]}>{m}</Tag>));
+      return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
     },
   }, {
     title: '地址',

@@ -7,10 +7,10 @@ import ajax from 'xhr-plus';
 import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
 import { browserHistory, Link } from 'dva/router';
-import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+// import { DragDropContext, DragSource, DropTarget } from 'react-dnd';
+// import HTML5Backend from 'react-dnd-html5-backend';
 import Info from '../../components/info';
-import { TypeColorMap } from '../../utils/constants';
+import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 

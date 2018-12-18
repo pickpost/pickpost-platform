@@ -40,19 +40,6 @@ class Api extends React.PureComponent {
     // }, 300);
   }
 
-  getTypeByMethods(methods) {
-    if (!Array.isArray(methods)) {
-      return 'HTTP';
-    }
-
-    if (methods.indexOf('RPC') >= 0) {
-      return 'RPC';
-    } else if (methods.indexOf('SPI') >= 0) {
-      return 'SPI';
-    }
-    return 'HTTP';
-  }
-
   handleMenuClick = e => {
     if (e.key === 'file') {
       const { collectionId } = this.props.collectionApisModel;

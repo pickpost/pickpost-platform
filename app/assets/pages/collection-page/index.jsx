@@ -6,7 +6,7 @@ import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
-import { TypeColorMap } from '../../utils/constants';
+import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 
