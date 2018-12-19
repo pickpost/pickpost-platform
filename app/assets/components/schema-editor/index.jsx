@@ -80,8 +80,9 @@ class SchemaEditor extends React.Component {
     const json = schema2json(props.value);
     const rows = (JSON.stringify(json, null, '\t') || '').split('\n').length;
     const defaultJsonStr = '{\n\t\n}'; // 默认三行
+    const jsonStr = json ? JSON.stringify(json, null, '\t') : defaultJsonStr;
     this.state = {
-      jsonStr: JSON.stringify(json, null, '\t') || defaultJsonStr,
+      jsonStr,
       schema: props.value,
       path: '',
       list: [{}],
@@ -284,6 +285,7 @@ class SchemaEditor extends React.Component {
 
   render() {
     const { jsonStr, schema, enumsModal, leftRowCount, hightLightLine } = this.state;
+    console.log('jsonStr', jsonStr);
     const rows = [];
     this.renderTable(rows, schema.properties, 'data');
     const leftShowRows = Math.max(leftRowCount, MinRows);
