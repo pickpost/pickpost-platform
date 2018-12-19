@@ -264,41 +264,6 @@ exports.searchByKeyWord = async function () {
   };
 };
 
-// exports.searchByKeyWord = async function (ctx) {
-//   try {
-//     const result = await axios({
-//       url: 'http://office.choicesaas.cn/external/getUser',
-//       method: 'post',
-//       headers: {
-//         cookie: ctx.request.header.cookie,
-//       },
-//       data: {
-//         value: this.query.keyword || '',
-//       },
-//     });
-
-//     const users = result.data.data.map(item => ({
-//       empId: item.userId,
-//       name: item.realyName,
-//       email: item.username,
-//     }));
-
-//     this.body = {
-//       status: 'success',
-//       data: {
-//         users,
-//       },
-//     };
-//   } catch (err) {
-//     this.body = {
-//       status: 'success',
-//       data: {
-//         users: [],
-//       },
-//     };
-//   }
-// };
-
 exports.globalSearch = async function (ctx) {
   const keyword = this.query.keyword;
   const Project = ctx.model.Project;
