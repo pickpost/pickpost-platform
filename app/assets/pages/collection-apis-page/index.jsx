@@ -5,12 +5,14 @@ import { browserHistory, Link } from 'dva/router';
 import Folder from '../../components/folder';
 import File from '../../components/file';
 import FolderCreate from './components/folder-create';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
 import './style.less';
 
 class Api extends React.PureComponent {
   componentDidMount() {
-    const { params: { collectionId }, location: { query: { groupId } } } = this.props;
+    const { params: { collectionId } } = this.props;
 
     this.props.dispatch({
       type: 'collectionApisModel/setData',
@@ -133,6 +135,15 @@ class Api extends React.PureComponent {
     });
   }
 
+  handleApiChangeGroup = (apiId, groupId) => {
+    this.props.dispatch({
+      type: 'collectionApisModel/changeApiGroup',
+      collectionApiId: apiId,
+      groupId,
+      currentGroupId: this.groupId,
+    });
+  }
+
   render() {
     const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
@@ -162,7 +173,7 @@ class Api extends React.PureComponent {
               </Button>
             </Dropdown>
           </div>
-          <Link className="all-apis" activeClassName="active" to={`/collection/${collectionId}/apis/list`}>
+          <Link className="all-apis" to={`/collection/${collectionId}/apis/list`}>
             <Icon type="bars" />
             全部接口
           </Link>
@@ -171,12 +182,14 @@ class Api extends React.PureComponent {
               <Folder
                 key={folder._id}
                 folder={folder}
+                isActive={this.groupId === folder._id}
                 isCollapsed={folder.isCollapsed}
                 handleToggleFolder={this.handleToggleCollection}
                 handleEditFolder={this.handleEditCollection}
                 handleDeleteFolder={this.handleDeleteCollection}
                 handleAddFile={this.handleAddFile}
                 handleSetFolder={this.handleSetFolder}
+                handleApiChangeGroup={this.handleApiChangeGroup}
               >
                 {
                   (folder.children || []).map(api => (
@@ -230,4 +243,4 @@ export default connect(({ collectionModel, collectionApisModel }) => {
     collectionApisModel,
     collectionModel,
   };
-})(Api);
+})(DragDropContext(HTML5Backend)(Api));

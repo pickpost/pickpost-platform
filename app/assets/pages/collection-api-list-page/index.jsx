@@ -5,6 +5,7 @@ import moment from 'moment';
 import { browserHistory, Link } from 'dva/router';
 import Info from '../../components/info';
 import { TypeColorMap } from '../../../common/constants';
+import Dragrow from './components/dragrow';
 
 import './style.less';
 
@@ -62,7 +63,6 @@ class Collection extends React.PureComponent {
         return (
           <div className="actions" onClick={e => e.stopPropagation()}>
             <Link to={`/collection/${collectionId}/apis/doc/${api._id}`}>详情</Link>
-            <a href="#" onClick={this.handleChangeGroup}>移动到分组</a>
             <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
               <Link to="">删除</Link>
             </Popover>
@@ -118,8 +118,10 @@ class Collection extends React.PureComponent {
     });
   }
 
-  handleChangeGroup = () => {
-
+  components = {
+    body: {
+      row: Dragrow,
+    },
   }
 
   render() {
@@ -140,7 +142,8 @@ class Collection extends React.PureComponent {
           <Table
             dataSource={apis}
             columns={this.apisColumns}
-            rowKey="_id"
+            rowKey="collectionApiId"
+            components={this.components}
             locale={{ emptyText: '暂无数据' }}
             onRow={api => {
               return {
@@ -162,4 +165,4 @@ export default connect(({ collectionApiListModel }) => {
   return {
     collectionApiListModel,
   };
-})(Form.create()(Collection));
+})(Collection);

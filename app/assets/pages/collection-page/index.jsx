@@ -401,4 +401,4 @@ export default connect(({ collectionModel }) => {
   return {
     collectionModel,
   };
-})(Form.create()(Collection));
+})(Collection);

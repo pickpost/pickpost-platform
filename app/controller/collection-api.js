@@ -85,9 +85,10 @@ exports.create = async function (ctx) {
 
 exports.update = async function (ctx) {
   const CollectionAPI = ctx.model.CollectionApi;
-  const { name } = this.request.body;
+  const { name, parentId } = this.request.body;
   const result = await CollectionAPI.updateOne({ _id: this.params.id }, { $set: {
     name,
+    parentId,
   } });
 
   this.body = {

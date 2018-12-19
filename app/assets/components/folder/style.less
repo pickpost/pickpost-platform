@@ -3,6 +3,36 @@
   position: relative;
   margin: 0;
 
+  &:hover {
+    background: rgba(74, 144, 226, 0.2);
+
+    .more-action {
+      color: #1F8FC5;
+      display: block;
+    }
+  }
+
+  &.active {
+    background: #40a9ff;
+
+    dt .detail h5 {
+      color: #fff;
+    }
+
+    dt .detail p {
+      color: #fff;
+    }
+
+    dt .anticon {
+      color: #fff;
+    }
+
+    .more-action {
+      color: #fff;
+      display: block;
+    }
+  }
+
   &:last-child dt {
     border-bottom: 1px solid #f2f4f5;
   }
@@ -58,15 +88,6 @@
       .anticon {
         color: #1F8FC5;
         margin-top: 22px;
-      }
-    }
-
-    &:hover {
-      background: rgba(74, 144, 226, 0.2);
-
-      .more-action {
-        color: #1F8FC5;
-        display: block;
       }
     }
   }

@@ -26,6 +26,8 @@ exports.apisIndex = async function (ctx) {
 
   const projects = await Project.find();
   const projectMap = {};
+  const collectionAPIMap = {};
+
   projects.forEach(item => {
     projectMap[item._id] = item;
   });
@@ -34,6 +36,7 @@ exports.apisIndex = async function (ctx) {
     const collectionAPIList = await CollectionAPI.find({
       collectionId,
     });
+
     const apiIds = collectionAPIList.filter(item => {
       if (!item.apiId) return false;
       if (groupId) {
@@ -44,6 +47,8 @@ exports.apisIndex = async function (ctx) {
           return false;
         }
       }
+
+      collectionAPIMap[item.apiId] = item._id;
       return true;
     }).map(item => item.apiId);
     params._id = { $in: apiIds };
@@ -66,6 +71,7 @@ exports.apisIndex = async function (ctx) {
     projectName: projectMap[item.projectId] ? projectMap[item.projectId].name : '',
     projectDesc: projectMap[item.projectId] ? projectMap[item.projectId].desc : '',
     creater: item.creater ? item.creater.cname : '',
+    collectionApiId: collectionAPIMap[item._id],
   }));
 
   this.body = {

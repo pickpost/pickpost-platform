@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
 import { Icon, message, Menu, Dropdown } from 'antd';
+import { DropTarget } from 'react-dnd';
 
 import './style.less';
 
@@ -28,18 +29,18 @@ class Folder extends React.PureComponent {
   }
 
   render() {
-    const { folder, isCollapsed } = this.props;
+    const { folder, isCollapsed, isActive, connectDropTarget } = this.props;
 
     const menu = (
       <Menu onClick={this._handleMenuClick}>
+        <Menu.Item key="file-add"><Icon type="file-add" theme="twoTone" />添加接口</Menu.Item>
         <Menu.Item key="edit"><Icon type="edit" theme="twoTone" />修改分组</Menu.Item>
         <Menu.Item key="delete"><Icon type="delete" theme="twoTone" />移除分组</Menu.Item>
-        <Menu.Item key="file-add"><Icon type="file-add" theme="twoTone" />添加接口</Menu.Item>
       </Menu>
     );
 
-    return (
-      <dl key={folder._id} className="file-tree">
+    return connectDropTarget(
+      <dl key={folder._id} className={isActive ? 'file-tree active' : 'file-tree'}>
         <dt data-value={folder._id} onClick={this._handleToggleFolder}>
           {
             isCollapsed ? <Icon type="folder" /> : <Icon type="folder-open" />
@@ -76,6 +77,26 @@ Folder.propTypes = {
   handleEditFolder: PropTypes.func,
   handleDeleteFolder: PropTypes.func,
   handleAddFile: PropTypes.func,
+  handleApiChangeGroup: PropTypes.func,
 };
 
-export default Folder;
+const rowTarget = {
+  drop(props, monitor) {
+    const id = monitor.getItem().id;
+    props.handleApiChangeGroup(id, props.folder._id);
+
+    // Note: we're mutating the monitor item here!
+    // Generally it's better to avoid mutations,
+    // but it's good here for the sake of performance
+    // to avoid expensive index searches.
+    monitor.getItem().id = id;
+  },
+};
+
+const dragFolder = DropTarget('row', rowTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  sourceClientOffset: monitor.getSourceClientOffset(),
+}))(Folder);
+
+export default dragFolder;

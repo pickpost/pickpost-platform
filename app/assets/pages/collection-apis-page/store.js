@@ -230,6 +230,34 @@ export default {
         message.error('移除失败');
       }
     },
+    *changeApiGroup({ collectionApiId, groupId, currentGroupId }, { call, put, select }) {
+      try {
+        const { status } = yield call(ajax, {
+          url: `/api/collection-apis/${collectionApiId}`,
+          method: 'PUT',
+          type: 'json',
+          data: {
+            parentId: groupId || '',
+          },
+        });
+
+        if (status === 'success') {
+          message.success('修改分组成功');
+          const { collectionApisModel: { collectionId } } = yield select();
+          yield put({
+            type: 'getApisTree',
+            collectionId,
+          });
+          yield put({
+            type: 'collectionApiListModel/collectionApis',
+            id: collectionId,
+            groupId: currentGroupId,
+          });
+        }
+      } catch (e) {
+        message.error('修改分组失败');
+      }
+    },
   },
   reducers: {
     setData(state, { payload }) {

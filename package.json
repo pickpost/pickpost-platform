@@ -46,7 +46,7 @@
     "react": "^15.5.4",
     "react-codemirror2": "^5.1.0",
     "react-copy-to-clipboard": "^5.0.0",
-    "react-dnd": "^7.0.2",
+    "react-dnd": "2.5.1",
     "react-dnd-html5-backend": "^7.0.2",
     "react-dom": "^15.5.4",
     "safer-eval": "^1.2.3",
