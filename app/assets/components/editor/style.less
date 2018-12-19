@@ -1,0 +1,148 @@
+.editor {
+  height: 100%;
+  // border: 1px solid #E4E8F0;
+
+  .CodeMirror {
+    min-height: 500px;
+  }
+
+  .bulkeditor {
+    border-top: 1px solid #E4E8F0;
+    padding-top: 3px;
+  }
+
+  .taglist {
+    margin: 0;
+    padding-right: 90px;
+
+    li {
+      display: block;
+      float: left;
+      position: relative;
+      margin-left: 5px;
+      padding: 2px;
+      background: #FC5A7D;
+      box-sizing: border-box;
+      cursor: pointer;
+      height: 22px;
+
+      .title {
+        color: #fff;
+      }
+    }
+
+    .add {
+      background: #fff;
+      border: 1px dashed #DEE4EA;
+      color: #DEE4EA;
+    }
+
+    .actoin {
+      display: none;
+      position: absolute;
+      height: 22px;
+      right: -40px;
+      top: 0;
+      background: #fff;
+      border: 1px solid #FC5A7D;
+      z-index: 10;
+
+      i {
+        margin: 5px 5px;
+      }
+    }
+
+    li:hover .actoin {
+      display: block;
+    }
+  }
+
+  .category {
+    position: relative;
+    padding: 10px 0;
+  }
+
+  .edit-content {
+    position: relative;
+    min-height: 500px;
+
+    //&::-webkit-scrollbar {
+    //  width: 6px;
+    //  height: 6px;
+    //  color: #000;
+    //  background-color: transparent;
+    //}
+    //
+    //&::-webkit-scrollbar:hover {
+    //  background-color: #FAFAFA;
+    //}
+    //
+    //&::-webkit-scrollbar-thumb {
+    //  min-height: 5px;
+    //  min-width: 5px;
+    //  border: none;
+    //  border: 1px solid #fafafa;
+    //  background-color: #fafafa;
+    //}
+    //
+    //&::-webkit-scrollbar-thumb:hover {
+    //  min-height: 5px;
+    //  min-width: 5px;
+    //  border: none;
+    //  background-color: #fff;
+    //}
+    //
+    //&::-webkit-scrollbar-thumb:active {
+    //  border: none;
+    //  background-color: #fff;
+    //}
+  }
+
+  .top-action {
+    position: absolute;
+    right: 10px;
+    top: 11px;
+
+    >div {
+      margin-left: 10px;
+    }
+
+    .copy-code {
+      cursor: pointer;
+      float: right;
+    }
+
+    .format-code {
+      float: right;
+      cursor: pointer;
+    }
+  }
+
+  .ant-tag {
+    // border-radius: 0;
+    // background: #D8D8D8;
+    // border: 1px solid #D8D8D8;
+    // color: #fff;
+    // margin-bottom: 5px;
+    // margin-right: 5px;
+    // .anticon {
+    //   color: #fff;
+    // }
+  }
+
+  .new-tag {
+    border: 1px dashed #D8D8D8;
+    background: #fff;
+    color: #D8D8D8;
+  }
+
+  .ant-tag.active {
+    background: #36D484;
+    border: 1px solid #36D484;
+    color: #fff;
+
+    .anticon {
+      color: #fff;
+    }
+  }
+}

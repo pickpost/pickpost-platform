@@ -5,8 +5,9 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { isOwner } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
-import BulkEditor from '../../components/BulkEditor';
-import './index.less';
+import BulkEditor from '../../components/bulk-editor';
+
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

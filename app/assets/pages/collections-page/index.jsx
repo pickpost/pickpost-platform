@@ -1,12 +1,12 @@
 import React from 'react';
 import { Row, Col, Pagination, Icon, Button, Tabs } from 'antd';
 import { connect } from 'dva';
-import { isBelong } from '../../utils/utils';
 import { Link } from 'dva/router';
+import { isBelong } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
-import Card from '../../components/Card';
+import Card from '../../components/card';
 
-import './index.less';
+import './style.less';
 
 const TabPane = Tabs.TabPane;
 

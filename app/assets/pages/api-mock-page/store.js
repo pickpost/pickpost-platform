@@ -1,5 +1,4 @@
 import ajax from 'xhr-plus';
-import { message } from 'antd';
 
 export default {
   namespace: 'apiMockModel',
@@ -16,6 +15,23 @@ export default {
     projectName: '',
   },
   effects: {
+    *detail({ apiId, collectionId }, { call, put }) {
+      yield put({
+        type: 'reset',
+      });
+      const { status, data } = yield call(ajax, {
+        url: `/api/apis/${apiId}`,
+        method: 'get',
+        type: 'json',
+      });
+
+      if (status === 'success') {
+        yield put({
+          type: 'setData',
+          data,
+        });
+      }
+    },
     *changeEditor({ changeType, list, index = 0 }, { put }) {
       yield put({
         type: 'setData',
@@ -24,22 +40,6 @@ export default {
           responseIndex: index,
         },
       });
-    },
-
-    *saveMock({ api }, { call }) {
-      const { status } = yield call(ajax, {
-        url: `/api/apis/${api._id}`,
-        method: 'put',
-        type: 'json',
-        data: {
-          api: JSON.stringify({
-            ...api,
-          }),
-        },
-      });
-      if (status === 'success') {
-        message.success('保存成功!');
-      }
     },
   },
 

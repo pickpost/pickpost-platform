@@ -4,8 +4,9 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
+import { apiTypes } from '../../../common/constants';
 
-import './index.less';
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -36,15 +37,18 @@ class Index extends React.PureComponent {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'collectionApisModel/detail',
+        apiId: nextProps.params.apiId,
+      });
+    }
+  }
+
   handleSaveAPI() {
     this.props.form.validateFields((err, values) => {
       if (values.url) {
-        if (values.apiType === 'HTTP') {
-          values.methods = values.apiSubType;
-        } else {
-          values.methods = [ values.apiType ];
-        }
-
         // 新建API
         this.props.dispatch({
           type: 'apiEditModel/saveAPI',
@@ -54,27 +58,12 @@ class Index extends React.PureComponent {
     });
   }
 
-  getTypeByMethods(methods) {
-    if (!Array.isArray(methods)) {
-      return 'HTTP';
-    }
-
-    if (methods.indexOf('RPC') >= 0) {
-      return 'RPC';
-    } else if (methods.indexOf('SPI') >= 0) {
-      return 'SPI';
-    }
-    return 'HTTP';
-  }
-
-  // Todo: 添加完一个接口，立即又添加一个相同的接口，校验不到。
-  // RPC 和 SPI 接口存放的项目地址需要探讨一下，在A应用里有a接口，然后在B应用里新建a接口，会提示接口已存在，这是因为RPC和SPI接口匹配规则忽略所在应用。
   validateUrl = (rule, value, callback) => {
     const { editingAPI } = this.props.apiEditModel;
     const { getFieldValue } = this.props.form;
 
     // 如果是修改接口，判断 method 和 url 是否变更，如果没有变更，则不进入重复校验
-    if (editingAPI._id && getFieldValue('apiType') === this.getTypeByMethods(editingAPI.methods) && editingAPI.url === value) {
+    if (editingAPI._id && getFieldValue('apiType') === editingAPI.apiType && editingAPI.url === value) {
       callback();
       return;
     }
@@ -83,7 +72,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { apiEditModel, params: { collectionId, projectId, apiId } } = this.props;
+    const { apiEditModel, params: { collectionId, projectId, apiId }, location: { query: { groupId } } } = this.props;
     const { editingAPI, projectList } = apiEditModel;
 
     const formItemLayout = {
@@ -92,19 +81,12 @@ class Index extends React.PureComponent {
     };
 
     const { getFieldValue, getFieldDecorator, getFieldError } = this.props.form;
-    const apiType = editingAPI.apiType || this.getTypeByMethods(editingAPI.methods);
-    const methodOptions = [
-      { label: 'GET', value: 'GET' },
-      { label: 'POST', value: 'POST' },
-      { label: 'PUT', value: 'PUT' },
-      { label: 'DELETE', value: 'DELETE' },
-    ];
-    const ruleTypeMap = {
-      HTTP: {
-        label: '路径规则',
-        placeholder: '请输入接口规则，例如：/shop/detail.json',
-      },
-    };
+    const apiType = getFieldValue('apiType') || editingAPI.apiType;
+    const matchApiType = apiTypes.find(item => item.type === apiType) || {};
+    const methodOptions = (matchApiType.methods || []).map(item => ({
+      label: item,
+      value: item,
+    }));
 
     const titleText = apiId ? '编辑接口' : '新建接口';
 
@@ -124,6 +106,12 @@ class Index extends React.PureComponent {
               <Form layout="vertical" hideRequiredMark={true}>
                 {getFieldDecorator('collectionId', {
                   initialValue: collectionId,
+                })(
+                  <Input type="hidden" />
+                )}
+
+                {getFieldDecorator('groupId', {
+                  initialValue: groupId,
                 })(
                   <Input type="hidden" />
                 )}
@@ -162,9 +150,9 @@ class Index extends React.PureComponent {
                     rules: [{ required: true, message: '请选择接口类型' }],
                   })(
                     <RadioGroup>
-                      <RadioButton value="HTTP">HTTP</RadioButton>
-                      <RadioButton value="RPC">RPC</RadioButton>
-                      <RadioButton value="SPI">SPI</RadioButton>
+                      {
+                        apiTypes.map(item => <RadioButton key={item.type} value={item.type}>{item.name}</RadioButton>)
+                      }
                     </RadioGroup>
                   )}
                 </FormItem>
@@ -173,9 +161,9 @@ class Index extends React.PureComponent {
                     <FormItem
                       label="Allow Methods"
                       {...formItemLayout}
-                      help={getFieldError('apiSubType')}
+                      help={getFieldError('methods')}
                     >
-                      {getFieldDecorator('apiSubType', {
+                      {getFieldDecorator('methods', {
                         initialValue: editingAPI.methods,
                         rules: [{ required: true, message: '请选择Allow Methods' }],
                       })(
@@ -185,18 +173,18 @@ class Index extends React.PureComponent {
                   )
                 }
                 <FormItem
-                  label={getFieldValue('apiType') && ruleTypeMap[getFieldValue('apiType')] ? ruleTypeMap[getFieldValue('apiType')].label : ''}
+                  label={matchApiType.uniqueName}
                   {...formItemLayout}
                   help={getFieldError('url')}
                 >
                   {getFieldDecorator('url', {
                     initialValue: editingAPI.url,
                     rules: [
-                      { required: true, message: '接口地址不能为空' },
+                      { required: true, message: `${matchApiType.uniqueName}不能为空` },
                       { validator: this.validateUrl },
                     ],
                   })(
-                    <Input placeholder={getFieldValue('apiType') && ruleTypeMap[getFieldValue('apiType')] ? ruleTypeMap[getFieldValue('apiType')].placeholder : ''} />
+                    <Input placeholder={matchApiType.placeholder} />
                   )}
                 </FormItem>
                 <FormItem

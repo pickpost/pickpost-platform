@@ -5,7 +5,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { isOwner, isMember } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
-import './index.less';
+import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;

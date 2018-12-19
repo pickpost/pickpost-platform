@@ -1,11 +1,9 @@
-// 将 JSON 转化为 Schema
 function isPlainObject(obj) {
   return obj ? typeof obj === 'object' && Object.getPrototypeOf(obj) === Object.prototype : false;
 }
 
-const supportType = [ 'string', 'number', 'array', 'object', 'boolean', 'integer' ];
-
 function getType(type) {
+  const supportType = [ 'string', 'number', 'array', 'object', 'boolean', 'integer' ];
   if (!type) type = 'string';
   if (supportType.indexOf(type) !== -1) {
     return type;
@@ -13,99 +11,51 @@ function getType(type) {
   return typeof type;
 }
 
-function isSchema(object) {
-  if (supportType.indexOf(object.type) !== -1) {
-    return true;
-  }
-  return false;
-}
+function json2schema(json, pathMap, parentsPath) {
+  let schema;
+  pathMap = pathMap || {};
+  const newParentsPath = parentsPath || 'root';
 
-function handleSchema(json, schema) {
-  Object.assign(schema, json);
-  if (schema.type === 'object') {
-    delete schema.properties;
-    parse(json.properties, schema);
-  }
-  if (schema.type === 'array') {
-    delete schema.items;
-    schema.items = {};
-    parse(json.items, schema.items);
-  }
-}
-
-function handleArray(arr, schema, str) {
-  schema.type = 'array';
-  if (arr.length <= 0) {
-    schema.items = null;
+  if (isPlainObject(json)) {
+    schema = schema || {
+      title: '',
+      type: 'object',
+      properties: (function() {
+        const props = {};
+        Object.keys(json).forEach(key => {
+          props[key] = json2schema(json[key], pathMap, newParentsPath + '.' + key);
+        });
+        return props;
+      })(),
+      remark: '',
+      path: newParentsPath,
+    };
+  } else if (Array.isArray(json)) {
+    schema = schema || {
+      title: '',
+      type: 'array',
+      items: (function() {
+        return json.length <= 0 ? null : json2schema(json[0], pathMap, newParentsPath + '[0]');
+      })(),
+      remark: '',
+      path: newParentsPath,
+    };
   } else {
-    schema.items = {};
-    parse(arr[0], schema.items, str);
+    schema = {
+      title: '',
+      type: getType(json),
+      example: json,
+      enum: [],
+      remark: '',
+      path: newParentsPath,
+    };
   }
+
+  if (pathMap[schema.path]) {
+    schema = { ...schema, ...pathMap[schema.path] };
+  }
+
+  return schema;
 }
 
-function handleObject(json, schema, str) {
-  if (isSchema(json)) {
-    return handleSchema(json, schema);
-  }
-  schema.type = 'object';
-  schema.required = [];
-  const props = schema.properties = {};
-  for (let key in json) {
-    const item = json[key];
-    let curSchema = props[key] = {};
-    if (key[0] === '*') {
-      delete props[key];
-      key = key.substr(1);
-      schema.required.push(key);
-      curSchema = props[key] = {};
-    }
-    parse(item, curSchema, str + '.' + key);
-  }
-}
-
-function parse(json, schema, str, schemaChange = {}) {
-  if (schemaChange[str] && schemaChange[str].title) {
-    schema.title = schemaChange[str].title;
-  } else {
-    schema.title = '';
-  }
-  schema.path = str;
-  if (Array.isArray(json)) {
-    handleArray(json, schema, str + '[0]');
-  } else if (isPlainObject(json)) {
-    handleObject(json, schema, str);
-  } else {
-    schema.type = getType(json);
-    schema.example = json;
-    schema.path = str;
-    if (schemaChange[str] && schemaChange[str].enum) {
-      schema.enum = schemaChange[str].enum;
-    } else {
-      schema.enum = [];
-    }
-    if (schemaChange[str] && schemaChange[str].example) {
-      schema.example = schemaChange[str].example;
-    } else {
-      schema.example = json;
-    }
-  }
-}
-
-function ejs(data, schemaChange) {
-  const JsonSchema = {};
-  parse(data, JsonSchema, 'data', schemaChange);
-  return JsonSchema;
-}
-
-
-// function json2schema(json) {
-//   let schema;
-
-//   if (isPlainObject(json)) {
-
-//   } else if (Array.isArray(json)) {
-
-//   }
-// }
-
-export default ejs;
+export default json2schema;

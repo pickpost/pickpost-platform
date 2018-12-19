@@ -6,10 +6,10 @@ import Mock from 'mockjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import hljs from 'highlight.js/lib/highlight';
 
-import Info from '../../components/Info';
-import Editor from '../../components/Editor';
+import Info from '../../components/info';
+import Editor from '../../components/editor';
 
-import './index.less';
+import './style.less';
 import 'highlight.js/styles/googlecode.css';
 
 // highlight.js 高亮插件注册语言包
@@ -70,15 +70,21 @@ class Api extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const { responses, responseIndex } = this.props.apiPageModel.currentAPI;
+    const { dispatch, params: { collectionId, apiId } } = this.props;
     dispatch({
-      type: 'apiMockModel/setData',
-      data: {
-        responses,
-        responseIndex,
-      },
+      type: 'apiMockModel/detail',
+      collectionId,
+      apiId,
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'apiMockModel/detail',
+        apiId: nextProps.params.apiId,
+      });
+    }
   }
 
   getPreviewUrl(api) {
@@ -101,7 +107,7 @@ class Api extends React.PureComponent {
     const { params: { apiId } } = this.props;
 
     this.props.dispatch({
-      type: 'apiMockModel/saveMock',
+      type: 'collectionApisModel/saveAPI',
       api: {
         _id: apiId,
         responses,
@@ -146,16 +152,15 @@ class Api extends React.PureComponent {
 
   render() {
     const { showMockTips } = this.state;
-    const { apiPageModel, apiMockModel } = this.props;
-    const { currentAPI: { name, url, apiType } } = apiPageModel;
-    const { responses, responseIndex } = apiMockModel;
+    const { apiMockModel } = this.props;
+    const { responses, responseIndex, name, url, apiType, desc } = apiMockModel;
     const mockTips = (
       <div className="mock-tips">
         支持高级功能: 响应式Mock, MockJS生成数据 <span className="pull-right">查看示例</span>
       </div>
     );
 
-    const previewUrl = this.getPreviewUrl(apiPageModel.currentAPI);
+    const previewUrl = this.getPreviewUrl(apiMockModel);
 
     const copyBtn = (
       <CopyToClipboard text={previewUrl} onCopy={() => message.success('复制成功')}>
@@ -166,7 +171,7 @@ class Api extends React.PureComponent {
     return (
       <div>
         <div className="c-header">
-          <Info title={name} url={url} apiType={apiType}>
+          <Info title={name} url={url} desc={desc} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>
@@ -212,9 +217,8 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiMockModel, apiPageModel }) => {
+export default connect(({ apiMockModel }) => {
   return {
-    apiPageModel,
     apiMockModel,
   };
 })(Api);

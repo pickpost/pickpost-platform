@@ -58,24 +58,21 @@ export default {
     result: null,
   },
   effects: {
-    *updateAPI({ api }, { call }) {
-      try {
-        const { status } = yield call(ajax, {
-          url: `/api/apis/${api._id}`,
-          method: 'PUT',
-          type: 'json',
-          data: {
-            api: JSON.stringify({
-              ...api,
-            }),
-          },
-        });
+    *detail({ apiId, collectionId }, { call, put }) {
+      yield put({
+        type: 'reset',
+      });
+      const { status, data } = yield call(ajax, {
+        url: `/api/apis/${apiId}`,
+        method: 'get',
+        type: 'json',
+      });
 
-        if (status === 'success') {
-          message.success('保存成功');
-        }
-      } catch (errMsg) {
-        message.error(errMsg || '更新失败');
+      if (status === 'success') {
+        yield put({
+          type: 'syncData',
+          data,
+        });
       }
     },
 
@@ -328,6 +325,7 @@ export default {
     },
 
     syncData(state, { data }) {
+      const method = data.apiType === 'HTTP' && data.methods && data.methods[0] ? data.methods[0] : 'GET';
       return {
         projectName: data.projectName,
         projectId: data.projectId,
@@ -335,9 +333,10 @@ export default {
         apiName: data.name,
         url: data.url,
         desc: data.desc,
-        apiType: data.apiType, // HTTP RPC MGW
-        method: data.apiType === 'SPI' ? 'SPI' : data.methods ? data.methods[0] : 'GET',
-        methods: data.methods || [ 'GET' ],
+        apiType: data.apiType,
+        method,
+        methods: data.methods || [ 'GET', 'POST' ],
+        subType: data.apiType === 'HTTP' && method === 'GET' ? '1' : '2',
         requestIndex: data.requestIndex,
         requests: data.requests,
         paramIndex: data.paramIndex,
@@ -346,7 +345,7 @@ export default {
         headers: data.headers,
         updateAt: data.updateAt,
         // 还需要更新 collection 相关的字段：accounts, envs
-        accounts: data.accounts || [],
+        accounts: (data.accounts || []).filter(item => item),
         envs: data.envs || [],
         gateways: data.gateways || [],
         serverUrl: get(data, 'envs[0].value'),

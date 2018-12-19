@@ -2,74 +2,56 @@ import React from 'react';
 import { connect } from 'dva';
 import { Form, Button, Input } from 'antd';
 
-import Info from '../../components/Info';
-import SchemaEditor from '../../components/SchemaEditor';
+import Info from '../../components/info';
+import SchemaEditor from '../../components/schema-editor';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
 
-import './index.less';
-
 class Api extends React.PureComponent {
+  componentDidMount() {
+    const { dispatch, params: { collectionId, apiId } } = this.props;
+    dispatch({
+      type: 'apiDocModel/detail',
+      collectionId,
+      apiId,
+      form: this.props.form,
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.apiId !== nextProps.params.apiId && nextProps.params.apiId) {
+      this.props.dispatch({
+        type: 'apiDocModel/detail',
+        apiId: nextProps.params.apiId,
+        form: nextProps.form,
+      });
+    }
+  }
+
   handleSave = () => {
     this.props.form.validateFields((err, values) => {
-      // 新建API
       this.props.dispatch({
-        type: 'apiDocModel/saveAPI',
+        type: 'collectionApisModel/saveAPI',
         api: values,
       });
     });
   }
 
-  getTypeByMethods(methods) {
-    if (!Array.isArray(methods)) {
-      return 'HTTP';
-    }
-
-    if (methods.indexOf('RPC') >= 0) {
-      return 'RPC';
-    } else if (methods.indexOf('SPI') >= 0) {
-      return 'SPI';
-    }
-    return 'HTTP';
-  }
-
-  getBelongQuery() {
-    const { belong } = this.props.location.query;
-    return belong || '';
-  }
-
-  getBelong() {
-    let { belong } = this.props.location.query;
-    const { currentAPI: { projectId } } = this.props.apiPageModel;
-    belong = belong || `project_${projectId}`;
-    return belong;
-  }
-
-  getUplevel() {
-    return '/' + this.getBelong().replace('_', '/') + '?tab=api';
-  }
-
   render() {
-    const { apiPageModel } = this.props;
-    const { params: { apiId } } = this.props;
-    const { currentAPI } = apiPageModel;
-    if (!currentAPI._id) {
-      return null;
-    }
-
+    const { apiDocModel, params: { apiId } } = this.props;
+    const { _id, name, desc, url, apiType, requestSchema, responseSchema } = apiDocModel;
     const { getFieldDecorator, getFieldError } = this.props.form;
     const formItemLayoutFull = null;
+
+    if (!_id) {
+      return null;
+    }
 
     return (
       <div>
         <div className="c-header">
-          <Info
-            title={currentAPI.name}
-            desc={currentAPI.desc}
-            url={currentAPI.url}
-            apiType={currentAPI.apiType}
-          >
+          <Info title={name} desc={desc} url={url} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>
@@ -86,7 +68,7 @@ class Api extends React.PureComponent {
               help={getFieldError('desc')}
             >
               {getFieldDecorator('requestSchema', {
-                initialValue: currentAPI.requestSchema || {},
+                initialValue: requestSchema || {},
               })(
                 <SchemaEditor />
               )}
@@ -97,7 +79,7 @@ class Api extends React.PureComponent {
               help={getFieldError('desc')}
             >
               {getFieldDecorator('responseSchema', {
-                initialValue: currentAPI.responseSchema || {},
+                initialValue: responseSchema || {},
               })(
                 <SchemaEditor />
               )}
@@ -109,8 +91,8 @@ class Api extends React.PureComponent {
   }
 }
 
-export default connect(({ apiPageModel }) => {
+export default connect(({ apiDocModel }) => {
   return {
-    apiPageModel,
+    apiDocModel,
   };
 })(createForm()(Api));
