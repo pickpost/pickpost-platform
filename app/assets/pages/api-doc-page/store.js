@@ -19,18 +19,15 @@ export default {
           type: 'setData',
           data,
         });
-        // 更新表单值
-        // form.setFieldsValue({
-        //   _id: data._id,
-        //   requestSchema: data.requestSchema,
-        //   responseSchema: data.responseSchema,
-        // });
       }
     },
   },
   reducers: {
     setData(state, { data }) {
       return { ...state, ...data };
+    },
+    reset() {
+      return {};
     },
   },
 };

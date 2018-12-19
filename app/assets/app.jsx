@@ -3,10 +3,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import dva from 'dva';
 import { Router, Route, browserHistory } from 'dva/router';
-// import createLoading from 'dva-loading';
 import './app.less';
 
-// 0. Pages
+// Pages
 import APIEditPage from './pages/api-edit-page';
 import APIDocPage from './pages/api-doc-page';
 import APITestPage from './pages/api-test-page';
@@ -25,7 +24,7 @@ import ProjectEditPage from './pages/project-edit-page';
 import ProjectPage from './pages/project-page';
 import ProjectsPage from './pages/projects-page';
 
-// 0. Models
+// Models
 import APIEditModel from './pages/api-edit-page/store';
 import APIDocModel from './pages/api-doc-page/store';
 import APITestModel from './pages/api-test-page/store';
@@ -39,7 +38,6 @@ import CollectionApisModel from './pages/collection-apis-page/store';
 import CollectionMemebersModel from './pages/collection-members-page/store';
 import CollectionApiListModel from './pages/collection-api-list-page/store';
 import CollectionSettingModel from './pages/collection-setting-page/store';
-
 
 import ProjectEditModel from './pages/project-edit-page/store';
 import ProjectModel from './pages/project-page/store';
