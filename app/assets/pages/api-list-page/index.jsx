@@ -27,14 +27,22 @@ class Collection extends React.PureComponent {
       dataIndex: 'name',
       width: '200px',
       key: 'name',
+      render: (_, item) => (
+        <div title={item.name} className="ellipsis">
+          <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
+          {item.name}
+        </div>
+      ),
     }, {
       title: '唯一标识',
       dataIndex: 'url',
       key: 'url',
       ...this.getColumnSearchProps('url'),
-      render: (_, item) => {
-        return (<div className="ellipsis" title={item.url}><Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>{item.url}</div>);
-      },
+      render: (_, item) => (
+        <div title={item.url} className="ellipsis item-url">
+          {item.url}
+        </div>
+      ),
     }, {
       title: '所属应用',
       dataIndex: 'projectName',

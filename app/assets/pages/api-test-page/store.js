@@ -349,7 +349,7 @@ export default {
         envs: data.envs || [],
         gateways: data.gateways || [],
         serverUrl: get(data, 'envs[0].value'),
-        gateway: get(data, 'gateways[0]'),
+        gateway: get(data, 'gateways[0].value'),
         result: null,
       };
     },
