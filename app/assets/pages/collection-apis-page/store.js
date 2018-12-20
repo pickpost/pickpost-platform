@@ -46,7 +46,7 @@ export default {
         yield put({
           type: 'setData',
           payload: {
-            collectionApis: data.map(item => ({ ...item, isCollapsed: true })),
+            collectionApis: data.map(item => ({ ...item })),
           },
         });
       }
@@ -141,8 +141,8 @@ export default {
     },
     *changeKeywords({ keywords }, { select, put }) {
       // 搜索关键词变化，设置关键词，且设置过滤结果。
-      const { collectionModel } = yield select();
-      const filterApis = collectionModel.apis.filter(item => item.url && item.url.toLowerCase().indexOf(keywords.toLowerCase()) >= 0);
+      const { collectionApisModel: { collectionApis } } = yield select();
+      const filterApis = collectionApis.filter(item => item.name && item.name.toLowerCase().indexOf(keywords.toLowerCase()) >= 0);
       yield put({
         type: 'updateSearch',
         filterApis,
@@ -249,7 +249,7 @@ export default {
             collectionId,
           });
           yield put({
-            type: 'collectionApiListModel/collectionApis',
+            type: 'apiListModel/collectionApis',
             id: collectionId,
             groupId: currentGroupId,
           });

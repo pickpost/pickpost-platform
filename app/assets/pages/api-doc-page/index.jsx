@@ -45,7 +45,7 @@ class Api extends React.PureComponent {
     const formItemLayoutFull = null;
 
     if (!_id) {
-      return null;
+      return <div></div>;
     }
 
     return (

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Table, Button, Popover, Tag, Form } from 'antd';
+import { Table, Button, Popover, Tag, Input, Icon } from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
 import { browserHistory, Link } from 'dva/router';
+import Highlighter from 'react-highlight-words';
 import Info from '../../components/info';
 import { TypeColorMap } from '../../../common/constants';
 import Dragrow from './components/dragrow';
@@ -17,29 +18,33 @@ class Collection extends React.PureComponent {
       showMoreSettings: false,
       showModal: false,
       memberList: [],
+      searchText: '',
     };
 
     const { collectionId } = props.params;
     this.apisColumns = [{
       title: '名称',
       dataIndex: 'name',
+      width: '200px',
       key: 'name',
     }, {
       title: '唯一标识',
       dataIndex: 'url',
-      width: '240px',
       key: 'url',
+      ...this.getColumnSearchProps('url'),
       render: (_, item) => {
         return (<div className="ellipsis" title={item.url}><Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>{item.url}</div>);
       },
     }, {
       title: '所属应用',
       dataIndex: 'projectName',
+      width: '130px',
       key: 'projectName',
     }, {
       title: '最近更新',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
+      width: '160px',
       render: updatedAt => {
         return moment(updatedAt).format('YYYY-MM-DD HH:mm');
       },
@@ -77,12 +82,12 @@ class Collection extends React.PureComponent {
 
     // 获取需求信息
     this.props.dispatch({
-      type: 'collectionApiListModel/collection',
+      type: 'apiListModel/collection',
       id: collectionId,
     });
     // 获取需求内接口列表
     this.props.dispatch({
-      type: 'collectionApiListModel/collectionApis',
+      type: 'apiListModel/collectionApis',
       id: collectionId,
       groupId: this.props.location.query.groupId || '',
     });
@@ -91,17 +96,75 @@ class Collection extends React.PureComponent {
   componentWillReceiveProps(nextProps) {
     if (this.props.location.query.groupId !== nextProps.location.query.groupId) {
       this.props.dispatch({
-        type: 'collectionApiListModel/collectionApis',
+        type: 'apiListModel/collectionApis',
         id: nextProps.params.collectionId,
         groupId: nextProps.location.query.groupId,
       });
     }
   }
 
+  getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys, selectedKeys, confirm, clearFilters,
+    }) => (
+      <div className="custom-filter-dropdown">
+        <Input
+          ref={node => { this.searchInput = node; }}
+          placeholder="搜索接口"
+          value={selectedKeys[0]}
+          onChange={e => setSelectedKeys(e.target.value ? [ e.target.value ] : [])}
+          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          style={{ width: 188, marginBottom: 8, display: 'block' }}
+        />
+        <Button
+          type="primary"
+          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          icon="search"
+          size="small"
+          style={{ width: 90, marginRight: 8 }}
+        >
+          Search
+        </Button>
+        <Button
+          onClick={() => this.handleReset(clearFilters)}
+          size="small"
+          style={{ width: 90 }}
+        >
+          Reset
+        </Button>
+      </div>
+    ),
+    filterIcon: filtered => <Icon type="search" style={{ color: filtered ? '#1890ff' : undefined }} />,
+    onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownVisibleChange: (visible) => {
+      if (visible) {
+        setTimeout(() => this.searchInput.select());
+      }
+    },
+    render: (text) => (
+      <Highlighter
+        highlightStyle={{ backgroundColor: '#ffc069', padding: 0 }}
+        searchWords={[ this.state.searchText ]}
+        autoEscape
+        textToHighlight={text.toString()}
+      />
+    ),
+  })
+
+  handleSearch = (selectedKeys, confirm) => {
+    confirm();
+    this.setState({ searchText: selectedKeys[0] });
+  }
+
+  handleReset = (clearFilters) => {
+    clearFilters();
+    this.setState({ searchText: '' });
+  }
+
   handleDeleteAPI = data => {
     const { collectionId } = this.props.params;
     this.props.dispatch({
-      type: 'collectionApiListModel/deleteAPI',
+      type: 'apiListModel/deleteAPI',
       apiId: data._id,
       projectId: data.projectId,
       collectionId,
@@ -111,7 +174,7 @@ class Collection extends React.PureComponent {
   handleRemoveAPI = data => {
     const { collectionId } = this.props.params;
     this.props.dispatch({
-      type: 'collectionApiListModel/unlinkAPI',
+      type: 'apiListModel/unlinkAPI',
       apiId: data._id,
       projectId: data.projectId,
       collectionId,
@@ -125,7 +188,7 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params: { collectionId }, collectionApiListModel: { apis, collection } } = this.props;
+    const { params: { collectionId }, apiListModel: { apis, collection } } = this.props;
 
     return (
       <div className="api-list-page">
@@ -133,7 +196,7 @@ class Collection extends React.PureComponent {
           <Info title={collection.name} desc={collection.desc}>
             <Link to={`/collection/${collectionId}/newapi`}>
               <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
-                新建接口
+                新增接口
               </Button>
             </Link>
           </Info>
@@ -161,8 +224,8 @@ class Collection extends React.PureComponent {
   }
 }
 
-export default connect(({ collectionApiListModel }) => {
+export default connect(({ apiListModel }) => {
   return {
-    collectionApiListModel,
+    apiListModel,
   };
 })(Collection);
