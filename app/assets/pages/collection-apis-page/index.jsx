@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Input, Menu, Dropdown, Button, Icon } from 'antd';
 import { browserHistory, Link } from 'dva/router';
 import Folder from '../../components/folder';
-import File from '../../components/file';
+// import File from '../../components/file';
 import FolderCreate from './components/folder-create';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -148,10 +148,10 @@ class Api extends React.PureComponent {
     const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
 
-    const showApis = keywords ? filterApis : collectionModel.apis;
+    const showApis = keywords ? filterApis : collectionApis;
     const folder = {
       name: '默认接口',
-      apis: showApis,
+      apis: collectionModel.apis,
     };
 
     const menu = (
@@ -165,7 +165,7 @@ class Api extends React.PureComponent {
       <div className="collection-apis-page">
         <div className="folder-tree">
           <div className="search-row">
-            <Input placeholder="Search" onChange={this.handleFilterDebounced} />
+            <Input placeholder="搜索分组" onChange={this.handleFilterDebounced} />
             <Dropdown overlay={menu} placement="bottomRight">
               <Button className="dropdown-btn" type="dashed">
                 <Icon className="add-entrance" type="plus-circle" theme="twoTone" />
@@ -178,7 +178,7 @@ class Api extends React.PureComponent {
             全部接口
           </Link>
           {
-            collectionApis.map(folder => (
+            showApis.map(folder => (
               <Folder
                 key={folder._id}
                 folder={folder}
@@ -190,13 +190,7 @@ class Api extends React.PureComponent {
                 handleAddFile={this.handleAddFile}
                 handleSetFolder={this.handleSetFolder}
                 handleApiChangeGroup={this.handleApiChangeGroup}
-              >
-                {
-                  (folder.children || []).map(api => (
-                    <File key={api._id} file={api} linkUrl={`/collection/${collectionId}/apis/doc/${api.apiId}`} />
-                  ))
-                }
-              </Folder>
+              />
             ))
           }
         </div>

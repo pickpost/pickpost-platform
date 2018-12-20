@@ -190,14 +190,14 @@ class Api extends React.PureComponent {
   render() {
     const { apiTestModel } = this.props;
     const { modalEnvs } = this.state;
-    const { name, url, desc, apiType, gateways, result, isAuthing, displayUrl, method, gateway, gatewayModal, envModal, progress } = apiTestModel;
+    const { apiName, url, desc, apiType, gateways, result, isAuthing, displayUrl, method, gateway, gatewayModal, envModal, progress } = apiTestModel;
     const fullGateways = (gateways || []);
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
       <div>
         <div className="c-header">
-          <Info title={name} url={url} desc={desc} apiType={apiType}>
+          <Info title={apiName} url={url} desc={desc} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
           </Info>
         </div>

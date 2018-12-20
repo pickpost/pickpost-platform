@@ -4,6 +4,7 @@
   "rules": {
     "generator-star-spacing": "off",
     "babel/generator-star-spacing": "off",
-    "no-eval": "off"
+    "no-eval": "off",
+    "arrow-parens": "off"
   }
 }

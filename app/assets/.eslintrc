@@ -15,6 +15,7 @@
     "generator-star-spacing": "off",
     "babel/generator-star-spacing": "off",
     "no-eval": "off",
-    "no-empty-pattern": "off"
+    "no-empty-pattern": "off",
+    "arrow-parens": "off"
   }
 }

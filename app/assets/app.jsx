@@ -11,13 +11,13 @@ import APIDocPage from './pages/api-doc-page';
 import APITestPage from './pages/api-test-page';
 import APIMockPage from './pages/api-mock-page';
 import APISettingPage from './pages/api-setting-page';
+import APIListPage from './pages/api-list-page';
 
 import CollectionEditPage from './pages/collection-edit-page';
 import CollectionsPage from './pages/collections-page';
 import CollectionPage from './pages/collection-page';
 import CollectionApisPage from './pages/collection-apis-page';
 import CollectionMemebersPage from './pages/collection-members-page';
-import CollectionApiListPage from './pages/collection-api-list-page';
 import CollectionSettingPage from './pages/collection-setting-page';
 
 import ProjectEditPage from './pages/project-edit-page';
@@ -30,13 +30,13 @@ import APIDocModel from './pages/api-doc-page/store';
 import APITestModel from './pages/api-test-page/store';
 import APIMockModel from './pages/api-mock-page/store';
 import APISettingModel from './pages/api-setting-page/store';
+import APIListModel from './pages/api-list-page/store';
 
 import CollectionEditModel from './pages/collection-edit-page/store';
 import CollectionModel from './pages/collection-page/store';
 import CollectionsModel from './pages/collections-page/store';
-import CollectionApisModel from './pages/collection-apis-page/store';
 import CollectionMemebersModel from './pages/collection-members-page/store';
-import CollectionApiListModel from './pages/collection-api-list-page/store';
+import CollectionApisModel from './pages/collection-apis-page/store';
 import CollectionSettingModel from './pages/collection-setting-page/store';
 
 import ProjectEditModel from './pages/project-edit-page/store';
@@ -57,14 +57,14 @@ app.model(APIDocModel);
 app.model(APITestModel);
 app.model(APIMockModel);
 app.model(APISettingModel);
+app.model(APIListModel);
 
 app.model(CollectionEditModel);
 app.model(CollectionModel);
 app.model(CollectionsModel);
 
-app.model(CollectionApisModel);
 app.model(CollectionMemebersModel);
-app.model(CollectionApiListModel);
+app.model(CollectionApisModel);
 app.model(CollectionSettingModel);
 
 app.model(ProjectEditModel);
@@ -87,7 +87,7 @@ export default class Container extends React.Component {
           <Route path="/project/:projectId" component={ProjectPage} context={context} />
           <Route path="/collection/:collectionId" component={CollectionPage} context={context}>
             <Route path="apis" component={CollectionApisPage} context={context}>
-              <Route path="list" component={CollectionApiListPage} context={context} />
+              <Route path="list" component={APIListPage} context={context} />
               <Route path="doc/:apiId" component={APIDocPage} context={context} />
               <Route path="test/:apiId" component={APITestPage} context={context} />
               <Route path="mock/:apiId" component={APIMockPage} context={context} />

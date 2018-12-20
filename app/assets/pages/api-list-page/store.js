@@ -2,7 +2,7 @@ import ajax from 'xhr-plus';
 import { message } from 'antd';
 
 export default {
-  namespace: 'collectionApiListModel',
+  namespace: 'apiListModel',
   state: {
     apis: [],
     collection: {},
