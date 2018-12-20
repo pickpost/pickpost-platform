@@ -303,7 +303,7 @@ class SchemaEditor extends React.Component {
                   <span className="format-action" onClick={this.formatJSON}> 格式化 </span>
                 </th>
                 <th width="8%" style={{ textAlign: 'center' }}>Key</th>
-                <th width="25%" style={{ textAlign: 'center' }}>值规则</th>
+                <th width="22%" style={{ textAlign: 'center' }}>值规则</th>
                 <th width="20%" style={{ textAlign: 'center' }}>备注</th>
               </tr>
             </thead>

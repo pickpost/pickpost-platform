@@ -87,3 +87,5 @@ $ open http://localhost:7001
 
 Todo: schema editor 如果改变了字段名，之前的备注信息丢失。
 优化方法：path 匹配 || 行号匹配。
+
+需求和系统两个概念如何区分，是否有必要维护两种？

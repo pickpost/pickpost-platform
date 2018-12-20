@@ -145,7 +145,7 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { collectionApisModel, collectionModel, params: { collectionId, apiId } } = this.props;
+    const { collectionApisModel, collectionModel, params: { collectionId, apiId }, location: { query: { groupId }} } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
 
     const showApis = keywords ? filterApis : collectionApis;
@@ -173,7 +173,7 @@ class Api extends React.PureComponent {
               </Button>
             </Dropdown>
           </div>
-          <Link className="all-apis" to={`/collection/${collectionId}/apis/list`}>
+          <Link className={ !groupId ? 'all-apis active' : 'all-apis'} to={`/collection/${collectionId}/apis/list`}>
             <Icon type="bars" />
             全部接口
           </Link>
@@ -182,7 +182,7 @@ class Api extends React.PureComponent {
               <Folder
                 key={folder._id}
                 folder={folder}
-                isActive={this.groupId === folder._id}
+                isActive={(folder._id && groupId && (this.groupId === folder._id || groupId === folder._id)) || (groupId === 'none' && !folder._id)}
                 isCollapsed={folder.isCollapsed}
                 handleToggleFolder={this.handleToggleCollection}
                 handleEditFolder={this.handleEditCollection}

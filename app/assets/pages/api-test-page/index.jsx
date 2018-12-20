@@ -195,7 +195,7 @@ class Api extends React.PureComponent {
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
-      <div>
+      <div className="api-main-test">
         <div className="c-header">
           <Info title={apiName} url={url} desc={desc} apiType={apiType}>
             <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
@@ -204,7 +204,7 @@ class Api extends React.PureComponent {
         <div className="api-content">
           <div className="test-panel-content">
             {
-              apiType === 'SPI' || apiType === 'RPC' ? (
+              apiType !== 'HTTP' ? (
                 <div className="actions">
                   <div className="path-input-wrapper">
                     <div className="path-input">
@@ -215,7 +215,7 @@ class Api extends React.PureComponent {
                         <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={gateway} onChange={this.handleSpigwChange}>
                           <Select.Option value="">请选择服务器</Select.Option>
                           {
-                            fullGateways.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                            fullGateways.map((m, idx) => <Select.Option key={idx} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
                           }
                         </Select>
                         <div className="ant-select ant-select-enabled settings" onClick={this.toggleGatewayModal}>
@@ -255,7 +255,7 @@ class Api extends React.PureComponent {
                   <div className="path-input-wrapper">
                     <div className="path-input">
                       <InputGroup compact>
-                        <Select size="default" defaultValue="POST" style={{ width: 80 }} value={apiTestModel.method} onChange={this.handleMethodChange}>
+                        <Select size="default" defaultValue="POST" style={{ width: 100 }} value={apiTestModel.method} onChange={this.handleMethodChange}>
                           {
                             apiTestModel.methods.map(m => <Select.Option key={m} value={m}>{m}</Select.Option>)
                           }
@@ -263,7 +263,7 @@ class Api extends React.PureComponent {
                         <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
                           <Select.Option value="">请选择服务器</Select.Option>
                           {
-                            envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                            envs.map((m, idx) => <Select.Option key={idx} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
                           }
                         </Select>
                         <div className="ant-select ant-select-enabled settings" onClick={this.toggleEnvModal}>

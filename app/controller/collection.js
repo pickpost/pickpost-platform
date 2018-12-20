@@ -18,7 +18,7 @@ exports.collectionsIndex = async function (ctx) {
 
   // 每个接口集下接口个数
   collections = collections.map(item => {
-    const apisCount = collectionAPIList.filter(c => c.collectionId + '' === item._id + '').length;
+    const apisCount = collectionAPIList.filter(c => c.collectionId + '' === item._id + '' && c.type !== 'folder').length;
     return {
       ...item,
       apisCount,

@@ -369,6 +369,10 @@ class Collection extends React.PureComponent {
     });
   }
 
+  isMatchUrl = () => {
+    return /\/collection\/.+\/apis/.test(location.href);
+  }
+
   render() {
     const { params } = this.props;
     const { collectionId } = params;
@@ -376,7 +380,7 @@ class Collection extends React.PureComponent {
     return (
       <Layout uplevel={'/collections'}>
         <aside>
-          <Link to={`/collection/${collectionId}/apis/list`} activeClassName="active">
+          <Link to={`/collection/${collectionId}/apis/list`} className={this.isMatchUrl() ? 'active' : ''}>
             <Icon type="bars" />
             <div>接口</div>
           </Link>
