@@ -6,8 +6,6 @@ export default {
   namespace: 'apiSettingModel',
   state: {
     projectList: [],
-    collectionId: '',
-    projectId: '',
     editingAPI: {},
   },
   effects: {
@@ -29,7 +27,7 @@ export default {
         console.log(e);
       }
     },
-    *detail({ apiId, collectionId }, { call, put }) {
+    *detail({ apiId }, { call, put }) {
       const { status, data } = yield call(ajax, {
         url: `/api/apis/${apiId}`,
         method: 'get',

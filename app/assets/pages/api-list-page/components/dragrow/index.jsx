@@ -3,6 +3,7 @@ import { DragSource } from 'react-dnd';
 
 class BodyRow extends React.Component {
   render() {
+    /* eslint-disable */
     const {
       connectDragSource,
       dragRow,
@@ -11,8 +12,8 @@ class BodyRow extends React.Component {
       initialClientOffset,
       ...restProps
     } = this.props;
+    /* eslint-enable */
     const style = { ...restProps.style, cursor: 'move' };
-
 
     return connectDragSource(
       <tr

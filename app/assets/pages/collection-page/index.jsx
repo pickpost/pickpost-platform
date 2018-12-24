@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Button, Popover, Tag, Form, Dropdown, Menu, message, Popconfirm } from 'antd';
+import { Icon, Button, Popover, Tag, Dropdown, Menu, message, Popconfirm } from 'antd';
 import { connect } from 'dva';
 import ajax from 'xhr-plus';
 import moment from 'moment';
@@ -112,7 +112,7 @@ class Collection extends React.PureComponent {
       align: 'center',
       render: (v, api) => {
         if (this.props.collectionModel.collection.owners.map(v => v.key).includes(mySelf.workid)) {
-          return (<Dropdown overlay={this.generateMenu(api)} trigger={['click']}>
+          return (<Dropdown overlay={this.generateMenu(api)} trigger={[ 'click' ]}>
             <a href="#">
               {v} <Icon type="down" />
             </a>

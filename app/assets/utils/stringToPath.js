@@ -1,3 +1,4 @@
+/* eslint-disable */
 
 const charCodeOfDot = '.'.charCodeAt(0);
 const reEscapeChar = /\\(\\)?/g;

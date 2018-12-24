@@ -22,12 +22,13 @@ class Index extends React.PureComponent {
       type: 'apiSettingModel/fetchProjectList',
     });
 
-    const { params: { collectionId, apiId } } = this.props;
+    const { params: { collectionId, projectId, apiId } } = this.props;
     if (apiId) {
       this.props.dispatch({
         type: 'apiSettingModel/detail',
         apiId,
         collectionId,
+        projectId,
       });
     } else {
       this.props.dispatch({

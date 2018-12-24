@@ -3,34 +3,14 @@ import { message } from 'antd';
 
 export default {
   namespace: 'apiListModel',
+  project: {},
+  collection: {},
   state: {
     apis: [],
-    collection: {},
   },
   effects: {
-    // 更新需求信息
-    *saveCollection({ id, collection }, { call }) {
-      try {
-        const { status } = yield call(ajax, {
-          url: `/api/collections/${id}`,
-          method: 'put',
-          type: 'json',
-          data: {
-            collection: JSON.stringify(collection),
-          },
-        });
-        if (status === 'success') {
-          message.success('需求信息更新成功');
-        } else {
-          message.error('系统异常');
-        }
-      } catch (e) {
-        message.error('系统异常');
-      }
-    },
-
     // 获取需求信息
-    *collection({ id }, { call, put }) {
+    *collectionDetail({ id }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: `/api/collections/${id}`,
@@ -52,21 +32,22 @@ export default {
       }
     },
 
-    // 废弃需求
-    *deleteCollection({ id }, { call }) {
+    *projectDetail({ id }, { call, put }) {
       try {
-        const { status } = yield call(ajax, {
-          url: `/api/collections/${id}`,
-          method: 'delete',
+        const { status, data } = yield call(ajax, {
+          url: `/api/projects/${id}`,
+          method: 'get',
           type: 'json',
           data: {},
         });
 
         if (status === 'success') {
-          message.success('删除成功');
-          setTimeout(() => {
-            location.replace(`http://${location.host}/collections`);
-          }, 2000);
+          yield put({
+            type: 'setData',
+            data: {
+              project: data,
+            },
+          });
         }
       } catch (e) {
         message.error('系统异常');
@@ -83,6 +64,29 @@ export default {
           data: {
             collectionId: id,
             groupId,
+          },
+        });
+        if (status === 'success') {
+          yield put({
+            type: 'setData',
+            data: {
+              apis: data.apis,
+            },
+          });
+        }
+      } catch (e) {
+        message.error('系统异常');
+      }
+    },
+
+    *projectApis({ projectId }, { call, put }) {
+      try {
+        const { status, data } = yield call(ajax, {
+          url: '/api/apis',
+          method: 'get',
+          type: 'json',
+          data: {
+            projectId,
           },
         });
         if (status === 'success') {

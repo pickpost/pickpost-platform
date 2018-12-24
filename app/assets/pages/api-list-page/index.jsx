@@ -14,10 +14,6 @@ class Collection extends React.PureComponent {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      activeKey: 'collection',
-      showMoreSettings: false,
-      showModal: false,
-      memberList: [],
       searchText: '',
     };
 
@@ -86,23 +82,34 @@ class Collection extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { collectionId } = this.props.params;
+    const { collectionId, projectId } = this.props.params;
 
-    // 获取需求信息
-    this.props.dispatch({
-      type: 'apiListModel/collection',
-      id: collectionId,
-    });
-    // 获取需求内接口列表
-    this.props.dispatch({
-      type: 'apiListModel/collectionApis',
-      id: collectionId,
-      groupId: this.props.location.query.groupId || '',
-    });
+    // 获取接口列表
+    if (collectionId) {
+      this.props.dispatch({
+        type: 'apiListModel/collectionDetail',
+        id: collectionId,
+      });
+      this.props.dispatch({
+        type: 'apiListModel/collectionApis',
+        id: collectionId,
+        groupId: this.props.location.query.groupId || '',
+      });
+    } else if (projectId) {
+      this.props.dispatch({
+        type: 'apiListModel/projectDetail',
+        id: projectId,
+      });
+      this.props.dispatch({
+        type: 'apiListModel/projectApis',
+        id: projectId,
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location.query.groupId !== nextProps.location.query.groupId) {
+    // 更新分组下数据
+    if (this.props.location.query.groupId !== nextProps.location.query.groupId && nextProps.params.collectionId) {
       this.props.dispatch({
         type: 'apiListModel/collectionApis',
         id: nextProps.params.collectionId,
@@ -196,18 +203,33 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params: { collectionId }, apiListModel: { apis, collection } } = this.props;
+    const { params: { collectionId, projectId }, apiListModel: { apis, collection, project } } = this.props;
 
     return (
       <div className="api-list-page">
         <div className="c-header">
-          <Info title={collection.name} desc={collection.desc}>
-            <Link to={`/collection/${collectionId}/newapi`}>
-              <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
-                新增接口
-              </Button>
-            </Link>
-          </Info>
+          {
+            collectionId && collection && (
+              <Info title={collection.name} desc={collection.desc}>
+                <Link to={`/api_fe/create?collectionId=${collectionId}`}>
+                  <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
+                    新增接口
+                  </Button>
+                </Link>
+              </Info>
+            )
+          }
+          {
+            projectId && project && (
+              <Info title={project.name} desc={project.desc}>
+                <Link to={`/api_fe/create?projectId=${projectId}`}>
+                  <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
+                    新增接口
+                  </Button>
+                </Link>
+              </Info>
+            )
+          }
         </div>
         <div className="apis-table-wrapper">
           <Table
@@ -220,7 +242,7 @@ class Collection extends React.PureComponent {
               return {
                 onClick: () => {
                   browserHistory.push({
-                    pathname: `/collection/${collectionId}/apis/doc/${api._id}`,
+                    pathname: collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`,
                   });
                 },
               };

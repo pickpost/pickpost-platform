@@ -23,12 +23,11 @@ class Index extends React.PureComponent {
       type: 'apiEditModel/fetchProjectList',
     });
 
-    const { params: { collectionId, apiId } } = this.props;
+    const { params: { apiId } } = this.props;
     if (apiId) {
       this.props.dispatch({
         type: 'apiEditModel/detail',
         apiId,
-        collectionId,
       });
     } else {
       this.props.dispatch({
@@ -72,7 +71,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { apiEditModel, params: { collectionId, projectId, apiId }, location: { query: { groupId } } } = this.props;
+    const { apiEditModel, params: { apiId }, location: { query: { collectionId, projectId, groupId } } } = this.props;
     const { editingAPI, projectList } = apiEditModel;
 
     const formItemLayout = {

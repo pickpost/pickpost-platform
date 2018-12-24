@@ -44,10 +44,9 @@ class Api extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, params: { collectionId, apiId } } = this.props;
+    const { dispatch, params: { apiId } } = this.props;
     dispatch({
       type: 'apiTestModel/detail',
-      collectionId,
       apiId,
     });
   }

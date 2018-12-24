@@ -1,0 +1,132 @@
+a {
+  text-decoration: none !important;
+
+  &:visited,
+  &:active {
+    text-decoration: none !important;
+  }
+}
+
+.collection-apis-page {
+  display: flex;
+  min-height: 600px;
+}
+
+@media screen and (max-width:1300px) {
+  .folder-tree{
+    width: 240px!important;
+  }
+}
+
+.folder-tree {
+  width: 290px;
+  margin-right: 1px;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  .search-row {
+    display: flex;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f2f4f5;
+
+    .dropdown-btn {
+      margin-left: 8px;
+      padding: 0 8px;
+    }
+
+    .add-entrance {
+      vertical-align: middle;
+      font-size: 16px !important;
+    }
+
+    .dropdown-icon {
+      margin-left: 5px;
+      color: #40a9ff;
+    }
+  }
+
+  .all-apis {
+    display: block;
+    height: 50px;
+    line-height: 50px;
+    padding: 0 10px;
+
+    &.active {
+      background: #40a9ff;
+      color: #fff;
+    }
+
+    &:hover {
+      background: rgba(74, 144, 226, 0.2);
+    }
+
+    .anticon {
+      margin-right: 10px;
+    }
+  }
+}
+
+
+.api-main {
+  flex: auto;
+  background: #fff;
+  width: 1px;
+
+  .tabs-header {
+    border-bottom: 1px solid #f2f4f5;
+    padding: 10px 0;
+    height: 50px;
+
+    a {
+      text-align: center;
+      width: 100px;
+      height: 30px;
+      line-height: 30px;
+      display: block;
+      float: left;
+      border: 1px solid #f2f4f5;
+      margin-left: 10px;
+      color: #314659;
+      text-decoration: none;
+
+      &.active {
+        background: #40a9ff;
+        border: 1px solid #40a9ff;
+        color: #fff;
+      }
+
+      .anticon {
+        display: inline-block;
+        margin-right: 5px;
+      }
+    }
+
+    .split-line {
+      display: block;
+      float: left;
+      border-left: 1px solid #f2f4f5;
+      width: 1px;
+      margin-left: 10px;
+      height: 30px;
+    }
+  }
+
+  .c-header {
+    padding: 24px;
+    border-bottom: 1px solid #f2f4f5;
+  }
+
+  .api-content {
+    padding: 24px;
+  }
+
+  .ant-pagination {
+    margin-right: 16px;
+  }
+
+  .ant-form-item-label label {
+    font-size: 15px;
+  }
+}
