@@ -60,7 +60,6 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
-    "@commitlint/config-angular": "^7.1.2",
     "@commitlint/config-conventional": "^7.1.2",
     "autod": "^3.0.1",
     "autod-egg": "^1.1.0",
@@ -79,12 +78,12 @@
     "eslint-config-egg": "4",
     "eslint-plugin-react": "~4.0.0",
     "husky": "^1.2.1",
+    "lint-staged": "^8.1.0",
     "mockjs": "^1.0.1-beta3",
     "parallel-compress": "^1.1.0",
     "redbox-react": "^1.5.0",
     "regenerator-runtime": "^0.11.1",
     "roadhog": "^2.1.0",
-    "roadhog-api-doc": "^1.0.0",
     "sftp-sync-deploy": "^0.7.1",
     "should": "8",
     "supertest": "1",
@@ -102,7 +101,8 @@
     "lint": "eslint --ext .js,.jsx .",
     "lintfix": "eslint --fix --ext .js,.jsx .",
     "ci": "npm run lint && npm run cov",
-    "autod": "autod"
+    "autod": "autod",
+    "precommit": "lint-staged"
   },
   "commitlint": {
     "extends": [
@@ -113,6 +113,11 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "lint-staged": {
+    "app/**/*.{js,jsx}": [
+      "eslint --fix"
+    ]
   },
   "ci": {
     "version": "8"

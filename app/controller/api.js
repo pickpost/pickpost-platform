@@ -346,7 +346,7 @@ exports.spiTest = async function (ctx) {
   });
   if (result && result._id) {
     const { _id, projectId } = result;
-    this.redirect(`/api-detail/${_id}/test?belong=project_${projectId}`);
+    this.redirect(`/project/${projectId}/apis/test/${_id}`);
   } else {
     // 查询项目
     const appName = this.query.appName;
@@ -364,7 +364,7 @@ exports.spiTest = async function (ctx) {
         url: bizType,
         projectId: projectResult._id,
       }));
-      this.redirect(`/api-detail/${apiCreateResult._id}/test?belong=project_${projectResult._id}`);
+      this.redirect(`/project/${projectResult._id}/apis/test/${apiCreateResult._id}`);
     } else {
       this.body = {
         status: 'fail',
