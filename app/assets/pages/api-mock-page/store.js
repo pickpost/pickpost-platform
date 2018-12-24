@@ -15,7 +15,7 @@ export default {
     projectName: '',
   },
   effects: {
-    *detail({ apiId, collectionId }, { call, put }) {
+    *detail({ apiId }, { call, put }) {
       yield put({
         type: 'reset',
       });

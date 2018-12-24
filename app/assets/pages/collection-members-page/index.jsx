@@ -115,7 +115,7 @@ class Collection extends React.PureComponent {
       align: 'center',
       render: (v, api) => {
         if (this.props.collectionModel.collection.owners.map(v => v.key).includes(mySelf.workid)) {
-          return (<Dropdown overlay={this.generateMenu(api)} trigger={['click']}>
+          return (<Dropdown overlay={this.generateMenu(api)} trigger={[ 'click' ]}>
             <a href="#">
               {v} <Icon type="down" />
             </a>

@@ -6,9 +6,9 @@ export default {
   namespace: 'apiEditModel',
   state: {
     projectList: [],
-    collectionId: '',
-    projectId: '',
-    editingAPI: {},
+    editingAPI: {
+      apiType: 'HTTP',
+    },
   },
   effects: {
     *fetchProjectList({}, { call, put }) {
@@ -29,7 +29,7 @@ export default {
         console.log(e);
       }
     },
-    *detail({ apiId, collectionId }, { call, put }) {
+    *detail({ apiId }, { call, put }) {
       const { status, data } = yield call(ajax, {
         url: `/api/apis/${apiId}`,
         method: 'get',

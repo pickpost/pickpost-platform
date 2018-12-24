@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* Jison generated parser */
 const parser = {
   trace: function trace() {},

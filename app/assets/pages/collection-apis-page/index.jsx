@@ -37,7 +37,7 @@ class Api extends React.PureComponent {
   handleMenuClick = e => {
     if (e.key === 'file') {
       const { collectionId } = this.props.collectionApisModel;
-      const url = `/collection/${collectionId}/newapi`;
+      const url = `/api_fe/create?collectionId=${collectionId}`;
 
       browserHistory.push({
         pathname: url,
@@ -125,7 +125,7 @@ class Api extends React.PureComponent {
 
   handleAddFile = folder => {
     const { collectionId } = this.props.collectionApisModel;
-    const url = `/collection/${collectionId}/newapi`;
+    const url = `/api_fe/create?collectionId=${collectionId}`;
 
     browserHistory.push({
       pathname: url,

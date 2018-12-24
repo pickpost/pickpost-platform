@@ -2,7 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import { Icon, Button, Table } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
+import { browserHistory, Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
 
 import './style.less';
@@ -112,7 +112,11 @@ class ProjectsPage extends React.PureComponent {
             dataSource={projectData}
             onRow={record => {
               return {
-                onClick: () => { location.href = `/project/${record.key}?tab=api`; },
+                onClick: () => {
+                  browserHistory.push({
+                    pathname: `/project/${record.key}/apis/list`,
+                  });
+                },
               };
             }}
           />

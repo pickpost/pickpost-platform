@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @autobind
-class CollectionsPage extends React.PureComponent {
+class Page extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -274,4 +274,4 @@ export default connect(({ projectEditModel }) => {
   return {
     projectEditModel,
   };
-})(createForm()(CollectionsPage));
+})(createForm()(Page));
