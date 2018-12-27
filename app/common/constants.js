@@ -38,11 +38,11 @@ apiTypes.forEach(item => {
 const AuthTypes = [
   {
     type: 'auth',
-    name: '商家中心',
+    name: 'AuthCenter（商家中心等）',
   },
   {
     type: 'buc',
-    name: 'buc',
+    name: 'BUC（运营工作台等）',
   },
 ];
 
