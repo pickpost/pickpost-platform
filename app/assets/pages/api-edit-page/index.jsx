@@ -4,7 +4,7 @@ import autobind from 'autobind-decorator';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import Layout from '../../layout/default.jsx';
-import { apiTypes } from '../../../common/constants';
+import { ApiTypes } from '../../../common/constants';
 
 import './style.less';
 
@@ -81,7 +81,7 @@ class Index extends React.PureComponent {
 
     const { getFieldValue, getFieldDecorator, getFieldError } = this.props.form;
     const apiType = getFieldValue('apiType') || editingAPI.apiType;
-    const matchApiType = apiTypes.find(item => item.type === apiType) || {};
+    const matchApiType = ApiTypes.find(item => item.type === apiType) || {};
     const methodOptions = (matchApiType.methods || []).map(item => ({
       label: item,
       value: item,
@@ -150,7 +150,7 @@ class Index extends React.PureComponent {
                   })(
                     <RadioGroup>
                       {
-                        apiTypes.map(item => <RadioButton key={item.type} value={item.type}>{item.name}</RadioButton>)
+                        ApiTypes.map(item => <RadioButton key={item.type} value={item.type}>{item.name}</RadioButton>)
                       }
                     </RadioGroup>
                   )}

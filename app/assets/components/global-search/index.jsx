@@ -33,9 +33,10 @@ export default class GlobalSearch extends React.PureComponent {
 
   generateValue = (group, item) => {
     if (group.type === 'api-detail') {
-      return `/${group.type}/${item.id}/doc`;
+      // Todo: 项目 ID
+      return `/project/${item.projectId}/apis/doc/${item.id}`;
     }
-    return `/${group.type}/${item.id}?tab=api`;
+    return `/${group.type}/${item.id}/apis/list`;
   }
 
   render() {

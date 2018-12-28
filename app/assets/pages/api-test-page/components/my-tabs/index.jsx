@@ -6,9 +6,9 @@ import './style.less';
 @autobind
 class MyTabs extends React.Component {
   render() {
-    const { onTabClick, activeKey, method } = this.props;
+    const { onTabClick, activeKey, apiType, method } = this.props;
 
-    if (method === 'RPC' || method === 'SPI') {
+    if (apiType !== 'HTTP') {
       return (
         <div className="my-tabs">
           <div onClick={() => { onTabClick('2'); }} key="2" className={activeKey === '2' && 'active'}>RequestData</div>

@@ -89,16 +89,7 @@ class Api extends React.PureComponent {
   getPreviewUrl(api) {
     const prefix = `${location.protocol}//${location.host}`;
     const { apiType, projectName, url } = api;
-    switch (apiType) {
-      case 'HTTP':
-        return `${prefix}/mock/${projectName}${url}`;
-      case 'RPC':
-        return `${prefix}/mockrpc/${projectName}/${url}`;
-      case 'SPI':
-        return `${prefix}/mockspi/${projectName}/${url}`;
-      default:
-        return '';
-    }
+    return `${prefix}/mock/${apiType.toLowerCase()}/${projectName}/${url.replace('/', '')}`;
   }
 
   handleSave() {

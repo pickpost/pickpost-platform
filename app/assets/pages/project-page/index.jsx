@@ -7,13 +7,19 @@ import Layout from '../../layout/default.jsx';
 import './style.less';
 
 class Project extends React.Component {
+
+
+  isMatchUrl = () => {
+    return /\/project\/.+\/apis/.test(location.href);
+  }
+
   render() {
     const { params: { projectId } } = this.props;
 
     return (
       <Layout uplevel={'/projects'}>
         <aside>
-          <Link to={`/project/${projectId}/apis/list`} activeClassName="active">
+          <Link to={`/project/${projectId}/apis/list`} className={this.isMatchUrl() ? 'active' : ''}>
             <Icon type="bars" />
             <div>接口</div>
           </Link>

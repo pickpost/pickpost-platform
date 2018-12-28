@@ -75,7 +75,6 @@ export default {
 
     // 获取需求内接口列表
     *collectionApis({ id }, { call, put }) {
-      // console.log('id', id);
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
@@ -116,7 +115,6 @@ export default {
     },
 
     *unlinkAPI({ apiId, projectId, collectionId }, { call, put }) {
-      console.log('collectionId', collectionId);
       try {
         const { status } = yield call(ajax, {
           url: '/api/apisUnlink',
