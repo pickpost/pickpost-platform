@@ -4,14 +4,15 @@ import { message } from 'antd';
 import { mockParse, keyValueParse, getEnvByUrl } from '../../utils/utils';
 import get from 'lodash/get';
 import { getCookie } from './service';
+import { ApiTypes } from '../../../common/constants';
 
-function getCtoken(cookieStr) {
-  const matchCookie = /ctoken=([^;]*)/.exec(cookieStr);
-  if (matchCookie && matchCookie[1]) {
-    return matchCookie[1];
-  }
-  return '';
-}
+// function getCtoken(cookieStr) {
+//   const matchCookie = /ctoken=([^;]*)/.exec(cookieStr);
+//   if (matchCookie && matchCookie[1]) {
+//     return matchCookie[1];
+//   }
+//   return '';
+// }
 
 function refreshUrl(url, params = {}) {
   return url + '?' + Object.keys(params).map(p => `${p}=${params[p]}`).join('&');
@@ -26,7 +27,7 @@ export default {
     projectName: '',
     projectId: '',
 
-    serverUrl: '',
+    env: '',
     gateway: '', // 网关地址
     desc: '',
     apiType: '', // HTTP RPC MGW
@@ -40,9 +41,9 @@ export default {
     headerIndex: 0,
     headers: [{ title: 'headers', content: '' }],
 
-    // 接口集
     accounts: [],
     envs: [],
+    gateways: [],
 
     // 环境编辑弹层
     envModal: false,
@@ -87,148 +88,41 @@ export default {
       yield put({ type: reducer, list, index, url });
     },
 
-    *sendRequest({}, { put, select }) {
+    // 标准的接口转发
+    *sendRequest({}, { put, select, call }) {
       const {
-        apiType,
-      } = yield select(state => state.apiTestModel);
-
-      if (apiType === 'SPI') {
-        yield put({
-          type: 'sendSPIRequest',
-        });
-      } else if (apiType === 'RPC') {
-        yield put({
-          type: 'sendRPCRequest',
-        });
-      } else {
-        yield put({
-          type: 'sendHTTPRequest',
-        });
-      }
-    },
-
-    *sendRPCRequest({}, { put, select, call }) {
-      const {
-        serverUrl, url, method, requests, requestIndex, account, password,
-      } = yield select(state => state.apiTestModel);
-
-      const requestData = JSON.stringify(mockParse(requests[requestIndex] && requests[requestIndex].content));
-
-      const rpcResponse = yield call(ajax, {
-        url: '/proxyRPC',
-        method: 'post',
-        type: 'json',
-        data: {
-          operationType: url,
-          mgw: serverUrl,
-          method: 'RPC',
-          username: account,
-          password,
-          data: requestData,
-        },
-      });
-
-      yield put({
-        type: 'setData',
-        data: {
-          progress: 100,
-          result: {
-            url: `${serverUrl}/${url}`,
-            method,
-            headers: '',
-            request: requestData,
-            response: rpcResponse.data,
-          },
-        },
-      });
-    },
-
-    *sendSPIRequest({}, { put, select, call }) {
-      const {
-        serverUrl, url, method, requests, requestIndex,
-        headers, headerIndex, gateway, authStrategy, account, password,
-      } = yield select(state => state.apiTestModel);
-      yield put({ type: 'setData', data: { progress: 50, result: null, isAuthing: '接口调用中...' } });
-
-      const requestData = JSON.stringify(mockParse(requests[requestIndex] && requests[requestIndex].content));
-      const authEnv = getEnvByUrl(gateway);
-      const headerKeyValues = keyValueParse(headers[headerIndex] ? headers[headerIndex].content : '');
-      const cookieStr = yield call(getCookie, authStrategy, authEnv, account, password);
-      const fullGateway = gateway.indexOf('/spigw.json') >= 0 ? gateway : `${gateway}/spigw.json`;
-      const spiSendUrl = refreshUrl(fullGateway, {
-        ctoken: getCtoken(cookieStr),
-        _input_charset: 'utf-8',
-      });
-
-      const rpcResponse = yield call(ajax, {
-        url: '/proxySPI',
-        method: 'post',
-        type: 'json',
-        data: {
-          targetUrl: spiSendUrl,
-          dataStr: JSON.stringify({
-            bizType: url,
-            bizCase: '',
-            requestData: JSON.stringify([ JSON.parse(requestData) ]),
-            host: serverUrl.replace(/^https?:\/\//, ''),
-          }),
-          cookieStr,
-        },
-      });
-
-      yield put({
-        type: 'setData',
-        data: {
-          isAuthing: '',
-          progress: 100,
-          result: {
-            url: fullGateway,
-            method,
-            headers: JSON.stringify(headerKeyValues),
-            request: {
-              bizType: url,
-              bizCase: '',
-              requestData: JSON.stringify([ JSON.parse(requestData) ]),
-              host: serverUrl.replace(/^https?:\/\//, ''),
-              ctoken: getCtoken(cookieStr),
-              _input_charset: 'utf-8',
-            },
-            response: rpcResponse.data,
-          },
-        },
-      });
-    },
-
-    *sendHTTPRequest({}, { put, select, call }) {
-      const {
-        serverUrl, url, method, requests, requestIndex,
-        headers, headerIndex, authStrategy, account, password,
+        apiType, gateway,
+        url, method, account, password,
+        requests, requestIndex,
+        headers, headerIndex,
         params, paramIndex,
+        authStrategy, env,
       } = yield select(state => state.apiTestModel);
 
       yield put({ type: 'setData', data: { progress: 50, result: null, isAuthing: '接口调用中...' } });
 
-      const requestData = mockParse(requests[requestIndex] && requests[requestIndex].content);
+      const requestData = JSON.stringify(mockParse(requests[requestIndex] && requests[requestIndex].content));
       const headerKeyValues = keyValueParse(headers[headerIndex] ? headers[headerIndex].content : '');
-      const queries = keyValueParse(params[paramIndex].content);
+      const queries = keyValueParse(params[paramIndex] ? params[paramIndex].content : '');
 
-      const authEnv = getEnvByUrl(serverUrl);
+      const targetUrl = refreshUrl(gateway || (env + url), { ...queries });
+      const authEnv = getEnvByUrl(targetUrl);
       const cookieStr = yield call(getCookie, authStrategy, authEnv, account, password);
 
-      const sendUrl = refreshUrl(serverUrl + url, {
-        ...queries,
-        ctoken: getCtoken(cookieStr),
-      });
       const result = yield call(ajax, {
-        url: '/proxy',
+        url: `/proxy/${apiType}`,
         method: 'post',
         type: 'json',
         data: {
-          url: sendUrl,
+          gateway, // 网关服务器
+          target: apiType === 'HTTP' ? env + url : env, // 目标地址
+          url,
           method,
-          cookieStr,
+          account,
+          password,
           headers: JSON.stringify(headerKeyValues),
-          data: JSON.stringify(requestData),
+          requestData,
+          cookieStr,
         },
       });
 
@@ -238,9 +132,8 @@ export default {
           isAuthing: '',
           progress: 100,
           result: {
-            url: sendUrl,
+            targetUrl,
             method,
-            headers: JSON.stringify(headerKeyValues),
             request: requestData,
             response: result.data,
           },
@@ -326,6 +219,8 @@ export default {
 
     syncData(state, { data }) {
       const method = data.apiType === 'HTTP' && data.methods && data.methods[0] ? data.methods[0] : 'GET';
+      const matchedApiType = ApiTypes.find(item => item.type === data.apiType) || {};
+
       return {
         projectName: data.projectName,
         projectId: data.projectId,
@@ -347,54 +242,28 @@ export default {
         // 还需要更新 collection 相关的字段：accounts, envs
         accounts: (data.accounts || []).filter(item => item),
         envs: data.envs || [],
-        gateways: data.gateways || [],
-        serverUrl: get(data, 'envs[0].value'),
+        gateways: (data.gateways || []).concat(matchedApiType.gateways || []),
+        env: get(data, 'envs[0].value'),
         gateway: get(data, 'gateways[0].value'),
         result: null,
       };
     },
-    requestEnded(state, { data }) {
-      return {
-        ...state,
-        ...data,
-      };
-    },
-    changeTestingAPI(state, { api }) {
-      const apiTestModel = {
-        method: api.methods[0],
-        ...api,
-      };
-
-      return { ...state, ...apiTestModel };
-    },
-    changeServerUrl(state, { serverUrl }) {
-      const paramIndex = state.paramIndex;
-      const list = state.params;
-      const url = state.url;
-      const prefixUrl = serverUrl || '';
-      const query = (list[paramIndex] && list[paramIndex].content) || {};
-      let queries = {};
-      try {
-        queries = keyValueParse(query);
-      } catch (err) {
-        queries = {};
-      }
-      const queryStr = Object.keys(queries).map(key => `${key}=${encodeURIComponent(queries[key])}`).join('&');
-      const displayUrl = queryStr ? `${prefixUrl}${url}?${queryStr}` : `${prefixUrl}${url}`;
-      // Todo: 如果url变了，spi接口需要自动判断环境
-      return { ...state, displayUrl, serverUrl };
-    },
-    changeGateway(state, { gateway }) {
-      return { ...state, gateway };
-    },
-    // changeUrl(state, { displayUrl, param }) {
-    //   const params = [ ...state.params ];
-    //   const paramsIndex = state.paramsIndex;
-    //   const paramInfo = params[paramsIndex] || {};
-    //   paramInfo.content = param;
-    //   params[paramsIndex] = { ...paramInfo };
-    //   const url = displayUrl.split('?')[0];
-    //   return { ...state, url, params, displayUrl };
+    // changeServerUrl(state, { serverUrl }) {
+    //   const paramIndex = state.paramIndex;
+    //   const list = state.params;
+    //   const url = state.url;
+    //   const prefixUrl = serverUrl || '';
+    //   const query = (list[paramIndex] && list[paramIndex].content) || {};
+    //   let queries = {};
+    //   try {
+    //     queries = keyValueParse(query);
+    //   } catch (err) {
+    //     queries = {};
+    //   }
+    //   const queryStr = Object.keys(queries).map(key => `${key}=${encodeURIComponent(queries[key])}`).join('&');
+    //   const displayUrl = queryStr ? `${prefixUrl}${url}?${queryStr}` : `${prefixUrl}${url}`;
+    //   // Todo: 如果url变了，spi接口需要自动判断环境
+    //   return { ...state, displayUrl, serverUrl };
     // },
     changeMethod(state, { method }) {
       return { ...state, method };
@@ -405,7 +274,7 @@ export default {
     },
     changeParams(state, { url, list, index }) {
       const paramIndex = typeof index === 'number' ? index : state.paramsIndex;
-      const { serverUrl } = state;
+      const { env } = state;
       const query = list[paramIndex].content || {};
       let queries = {};
       try {
@@ -414,7 +283,7 @@ export default {
         queries = {};
       }
       const queryStr = Object.keys(queries).map(key => `${key}=${encodeURIComponent(queries[key])}`).join('&');
-      const displayUrl = queryStr ? `${serverUrl || ''}${url}?${queryStr}` : `${serverUrl || ''}${url}`;
+      const displayUrl = env ? `${env || ''}${url}?${queryStr}` : `${env || ''}${url}`;
       return { ...state, params: list, paramsIndex: paramIndex, displayUrl, url };
     },
     changeRequest(state, { list, index }) {

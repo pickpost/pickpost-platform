@@ -196,6 +196,10 @@ export function isBelong(data) {
   return (data.owners || []).concat(data.members || []).find(o => o.key === user.workid);
 }
 
+export function getEnvByUrl() {
+  return '';
+}
+
 export class StorageUtil {
   static setItem(key, val, isSession = false) {
     const adapter = isSession ? sessionStorage : localStorage;
@@ -215,8 +219,4 @@ export class StorageUtil {
     const adapter = isSession ? sessionStorage : localStorage;
     adapter.removeItem(key);
   }
-}
-
-export function getEnvByUrl() {
-  return '';
 }
