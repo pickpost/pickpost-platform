@@ -1,7 +1,9 @@
 import React from 'react';
 import moment from 'moment';
 import ajax from 'xhr-plus';
-import { Form, Select, Input, Button, Tag, Popover } from 'antd';
+import { Form, Select, Input,
+  Button, Tag, Popover, Switch,
+  Icon, Tooltip, Radio, Upload } from 'antd';
 import { connect } from 'dva';
 import { Link } from 'dva/router';
 import BulkEditor from '../../components/bulk-editor';
@@ -160,7 +162,7 @@ class Project extends React.Component {
     const { projectSettingModel, params } = this.props;
     const { project: { name, desc, owners, envs, accounts } } = projectSettingModel;
     const { projectId } = params;
-    const { getFieldDecorator, getFieldError } = this.props.form;
+    const { getFieldDecorator, getFieldError, getFieldValue } = this.props.form;
     const formItemLayout = {
       labelCol: { span: 24 },
       wrapperCol: { span: 24 },
@@ -226,36 +228,75 @@ class Project extends React.Component {
               </Select>
             )}
           </FormItem>
+          <FormItem
+            label="服务器URL"
+            {...formItemLayout}
+          >
+            {getFieldDecorator('envs', {
+              initialValue: envs && envs[0] ? envs : [{}],
+            })(
+              <BulkEditor configs={BulkEditorEnvs} />
+            )}
+          </FormItem>
+          <FormItem
+            label="测试账户"
+            {...formItemLayout}
+          >
+            {getFieldDecorator('accounts', {
+              initialValue: accounts && accounts[0] ? accounts : [{}],
+            })(
+              <BulkEditor configs={BulkEditorAccounts} />
+            )}
+          </FormItem>
+          <h3 className="setting-sub-title">开启智能文档同步
+            <Tooltip className="icon-tip" placement="topLeft" title="开启后支持多种自动同步方式, 如Swagger, 接口同步">
+              <Icon type="question-circle" />
+            </Tooltip>
+          </h3>
+          <FormItem
+            {...formItemLayout}
+          >
+            {getFieldDecorator('smartDoc', {
+              initialValue: false,
+            })(
+              <Switch checkedChildren="开" unCheckedChildren="关" />
+            )}
+          </FormItem>
           {
+            getFieldValue('smartDoc') &&
+            <FormItem
+              label="选择同步方式"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('smartDocType', {
+                initialValue: 'openapi',
+              })(
+                <Radio.Group size="small">
+                  <Radio.Button value="openapi">OPENAPI</Radio.Button>
+                  <Radio.Button value="swagger">Swagger文档</Radio.Button>
+                </Radio.Group>
+              )}
+            </FormItem>
+          }
+          {
+            getFieldValue('smartDocType') === 'swagger' &&
+            <FormItem
+              label="请填写swagger URL 或者上传文件"
+              {...formItemLayout}
+            >
             <div>
-              <FormItem
-                label="服务器地址"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('envs', {
-                  initialValue: envs && envs[0] ? envs : [{}],
-                })(
-                  <BulkEditor configs={BulkEditorEnvs} />
-                )}
-              </FormItem>
-              <FormItem
-                label="测试账户"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('accounts', {
-                  initialValue: accounts && accounts[0] ? accounts : [{}],
-                })(
-                  <BulkEditor configs={BulkEditorAccounts} />
-                )}
-              </FormItem>
+              <Input placeholder="请输入URL地址" />
+              <Upload>
+                <Button>
+                  <Icon type="upload" /> 点击上传
+                </Button>
+              </Upload>
             </div>
+            </FormItem>
           }
 
-          <div>
-            <Button className="submit" type="primary" size="default" htmlType="submit" onClick={this.handleSaveProject}>
-              更新
-          </Button>
-          </div>
+          <Button className="submit" type="primary" size="default"
+            htmlType="submit" onClick={this.handleSaveProject}>更新</Button>
         </Form>
       </div>
     );
