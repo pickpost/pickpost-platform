@@ -29,7 +29,7 @@ const apiTypes = [
     methods: [],
     color: 'green',
     uniqueName: 'bizType',
-    placeholder: '请输入 SPI 接口的 bizType 值，例如：mobilecsa.getList',
+    placeholder: '请输入 SPI 接口的 bizType 值，例如：kbsales.cspiShop.unbind',
   },
   {
     type: 'JSAPI',
