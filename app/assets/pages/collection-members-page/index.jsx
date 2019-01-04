@@ -203,7 +203,6 @@ class Collection extends React.PureComponent {
     const { members, owners } = collectionModel.collection;
     const newOwners = cloneDeep(owners);
     const newMembers = cloneDeep(members);
-    // console.log(v, _api.key);
 
     owners.map((v, i) => {
       if (_api.key === v.key) {
@@ -298,7 +297,6 @@ class Collection extends React.PureComponent {
             value: JSON.stringify(v),
             backfill: '',
           }));
-          // console.log(memberList);
           this.setState({
             memberList,
           });

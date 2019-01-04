@@ -99,7 +99,7 @@ class AuthForm extends React.Component {
     );
 
     const envDropdown = (
-      <Dropdown overlay={menu} placement="bottomRight" size="default">
+      <Dropdown overlay={menu} placement="bottomRight" size="default" trigger={[ 'click' ]}>
         <Icon type="down" />
       </Dropdown>
     );

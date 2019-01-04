@@ -23,6 +23,10 @@ $ open http://localhost:7001
 项目基于 eggjs + mongoogse 开发，
 数据库设计详见：`/doc/schema.md`
 
+开发规范：代码提交使用 commitlint 进行 message 格式校验，提交前会经过 eslint 检查。
+
+提交示例：`git commit -m 'feat: 接口文档功能'`
+
 ```
 .
 ├── README.md
@@ -48,21 +52,14 @@ $ open http://localhost:7001
 
 ## Todo:
 
+- 配置项集中管理
 - 接口类型支持自定义
-  涉及到哪些配置？
-  接口测试
-  接口 Mock
-  接口文档
-
-  接口类型  |
-  SPI      |
-  HTTP
-  RPC
-
-
-- 接口支持树形管理
+- 接口支持树形管理 [done]
 - xhr-plus 替换成 axios
+- 接口版本管理方案和对应的界面
 
+
+- 接口文档快速导入
 比如在语雀使用这样一个格式：
 
 ```

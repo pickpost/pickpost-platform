@@ -285,7 +285,6 @@ class SchemaEditor extends React.Component {
 
   render() {
     const { jsonStr, schema, enumsModal, leftRowCount, hightLightLine } = this.state;
-    console.log('jsonStr', jsonStr);
     const rows = [];
     this.renderTable(rows, schema.properties, 'data');
     const leftShowRows = Math.max(leftRowCount, MinRows);

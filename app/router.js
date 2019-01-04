@@ -46,14 +46,13 @@ module.exports = app => {
   router.put('/api/file/:id', controller.file.fileUpdate);
   // View Testing End
 
+  // MockAPI
   const jsonp = app.jsonp();
-  // Mock API
-  router.all('/mock/:project/**', jsonp, controller.proxy.mockapi);
-  router.all('/mockjsonp/:project/**', jsonp, controller.proxy.mockapi); // To be deprecated
+  router.all('/mock/:apiType/:projectName/**', jsonp, controller.mock.mockapi);
 
-  // Proxy API
+  // ProxyAPI
   router.all('/auth', controller.proxy.auth);
-  router.all('/proxy', controller.proxy.proxy);
+  router.all('/proxy/:apiType', controller.proxy.proxy);
 
   // SocketIO
   // router.io.of('/socket2').route('ping2', router.io.controller.socket.index);

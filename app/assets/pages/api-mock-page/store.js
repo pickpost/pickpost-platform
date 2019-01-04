@@ -47,18 +47,9 @@ export default {
     setData(state, { data }) {
       return { ...state, ...data };
     },
-    changeTestingAPI(state, { api }) {
-      const testingPanel = {
-        ...api,
-      };
-
-      return { ...state, ...testingPanel };
-    },
-
     changeProjectModel(state, { data }) {
       return { ...state, ...data };
     },
-
     changeResponse(state, { list, index }) {
       const responseIndex = typeof index === 'number' ? index : state.responseIndex;
       return { ...state, responses: list, responseIndex };

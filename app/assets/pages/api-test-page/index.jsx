@@ -64,6 +64,9 @@ class Api extends React.PureComponent {
     this.props.dispatch({
       type: 'apiTestModel/sendRequest',
     });
+
+    // 自动滑动到页面底部
+    document.documentElement.scrollTop = document.documentElement.scrollHeight;
   }
 
   handleSave() {
@@ -84,17 +87,21 @@ class Api extends React.PureComponent {
     });
   }
 
-  handleMGWChange(value) {
+  handleEnvChange(value) {
     this.props.dispatch({
-      type: 'apiTestModel/changeServerUrl',
-      serverUrl: value,
+      type: 'apiTestModel/setData',
+      data: {
+        env: value,
+      },
     });
   }
 
-  handleSpigwChange(value) {
+  handleGatewayChange(value) {
     this.props.dispatch({
-      type: 'apiTestModel/changeGateway',
-      gateway: value,
+      type: 'apiTestModel/setData',
+      data: {
+        gateway: value,
+      },
     });
   }
 
@@ -189,8 +196,7 @@ class Api extends React.PureComponent {
   render() {
     const { apiTestModel } = this.props;
     const { modalEnvs } = this.state;
-    const { apiName, url, desc, apiType, gateways, result, isAuthing, displayUrl, method, gateway, gatewayModal, envModal, progress } = apiTestModel;
-    const fullGateways = (gateways || []);
+    const { apiName, url, desc, apiType, gateways, result, isAuthing, displayUrl, method, gateway, env, gatewayModal, envModal, progress } = apiTestModel;
     const envs = apiTestModel.envs.filter(item => item) || [];
 
     return (
@@ -211,10 +217,10 @@ class Api extends React.PureComponent {
                         <div className="ant-select ant-select-enabled settings gateway">
                           网关服务器:
                         </div>
-                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={gateway} onChange={this.handleSpigwChange}>
+                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={gateway} onChange={this.handleGatewayChange}>
                           <Select.Option value="">请选择服务器</Select.Option>
                           {
-                            fullGateways.map((m, idx) => <Select.Option key={idx} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
+                            gateways.map((m, idx) => <Select.Option key={idx} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
                           }
                         </Select>
                         <div className="ant-select ant-select-enabled settings" onClick={this.toggleGatewayModal}>
@@ -223,13 +229,13 @@ class Api extends React.PureComponent {
                       </InputGroup>
                     </div>
                     {
-                      getEnvByUrl(gateway) === 'dev' && (
+                      apiType === 'SPI' && getEnvByUrl(gateway) === 'dev' && (
                         <div className="path-input">
                           <InputGroup compact>
                             <div className="ant-select ant-select-enabled settings gateway">
                               业务服务器:
                             </div>
-                            <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
+                            <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={env} onChange={this.handleEnvChange}>
                               <Select.Option value="">请选择服务器</Select.Option>
                               {
                                 envs.map(m => <Select.Option key={m} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
@@ -259,7 +265,7 @@ class Api extends React.PureComponent {
                             apiTestModel.methods.map(m => <Select.Option key={m} value={m}>{m}</Select.Option>)
                           }
                         </Select>
-                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={apiTestModel.serverUrl} onChange={this.handleMGWChange}>
+                        <Select size="default" style={{ flex: 'auto', width: 1 }} dropdownMatchSelectWidth={false} value={env} onChange={this.handleEnvChange}>
                           <Select.Option value="">请选择服务器</Select.Option>
                           {
                             envs.map((m, idx) => <Select.Option key={idx} value={m.value}>{m.value}{m.remark && <span> ({m.remark}) </span>}</Select.Option>)
@@ -280,7 +286,7 @@ class Api extends React.PureComponent {
               )
             }
 
-            <MyTabs activeKey={apiTestModel.subType} method={apiTestModel.method} onTabClick={this.handleChangeSubType} />
+            <MyTabs activeKey={apiTestModel.subType} apiType={apiType} method={apiTestModel.method} onTabClick={this.handleChangeSubType} />
 
             <div className="main-content">
               {
