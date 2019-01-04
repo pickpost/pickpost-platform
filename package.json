@@ -82,6 +82,7 @@
     "lint-staged": "^8.1.0",
     "mockjs": "^1.0.1-beta3",
     "parallel-compress": "^1.1.0",
+    "react-addons-perf": "^15.4.2",
     "redbox-react": "^1.5.0",
     "regenerator-runtime": "^0.11.1",
     "roadhog": "^2.1.0",

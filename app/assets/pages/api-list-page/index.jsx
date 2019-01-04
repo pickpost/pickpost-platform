@@ -17,7 +17,7 @@ class Collection extends React.PureComponent {
       searchText: '',
     };
 
-    const { collectionId } = props.params;
+    const { collectionId, projectId } = props.params;
     this.apisColumns = [{
       title: '名称',
       dataIndex: 'name',
@@ -65,13 +65,15 @@ class Collection extends React.PureComponent {
       render: (_, api) => {
         const DeleteFileButtons = (
           <div className="action-btns">
-            <Button type="default" onClick={this.handleRemoveAPI.bind(this, api)}>从需求移除接口</Button>
+            {
+              collectionId && <Button type="default" onClick={this.handleRemoveAPI.bind(this, api)}>从需求移除接口</Button>
+            }
             <Button type="danger" onClick={this.handleDeleteAPI.bind(this, api)}>从应用删除接口</Button>
           </div>
         );
         return (
           <div className="actions" onClick={e => e.stopPropagation()}>
-            <Link to={`/collection/${collectionId}/apis/doc/${api._id}`}>详情</Link>
+            <Link to={collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`}>详情</Link>
             <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
               <Link to="">删除</Link>
             </Popover>
@@ -88,21 +90,21 @@ class Collection extends React.PureComponent {
     if (collectionId) {
       this.props.dispatch({
         type: 'apiListModel/collectionDetail',
-        id: collectionId,
+        collectionId,
       });
       this.props.dispatch({
         type: 'apiListModel/collectionApis',
-        id: collectionId,
+        collectionId,
         groupId: this.props.location.query.groupId || '',
       });
     } else if (projectId) {
       this.props.dispatch({
         type: 'apiListModel/projectDetail',
-        id: projectId,
+        projectId,
       });
       this.props.dispatch({
         type: 'apiListModel/projectApis',
-        id: projectId,
+        projectId,
       });
     }
   }
@@ -112,7 +114,7 @@ class Collection extends React.PureComponent {
     if (this.props.location.query.groupId !== nextProps.location.query.groupId && nextProps.params.collectionId) {
       this.props.dispatch({
         type: 'apiListModel/collectionApis',
-        id: nextProps.params.collectionId,
+        collectionId: nextProps.params.collectionId,
         groupId: nextProps.location.query.groupId,
       });
     }
@@ -203,7 +205,7 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params: { collectionId, projectId }, apiListModel: { apis, collection, project } } = this.props;
+    const { params: { collectionId, projectId }, location: { query: { groupId } }, apiListModel: { apis, collection, project } } = this.props;
 
     return (
       <div className="api-list-page">
@@ -243,6 +245,9 @@ class Collection extends React.PureComponent {
                 onClick: () => {
                   browserHistory.push({
                     pathname: collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`,
+                    query: {
+                      groupId,
+                    },
                   });
                 },
               };

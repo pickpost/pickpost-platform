@@ -3,6 +3,7 @@ import autobind from 'autobind-decorator';
 import { Icon, Button, Input, Select, Modal } from 'antd';
 import { connect } from 'dva';
 import Mock from 'mockjs';
+import key from 'keymaster';
 import { getEnvByUrl } from '../../utils/utils';
 
 import Info from '../../components/info';
@@ -49,6 +50,16 @@ class Api extends React.PureComponent {
       type: 'apiTestModel/detail',
       apiId,
     });
+
+    // 重写 filter
+    key.filter = function filter() {
+      return true;
+    };
+
+    key('⌘+s, ctrl+s', e => {
+      e.preventDefault();
+      this.handleSave();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -58,6 +69,10 @@ class Api extends React.PureComponent {
         apiId: nextProps.params.apiId,
       });
     }
+  }
+
+  componentWillUnmount() {
+    key.unbind('⌘+s, ctrl+s');
   }
 
   handleSendRequest() {

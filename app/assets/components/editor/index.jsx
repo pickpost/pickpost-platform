@@ -16,17 +16,22 @@ require('codemirror/addon/lint/javascript-lint');
 require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
 
+require('codemirror/addon/fold/foldgutter');
+require('codemirror/addon/fold/brace-fold');
+require('codemirror/addon/fold/foldgutter.css');
+
 import './style.less';
 
 const CodeMirrorConfig = {
   mode: { name: 'javascript', json: true },
   theme: 'material',
   height: 'auto',
-  viewportMargin: Infinity,
+  // viewportMargin: Infinity, // 慎开，性能堪忧。
   tabSize: 2,
   lineNumbers: true,
-  gutters: [ 'CodeMirror-lint-markers' ],
+  foldGutter: true,
   lint: true,
+  gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter', 'CodeMirror-lint-markers' ],
   smartIndent: true,
   matchBrackets: true,
   styleActiveLine: true,
@@ -211,14 +216,8 @@ export default class Editor extends React.Component {
                   options={CodeMirrorConfig}
                   editorDidMount={ editor => { this.instance = editor; }}
                   onBeforeChange={(editor, data, value) => {
-                    this.setState({ jsonStr: value });
-                  }}
-                  onBeforeChange={(editor, data, value) => {
                     this.handleInputChange(selected, value);
                   }}
-                  // onChange={(editor, data, value) => {
-                  //   this.handleInputChange(selected, value);
-                  // }}
                 />
               }
             </div>

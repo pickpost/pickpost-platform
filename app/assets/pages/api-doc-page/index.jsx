@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
 import { Form, Button, Input } from 'antd';
+import key from 'keymaster';
 
 import Info from '../../components/info';
 import SchemaEditor from '../../components/schema-editor';
@@ -17,6 +18,16 @@ class Api extends React.PureComponent {
       apiId,
       form: this.props.form,
     });
+
+    // 重写 filter
+    key.filter = function filter() {
+      return true;
+    };
+
+    key('⌘+s, ctrl+s', e => {
+      e.preventDefault();
+      this.handleSave();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -27,6 +38,10 @@ class Api extends React.PureComponent {
         form: nextProps.form,
       });
     }
+  }
+
+  componentWillUnmount() {
+    key.unbind('⌘+s, ctrl+s');
   }
 
   handleSave = () => {

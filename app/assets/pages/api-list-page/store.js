@@ -10,10 +10,10 @@ export default {
   },
   effects: {
     // 获取需求信息
-    *collectionDetail({ id }, { call, put }) {
+    *collectionDetail({ collectionId }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
-          url: `/api/collections/${id}`,
+          url: `/api/collections/${collectionId}`,
           method: 'get',
           type: 'json',
           data: {},
@@ -32,10 +32,10 @@ export default {
       }
     },
 
-    *projectDetail({ id }, { call, put }) {
+    *projectDetail({ projectId }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
-          url: `/api/projects/${id}`,
+          url: `/api/projects/${projectId}`,
           method: 'get',
           type: 'json',
           data: {},
@@ -55,16 +55,21 @@ export default {
     },
 
     // 获取需求内接口列表
-    *collectionApis({ id, groupId }, { call, put }) {
+    *collectionApis({ projectId, collectionId, groupId }, { call, put }) {
       try {
+        const params = {};
+        if (!projectId && !collectionId) return;
+        if (collectionId) {
+          params.collectionId = collectionId;
+          params.groupId = groupId;
+        } else if (projectId) {
+          params.projectId = projectId;
+        }
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
           method: 'get',
           type: 'json',
-          data: {
-            collectionId: id,
-            groupId,
-          },
+          data: { ...params },
         });
         if (status === 'success') {
           yield put({
@@ -81,6 +86,7 @@ export default {
 
     *projectApis({ projectId }, { call, put }) {
       try {
+        if (!projectId) return;
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
           method: 'get',
@@ -112,7 +118,11 @@ export default {
         });
         if (status === 'success') {
           message.success('删除成功');
-          yield put({ type: 'collectionApis', id: collectionId });
+          if (collectionId) {
+            yield put({ type: 'collectionApis', collectionId });
+          } else {
+            yield put({ type: 'collectionApis', projectId });
+          }
         }
       } catch (e) {
         message.error('删除失败');
@@ -133,7 +143,7 @@ export default {
 
         if (status === 'success') {
           message.success('移除成功');
-          yield put({ type: 'collectionApis', id: collectionId });
+          yield put({ type: 'collectionApis', collectionId });
         }
       } catch (e) {
         message.error('移除失败');

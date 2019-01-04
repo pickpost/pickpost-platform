@@ -250,7 +250,7 @@ export default {
           });
           yield put({
             type: 'apiListModel/collectionApis',
-            id: collectionId,
+            collectionId,
             groupId: currentGroupId,
           });
         }

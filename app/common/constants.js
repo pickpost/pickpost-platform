@@ -78,7 +78,7 @@ const ApiTypes = [
     color: 'red',
     uniqueName: 'JSAPI方法名',
     placeholder: '请输入JSAPI的调用方法名, 例如: getUserInfo',
-  }
+  },
 ];
 
 const TypeColorMap = {};

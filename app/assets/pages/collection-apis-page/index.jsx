@@ -38,10 +38,12 @@ class Api extends React.PureComponent {
   handleMenuClick = e => {
     if (e.key === 'file') {
       const { collectionId } = this.props.collectionApisModel;
-      const url = `/api_fe/create?collectionId=${collectionId}`;
 
       browserHistory.push({
-        pathname: url,
+        pathname: '/api_fe/create',
+        query: {
+          collectionId,
+        },
       });
     } else if (e.key === 'folder') {
       this.props.dispatch({
