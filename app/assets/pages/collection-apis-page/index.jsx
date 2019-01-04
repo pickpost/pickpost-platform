@@ -4,6 +4,7 @@ import { Input, Menu, Dropdown, Button, Icon } from 'antd';
 import { browserHistory, Link } from 'dva/router';
 import Folder from '../../components/folder';
 // import File from '../../components/file';
+import ApiNav from './components/api-nav';
 import FolderCreate from './components/folder-create';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
@@ -196,26 +197,7 @@ class Api extends React.PureComponent {
         </div>
         <div className="api-main">
           {
-            apiId && (
-              <div className="tabs-header">
-                <Link to={`/collection/${collectionId}/apis/list?groupId=${this.groupId || ''}`} activeClassName="active">
-                  <Icon type="left" /> 返回列表
-                </Link>
-                <div className="split-line"></div>
-                <Link to={`/collection/${collectionId}/apis/doc/${apiId}`} activeClassName="active">
-                  <Icon type="profile" /> 文档
-                </Link>
-                <Link to={`/collection/${collectionId}/apis/test/${apiId}`} activeClassName="active">
-                  <Icon type="rocket" /> 测试
-                </Link>
-                <Link to={`/collection/${collectionId}/apis/mock/${apiId}`} activeClassName="active">
-                  <Icon type="api" /> Mock
-                </Link>
-                <Link to={`/collection/${collectionId}/apis/setting/${apiId}`} activeClassName="active">
-                  <Icon type="setting" /> 设置
-                </Link>
-              </div>
-            )
+            apiId && <ApiNav groupId={this.groupId} apiId={apiId} collectionId={collectionId} {...this.props} />
           }
 
           {this.props.children}
