@@ -5,6 +5,7 @@ const ApiTypes = [
     type: 'HTTP',
     name: 'HTTP',
     path: 'http',
+    supportModules: [ 'doc', 'test', 'mock', 'setting' ],
     methods: [ 'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD' ],
     color: 'blue',
     uniqueName: '路径规则',
@@ -15,6 +16,7 @@ const ApiTypes = [
     type: 'RPC',
     name: 'RPC',
     path: 'rpc',
+    supportModules: [ 'doc', 'test', 'mock', 'setting' ],
     methods: [],
     color: 'purple',
     uniqueName: 'operationType',
@@ -46,10 +48,11 @@ const ApiTypes = [
     type: 'SPI',
     name: 'SPI',
     path: 'spi',
+    supportModules: [ 'doc', 'test', 'mock', 'setting' ],
     methods: [],
     color: 'green',
     uniqueName: 'bizType',
-    placeholder: '请输入 SPI 接口的 bizType 值，例如：mobilecsa.getList',
+    placeholder: '请输入 SPI 接口的 bizType 值，例如：kbsales.cspiShop.unbind',
     globalUnique: true,
     gateways: [
       {
@@ -65,6 +68,16 @@ const ApiTypes = [
         remark: 'PROD 环境',
       },
     ],
+  },
+  {
+    type: 'JSAPI',
+    name: 'JSAPI',
+    path: 'jsapi',
+    supportModules: [ 'doc', 'mock', 'setting' ],
+    methods: [],
+    color: 'red',
+    uniqueName: 'JSAPI方法名',
+    placeholder: '请输入JSAPI的调用方法名, 例如: getUserInfo',
   },
 ];
 

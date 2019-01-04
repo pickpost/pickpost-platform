@@ -2,7 +2,6 @@ import React from 'react';
 import autobind from 'autobind-decorator';
 import set from 'lodash/set';
 import { Modal, Icon, Tooltip } from 'antd';
-import { Controlled as CodeMirror } from 'react-codemirror2';
 import json2schema from '../../utils/json2schema';
 import schema2json from '../../utils/schema2json';
 import JSON5 from 'json5';
@@ -11,7 +10,7 @@ import BulkEditor from '../bulk-editor';
 
 import './style.less';
 
-// CodeMirror packages
+import { Controlled as CodeMirror } from 'react-codemirror2';
 require('codemirror/mode/javascript/javascript');
 require('codemirror/lib/codemirror.css');
 require('codemirror/theme/material.css');
@@ -23,15 +22,14 @@ require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
 
 const CodeMirrorConfig = {
-  // mode: 'application/json',
   mode: { name: 'javascript', json: true },
   theme: 'material',
   height: 'auto',
-  viewportMargin: Infinity,
+  // viewportMargin: Infinity, // 慎开，性能堪忧。
   tabSize: 2,
   lineNumbers: true,
-  gutters: [ 'CodeMirror-lint-markers' ],
   lint: true,
+  gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-lint-markers' ],
   smartIndent: true,
   matchBrackets: true,
   styleActiveLine: true,
@@ -225,7 +223,8 @@ class SchemaEditor extends React.Component {
         rows.push({ });
       }
 
-      if (properties[prop].type === 'array') {
+      // 如果是数组，只有当数组内存在子项时需要尾部加占位
+      if (properties[prop].type === 'array' && properties[prop].items) {
         rows.push({ });
       }
     }
@@ -338,17 +337,19 @@ class SchemaEditor extends React.Component {
                       item.type === 'string' || item.type === 'number' || item.type === 'boolean' ?
                       <td className="enum">
                         {
-                          <div className="enum-select">
+                          item.enum && item.enum.length > 0 && (
                             <Tooltip title={<div>{(item.enum || []).map(attr => <div key={attr.value}>{`${attr.value} ${attr.remark ? ': ' + attr.remark : ''}`}</div>)}</div>}>
-                              {
-                                (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.remark ? `(${attr.remark})` : ''}</span>)
-                              }
+                              <div className="enum-select">
+                                {
+                                  (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.remark ? `(${attr.remark})` : ''}</span>)
+                                }
+                              </div>
                             </Tooltip>
-                            <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
-                              <Icon type="edit" />
-                            </span>
-                          </div>
+                          )
                         }
+                        <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
+                          <Icon type="edit" />
+                        </span>
                       </td> :
                       <td></td>
                     }

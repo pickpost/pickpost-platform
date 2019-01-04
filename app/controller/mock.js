@@ -36,8 +36,7 @@ exports.mockapi = async function (ctx) {
 
   let matchedProject = null;
   const findParams = {
-    // url: new RegExp(apiUrl, 'i'),
-    url: apiUrl,
+    url: apiType.toUpperCase() === 'HTTP' ? new RegExp(`^/${apiUrl}$`, 'i') : new RegExp(`^${apiUrl}$`, 'i'),
   };
 
   // 判断是否需要判断接口项目
@@ -55,7 +54,7 @@ exports.mockapi = async function (ctx) {
       return;
     }
 
-    findParams.projectId = matchedProject._id;
+    findParams.projectId = matchedProject._id.toString();
   }
 
   try {

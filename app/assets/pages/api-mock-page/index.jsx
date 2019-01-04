@@ -5,6 +5,7 @@ import { connect } from 'dva';
 import Mock from 'mockjs';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import hljs from 'highlight.js/lib/highlight';
+import key from 'keymaster';
 
 import Info from '../../components/info';
 import Editor from '../../components/editor';
@@ -75,6 +76,16 @@ class Api extends React.PureComponent {
       type: 'apiMockModel/detail',
       apiId,
     });
+
+    // 重写 filter
+    key.filter = function filter() {
+      return true;
+    };
+
+    key('⌘+s, ctrl+s', e => {
+      e.preventDefault();
+      this.handleSave();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -84,6 +95,10 @@ class Api extends React.PureComponent {
         apiId: nextProps.params.apiId,
       });
     }
+  }
+
+  componentWillUnmount() {
+    key.unbind('⌘+s, ctrl+s');
   }
 
   getPreviewUrl(api) {
