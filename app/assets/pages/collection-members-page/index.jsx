@@ -1,15 +1,12 @@
 import React from 'react';
 import {
-  Table, Icon, Button, Input, Popover,
-  Tag, Form, Dropdown, Menu,
+  Table, Icon, Input,
+  Form, Dropdown, Menu,
   AutoComplete, message, Popconfirm,
 } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
 import ajax from 'xhr-plus';
-import moment from 'moment';
 import cloneDeep from 'lodash/cloneDeep';
-import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 
@@ -40,62 +37,6 @@ class Collection extends React.PureComponent {
       id: collectionId,
     });
   }
-
-  apisColumns = [{
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-    width: '260px',
-  }, {
-    title: '类型',
-    dataIndex: 'methods',
-    key: 'methods',
-    render: methods => {
-      return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
-    },
-  }, {
-    title: '地址',
-    dataIndex: 'url',
-    key: 'url',
-    width: '400px',
-  }, {
-    title: '所属应用',
-    dataIndex: 'projectName',
-    key: 'projectName',
-  }, {
-    title: '最近更新',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
-    render: updatedAt => {
-      return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
-    },
-  }, {
-    title: '创建人',
-    dataIndex: 'creater',
-    key: 'creater',
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    key: 'operation',
-    render: (_, api) => {
-      const DeleteFileButtons = (
-        <div className="action-btns">
-          <Button type="default" onClick={this.handleRemoveAPI.bind(this, api)}>从需求移除接口</Button>
-          <Button type="danger" onClick={this.handleDeleteAPI.bind(this, api)}>从应用删除接口</Button>
-        </div>
-      );
-      return (
-        <div className="actions" onClick={e => e.stopPropagation()}>
-          <Link to={`/api-detail/${api._id}/doc?belong=collection_${this.props.params.collectionId}`}>文档</Link>
-          <Link to={`/api-detail/${api._id}/test?belong=collection_${this.props.params.collectionId}`}>测试</Link>
-          <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>Mock</Link>
-          <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-            <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
-          </Popover>
-        </div>
-      );
-    },
-  }];
 
   memberColumns = [
     {
