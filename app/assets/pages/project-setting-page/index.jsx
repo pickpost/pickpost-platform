@@ -279,6 +279,7 @@ class Project extends React.Component {
             </FormItem>
           }
           {
+            getFieldValue('smartDoc') &&
             getFieldValue('smartDocType') === 'swagger' &&
             <FormItem
               label="请填写swagger URL 或者上传文件"
