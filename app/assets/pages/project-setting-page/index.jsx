@@ -221,7 +221,7 @@ class Project extends React.Component {
               {getFieldDecorator('smartDocType', {
                 initialValue: 'openapi',
               })(
-                <Radio.Group size="small">
+                <Radio.Group className="smart-doc-type">
                   <Radio.Button value="openapi">OPENAPI</Radio.Button>
                   <Radio.Button value="swagger">Swagger文档</Radio.Button>
                 </Radio.Group>
@@ -236,7 +236,7 @@ class Project extends React.Component {
               {...formItemLayout}
             >
             <div>
-              <Input placeholder="请输入URL地址" />
+              <Input className="swagger-url" placeholder="请输入URL地址" />
               <Upload>
                 <Button>
                   <Icon type="upload" /> 点击上传
