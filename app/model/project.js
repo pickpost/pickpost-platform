@@ -14,6 +14,8 @@ module.exports = app => {
     envs: { type: Array },
     gateways: { type: Array },
     accounts: { type: Array },
+    smartDoc: { type: Boolean },
+    smartDocType: { type: String },
   }, {
     timestamps: true,
   });

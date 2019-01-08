@@ -1,8 +1,10 @@
 import React from 'react';
 import ajax from 'xhr-plus';
-import { Form, Select, Input,
+import {
+  Form, Select, Input,
   Button, Switch,
-  Icon, Tooltip, Radio, Upload } from 'antd';
+  Icon, Tooltip, Radio, Upload,
+} from 'antd';
 import { connect } from 'dva';
 import BulkEditor from '../../components/bulk-editor';
 
@@ -35,6 +37,11 @@ const BulkEditorEnvs = [{
   placeholder: '备注',
   width: '30%',
 }];
+
+const formItemLayout = {
+  labelCol: { span: 24 },
+  wrapperCol: { span: 24 },
+};
 
 class Project extends React.Component {
   state = {
@@ -93,6 +100,8 @@ class Project extends React.Component {
             owners: values.owners,
             envs: values.envs,
             accounts: values.accounts,
+            smartDoc: values.smartDoc,
+            smartDocType: values.smartDocType,
           },
         });
       }
@@ -107,16 +116,46 @@ class Project extends React.Component {
     });
   }
 
+  smartDockDetail = () => {
+    const { getFieldValue } = this.props.form;
+    const smartDoc = getFieldValue('smartDoc');
+    const smartDocType = getFieldValue('smartDocType');
+
+    if (smartDoc) {
+      if (smartDocType === 'swagger') {
+        return (
+          <FormItem
+            label="请填写swagger URL 或者上传文件"
+            {...formItemLayout}
+          >
+            <div>
+              <Input className="swagger-url" placeholder="请输入URL地址" />
+              <Upload>
+                <Button>
+                  <Icon type="upload" /> 点击上传
+                </Button>
+              </Upload>
+            </div>
+          </FormItem>
+        );
+      }
+      if (smartDocType === 'openapi') {
+        return (
+          <div>
+            <a target="_blank" href="https://yuque.antfin-inc.com/pickpost/helper/eyk7yb#rztlkg">查看OpenAPI接入文档</a>
+          </div>
+        );
+      }
+    }
+    return null;
+  }
+
   render() {
     window._t_ = this;
     const { projectSettingModel, params } = this.props;
-    const { project: { name, desc, owners, envs, accounts } } = projectSettingModel;
+    const { project: { name, desc, owners, envs, accounts, smartDoc, smartDocType } } = projectSettingModel;
     const { projectId } = params;
     const { getFieldDecorator, getFieldError, getFieldValue } = this.props.form;
-    const formItemLayout = {
-      labelCol: { span: 24 },
-      wrapperCol: { span: 24 },
-    };
 
     return (
       <div className="form-content">
@@ -207,7 +246,8 @@ class Project extends React.Component {
             {...formItemLayout}
           >
             {getFieldDecorator('smartDoc', {
-              initialValue: false,
+              initialValue: smartDoc,
+              valuePropName: 'checked',
             })(
               <Switch checkedChildren="开" unCheckedChildren="关" />
             )}
@@ -219,31 +259,17 @@ class Project extends React.Component {
               {...formItemLayout}
             >
               {getFieldDecorator('smartDocType', {
-                initialValue: 'openapi',
+                initialValue: smartDocType ? smartDocType : 'openapi',
               })(
                 <Radio.Group className="smart-doc-type">
-                  <Radio.Button value="openapi">OPENAPI</Radio.Button>
+                  <Radio.Button value="openapi">OpenAPI</Radio.Button>
                   <Radio.Button value="swagger">Swagger文档</Radio.Button>
                 </Radio.Group>
               )}
             </FormItem>
           }
           {
-            getFieldValue('smartDoc') &&
-            getFieldValue('smartDocType') === 'swagger' &&
-            <FormItem
-              label="请填写swagger URL 或者上传文件"
-              {...formItemLayout}
-            >
-            <div>
-              <Input className="swagger-url" placeholder="请输入URL地址" />
-              <Upload>
-                <Button>
-                  <Icon type="upload" /> 点击上传
-                </Button>
-              </Upload>
-            </div>
-            </FormItem>
+            this.smartDockDetail()
           }
 
           <Button className="submit" type="primary" size="default"
