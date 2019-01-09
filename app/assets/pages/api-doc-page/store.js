@@ -1,4 +1,5 @@
 import ajax from 'xhr-plus';
+import moment from 'moment';
 
 export default {
   namespace: 'apiDocModel',
@@ -15,9 +16,24 @@ export default {
       });
 
       if (status === 'success') {
+        const { swaggerSyncAt, updatedAt } = data;
+        let nValue = '';
+
+        if (swaggerSyncAt) {
+          // 手动文档更新时间早于智能文档
+          if (moment(updatedAt).isBefore(swaggerSyncAt)) {
+            nValue = 'auto';
+          } else {
+            nValue = 'manual';
+          }
+        }
+
         yield put({
           type: 'setData',
-          data,
+          data: {
+            ...data,
+            autoSwitch: nValue,
+          },
         });
       }
     },

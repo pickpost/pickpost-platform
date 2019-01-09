@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Form, Button, Input } from 'antd';
+import { Form, Button, Input, Radio } from 'antd';
+import moment from 'moment';
 import key from 'keymaster';
 
 import Info from '../../components/info';
@@ -54,9 +55,53 @@ class Api extends React.PureComponent {
     });
   }
 
+  generateInitial = (param) => {
+    const { updatedAt, swaggerSyncAt, requestSchema,
+      requestAutoSchema, responseSchema, responseAutoSchema } = this.props.apiDocModel;
+    if (param === 'requestSchema') {
+      if (swaggerSyncAt && moment(updatedAt).isBefore(swaggerSyncAt)) {
+        return requestAutoSchema;
+      }
+      return requestSchema;
+    }
+    if (param === 'responseSchema') {
+      if (swaggerSyncAt && moment(updatedAt).isBefore(swaggerSyncAt)) {
+        return responseAutoSchema;
+      }
+      return responseSchema;
+    }
+  }
+
+  handleSwitch = (e) => {
+    const { form, apiDocModel, dispatch } = this.props;
+    const { setFieldsValue } = form;
+    const { requestSchema, responseSchema, requestAutoSchema, responseAutoSchema } = apiDocModel;
+    const value = e.target.value;
+
+    if (value === 'auto') {
+      setFieldsValue({
+        requestSchema: requestAutoSchema,
+        responseSchema: responseAutoSchema,
+      });
+    } else {
+      setFieldsValue({
+        requestSchema,
+        responseSchema,
+      });
+    }
+
+    dispatch({
+      type: 'apiDocModel/setData',
+      data: {
+        autoSwitch: value,
+      },
+    });
+  }
+
   render() {
+    window._t_ = this;
     const { apiDocModel, params: { apiId } } = this.props;
-    const { _id, name, desc, url, apiType, requestSchema, responseSchema } = apiDocModel;
+    const { _id, name, desc, url, apiType, autoSwitch } = apiDocModel;
     const { getFieldDecorator, getFieldError } = this.props.form;
     const formItemLayoutFull = null;
 
@@ -71,7 +116,7 @@ class Api extends React.PureComponent {
             <div className="btn-wrap">
               <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
               <a className="smart-doc-attract" target="_blank" href="https://yuque.antfin-inc.com/pickpost/helper/eyk7yb#rztlkg">
-                推荐接入PickPost智能文档同步
+                文档更新太麻烦?  推荐接入PickPost智能文档同步!
               </a>
             </div>
           </Info>
@@ -83,13 +128,24 @@ class Api extends React.PureComponent {
             })(
               <Input type="hidden" />
             )}
+            {autoSwitch && <div className="auto-switch">
+              <Radio.Group
+                value={autoSwitch}
+                buttonStyle="solid"
+                size="small"
+                onChange={this.handleSwitch}
+              >
+                <Radio.Button value="auto">智能文档</Radio.Button>
+                <Radio.Button value="manual">手动文档</Radio.Button>
+              </Radio.Group>
+            </div>}
             <FormItem
               label="请求参数："
               {...formItemLayoutFull}
               help={getFieldError('desc')}
             >
               {getFieldDecorator('requestSchema', {
-                initialValue: requestSchema || {},
+                initialValue: this.generateInitial('requestSchema'),
               })(
                 <SchemaEditor />
               )}
@@ -100,7 +156,7 @@ class Api extends React.PureComponent {
               help={getFieldError('desc')}
             >
               {getFieldDecorator('responseSchema', {
-                initialValue: responseSchema || {},
+                initialValue: this.generateInitial('responseSchema'),
               })(
                 <SchemaEditor />
               )}
