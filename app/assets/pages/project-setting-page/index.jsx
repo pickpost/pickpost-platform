@@ -120,14 +120,17 @@ class Project extends React.Component {
       accept: '.json',
       name: 'swagger',
       action: '/openapi/sync/upload',
+      showUploadList: false,
       onChange(info) {
-        if (info.file.status !== 'uploading') {
-          console.log(info.file, info.fileList);
-        }
-        if (info.file.status === 'done') {
-          message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-          message.error(`${info.file.name} file upload failed.`);
+        const { response, status } = info.file;
+        if (status === 'done') {
+          if (response.status === 'success') {
+            message.success('接口文档同步成功 !');
+          } else {
+            message.error(`${response.msg}`);
+          }
+        } else if (status === 'error') {
+          message.error(`${response.msg}`);
         }
       },
     };
@@ -253,7 +256,7 @@ class Project extends React.Component {
                 <Switch checkedChildren="开" unCheckedChildren="关" />
               )}
             </FormItem>
-            { this.smartDockDetail() }
+            {this.smartDockDetail()}
           </Form>
         </div>
       </div>

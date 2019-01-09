@@ -1,8 +1,8 @@
 'use strict';
 
 const fs = require('fs');
+const fsExtra = require('fs-extra');
 const path = require('path');
-const sendToWormhole = require('stream-wormhole');
 const pump = require('mz-modules/pump');
 const swagger = require('../service/swagger');
 
@@ -37,19 +37,27 @@ exports.spiSync = async function (ctx) {
 exports.uploadSwagger = async function (ctx) {
   const stream = await ctx.getFileStream();
   const filename = Date.now() + '' + Number.parseInt(Math.random() * 10000) + path.extname(stream.filename);
-  const target = path.join('app/public', filename);
+  const target = path.join('app/public/upload', filename);
+
+  fsExtra.ensureDirSync('app/public/upload');
   const writeStream = fs.createWriteStream(target);
+
   try {
     // 写入文件
-    const resultFile = await pump(stream, writeStream);
+    await pump(stream, writeStream);
+    const resultFile = fs.readFileSync(target, 'utf8');
+    console.log(resultFile);
     const result = await swagger.sync(ctx.model, resultFile);
-    ctx.body = result;
+    this.body = {
+      status: 'success',
+      data: result,
+    };
   } catch (err) {
-    // 必须将上传的文件流消费掉，要不然浏览器响应会卡死
-    await sendToWormhole(stream);
     this.body = {
       status: 'fail',
       msg: err.message,
     };
+  } finally {
+    fsExtra.remove(target);
   }
 };
