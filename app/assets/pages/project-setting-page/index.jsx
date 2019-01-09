@@ -100,7 +100,6 @@ class Project extends React.Component {
             owners: values.owners,
             envs: values.envs,
             accounts: values.accounts,
-            smartDoc: values.smartDoc,
           },
         });
       }
@@ -115,11 +114,20 @@ class Project extends React.Component {
     });
   }
 
+  handleSwitchChecked = (checked) => {
+    const { projectId } = this.props.params;
+    this.props.dispatch({
+      type: 'projectSettingModel/switchChecked',
+      projectId,
+      checked,
+    });
+  }
+
   smartDockDetail = () => {
     const uploadProps = {
       accept: '.json',
       name: 'swagger',
-      action: '/openapi/sync/upload',
+      action: '/openapi/sync/upload', // 上传文件接口地址
       showUploadList: false,
       onChange(info) {
         const { response, status } = info.file;
@@ -239,7 +247,7 @@ class Project extends React.Component {
         <div className="smart-content">
           <Form layout="vertical" hideRequiredMark={true}>
             <h2 className="setting-sub-title">智能文档
-              <Tooltip className="icon-tip" placement="topLeft" title="开启后可通过SDK或者上传文件同步文档至Pickpost">
+              <Tooltip className="icon-tip" placement="topLeft" title="开启后可通过SDK或者上传文件同步文档至PickPost">
                 <Icon type="question-circle" />
               </Tooltip>
             </h2>
@@ -247,12 +255,7 @@ class Project extends React.Component {
             <FormItem
               {...formItemLayout}
             >
-              {getFieldDecorator('smartDoc', {
-                initialValue: smartDoc,
-                valuePropName: 'checked',
-              })(
-                <Switch checkedChildren="开" unCheckedChildren="关" />
-              )}
+              <Switch checked={smartDoc} onChange={this.handleSwitchChecked} checkedChildren="开" unCheckedChildren="关" />
             </FormItem>
             {this.smartDockDetail()}
           </Form>

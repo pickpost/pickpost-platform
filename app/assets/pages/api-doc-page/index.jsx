@@ -5,6 +5,7 @@ import key from 'keymaster';
 
 import Info from '../../components/info';
 import SchemaEditor from '../../components/schema-editor';
+import './index.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
@@ -64,10 +65,15 @@ class Api extends React.PureComponent {
     }
 
     return (
-      <div>
+      <div className="api-doc-page">
         <div className="c-header">
           <Info title={name} desc={desc} url={url} apiType={apiType}>
-            <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+            <div className="btn-wrap">
+              <Button size="default" className="new-btn" type="primary" icon="save" onClick={this.handleSave}>保存</Button>
+              <a className="smart-doc-attract" target="_blank" href="https://yuque.antfin-inc.com/pickpost/helper/eyk7yb#rztlkg">
+                推荐接入PickPost智能文档同步
+              </a>
+            </div>
           </Info>
         </div>
         <div className="api-content">

@@ -88,11 +88,40 @@ export default {
         message.error('删除失败');
       }
     },
+    *switchChecked({ checked, projectId }, { put }) {
+      try {
+        const { project } = yield put({
+          type: 'projectUpdate',
+          id: projectId,
+          project: {
+            smartDoc: checked,
+          },
+        });
+        if (project) {
+          yield put({
+            type: 'setSmartDoc',
+            data: {
+              smartDoc: project.smartDoc,
+            },
+          });
+        } else {
+          message.error('更新失败');
+        }
+      } catch (e) {
+        message.error('更新失败');
+      }
+    },
   },
 
   reducers: {
     setData(state, { data }) {
       return { ...state, ...data };
+    },
+    setSmartDoc(state, { data }) {
+      return {
+        ...state,
+        project: Object.assign(state.project, data),
+      };
     },
   },
 };
