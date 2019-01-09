@@ -1,8 +1,7 @@
 import React from 'react';
 import ajax from 'xhr-plus';
 import {
-  Form, Select, Input,
-  Button, Switch,
+  Form, Select, Input, Button, Switch,
   Icon, Tooltip, Radio, Upload,
 } from 'antd';
 import { connect } from 'dva';
