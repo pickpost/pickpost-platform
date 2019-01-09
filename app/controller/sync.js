@@ -46,8 +46,7 @@ exports.uploadSwagger = async function (ctx) {
     // 写入文件
     await pump(stream, writeStream);
     const resultFile = fs.readFileSync(target, 'utf8');
-    console.log(resultFile);
-    const result = await swagger.sync(ctx.model, resultFile);
+    const result = await swagger.sync(ctx.model, JSON.parse(resultFile));
     this.body = {
       status: 'success',
       data: result,

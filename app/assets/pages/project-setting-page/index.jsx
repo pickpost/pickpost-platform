@@ -137,11 +137,7 @@ class Project extends React.Component {
 
     return (
       <Dragger {...uploadProps}>
-        <p className="ant-upload-drag-icon">
-          <Icon type="inbox" />
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-        <p className="ant-upload-hint">Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files</p>
+        <p className="ant-upload-text">通过文件上传同步文档 (可选)</p>
       </Dragger>
     );
   }
@@ -156,6 +152,7 @@ class Project extends React.Component {
     return (
       <div className="setting-page">
         <div className="form-content">
+          <h2 className="setting-sub-title">基础设置</h2>
           <Form layout="vertical" hideRequiredMark={true}>
             {getFieldDecorator('_id', {
               initialValue: projectId,
@@ -241,11 +238,12 @@ class Project extends React.Component {
         </div>
         <div className="smart-content">
           <Form layout="vertical" hideRequiredMark={true}>
-            <h3 className="setting-sub-title">开启智能文档同步
-              <Tooltip className="icon-tip" placement="topLeft" title="开启后支持多种自动同步方式, 如Swagger, 接口同步">
+            <h2 className="setting-sub-title">智能文档
+              <Tooltip className="icon-tip" placement="topLeft" title="开启后可通过SDK或者上传文件同步文档至Pickpost">
                 <Icon type="question-circle" />
               </Tooltip>
-            </h3>
+            </h2>
+            <h3 className="smart-switch-title">开启智能文档<a target="_blank" href="https://yuque.antfin-inc.com/pickpost/helper/eyk7yb#rztlkg">如何接入智能文档同步功能 ?</a></h3>
             <FormItem
               {...formItemLayout}
             >

@@ -53,7 +53,6 @@
     "react-highlight-words": "^0.14.0",
     "safer-eval": "^1.2.3",
     "socket.io-client": "^2.0.4",
-    "stream-wormhole": "^1.1.0",
     "unirest": "^0.5.1",
     "url-pattern": "^1.0.3",
     "urllib": "^2.26.0",
