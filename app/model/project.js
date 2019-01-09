@@ -15,7 +15,6 @@ module.exports = app => {
     gateways: { type: Array },
     accounts: { type: Array },
     smartDoc: { type: Boolean },
-    smartDocType: { type: String },
   }, {
     timestamps: true,
   });
