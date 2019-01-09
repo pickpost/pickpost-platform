@@ -128,11 +128,11 @@ class Api extends React.PureComponent {
 
   handleAddFile = folder => {
     const { collectionId } = this.props.collectionApisModel;
-    const url = `/api_fe/create?collectionId=${collectionId}`;
 
     browserHistory.push({
-      pathname: url,
+      pathname: '/api_fe/create',
       query: {
+        collectionId,
         groupId: folder._id,
       },
     });
