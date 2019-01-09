@@ -33,6 +33,7 @@ exports.sync = async function(model, swagger) {
       action = API.updateOne({ url: bizType }, { $set: {
         requestAutoSchema,
         responseAutoSchema,
+        swaggerSyncAt: new Date(),
       } });
     } else {
       action = API.create({
@@ -42,6 +43,7 @@ exports.sync = async function(model, swagger) {
         url: bizType,
         requestAutoSchema,
         responseAutoSchema,
+        swaggerSyncAt: new Date(),
       });
     }
 
