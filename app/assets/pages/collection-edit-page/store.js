@@ -44,6 +44,9 @@ export default {
           type: 'json',
         });
         if (status === 'success') {
+          yield put({
+            type: 'collectionsModel/collections',
+          });
           // 页面跳转到接口集列表
           yield put(routerRedux.push({
             pathname: '/collections',
