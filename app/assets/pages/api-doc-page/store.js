@@ -42,8 +42,16 @@ export default {
     setData(state, { data }) {
       return { ...state, ...data };
     },
+
     reset() {
       return {};
+    },
+
+    updateFields(state, { data }) {
+      return {
+        ...state,
+        ...data,
+      };
     },
   },
 };

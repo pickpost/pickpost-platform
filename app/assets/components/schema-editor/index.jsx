@@ -1,12 +1,12 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 import set from 'lodash/set';
+import JSON5 from 'json5';
 import { Modal, Icon, Tooltip } from 'antd';
+import BulkEditor from '../bulk-editor';
 import json2schema from '../../utils/json2schema';
 import schema2json from '../../utils/schema2json';
-import JSON5 from 'json5';
 import stringToPath from '../../utils/stringToPath';
-import BulkEditor from '../bulk-editor';
 
 import './style.less';
 
@@ -33,14 +33,15 @@ const CodeMirrorConfig = {
   smartIndent: true,
   matchBrackets: true,
   styleActiveLine: true,
+  readOnly: false,
 };
 
-const BulkEditorAccounts = [{
+const BulkEditorEnums = [{
   field: 'value',
   placeholder: '值',
   width: '',
 }, {
-  field: 'remark',
+  field: 'description',
   placeholder: '备注',
   width: '',
 }];
@@ -133,10 +134,6 @@ class SchemaEditor extends React.Component {
     }
   }
 
-  hasChildren(prop) {
-    return prop.properties || prop.items;
-  }
-
   // 递归遍历整个schema，去匹配pathMap，更新属性。
   sycnField = (schema, pathMap) => {
     if (pathMap[schema.path]) {
@@ -157,13 +154,15 @@ class SchemaEditor extends React.Component {
   }
 
   generatePathMap(schema, parentsPath, pathMap) {
+    if (!schema) return {};
+
     const newParentsPath = parentsPath || 'root';
     let innerPathMap = pathMap || {};
 
     innerPathMap[newParentsPath] = {
       required: schema.required,
       title: schema.title,
-      remark: schema.remark,
+      description: schema.description,
       enum: schema.enum,
     };
 
@@ -178,12 +177,6 @@ class SchemaEditor extends React.Component {
     return innerPathMap;
   }
 
-  showEnumsModal = () => {
-    this.setState({
-      enumsModal: true,
-    });
-  }
-
   handleBulkEditorChange = list => {
     this.setState({
       list,
@@ -194,9 +187,9 @@ class SchemaEditor extends React.Component {
     for (const prop in properties) {
       const path = str + '.' + prop + '';
 
-      // 如果没有remark，则不会更新当前行的备注信息
-      if (!properties[prop].remark) {
-        properties[prop].remark = '';
+      // 如果没有description，则不会更新当前行的备注信息
+      if (!properties[prop].description) {
+        properties[prop].description = '';
       }
 
       rows.push({
@@ -204,6 +197,7 @@ class SchemaEditor extends React.Component {
         path,
         ...properties[prop],
       });
+
       if (properties[prop].properties) {
         this.renderTable(rows, properties[prop].properties, path + '[0]');
       }
@@ -233,9 +227,9 @@ class SchemaEditor extends React.Component {
   handleRemarkChange(item, e) { // 备注的修改
     const { schema } = this.state;
     const value = e.target.value;
-    setSchemaData(schema, item.path, 'remark', value);
+    setSchemaData(schema, item.path, 'description', value);
     // 同步 pathMap
-    this.pathMap[item.path] = this.pathMap[item.path] ? { ...this.pathMap[item.path], remark: value } : { remark: value };
+    this.pathMap[item.path] = this.pathMap[item.path] ? { ...this.pathMap[item.path], description: value } : { description: value };
     this.setState({
       schema,
     });
@@ -284,10 +278,12 @@ class SchemaEditor extends React.Component {
 
   render() {
     const { jsonStr, schema, enumsModal, leftRowCount, hightLightLine } = this.state;
+    const { disabled } = this.props;
     const rows = [];
     this.renderTable(rows, schema.properties, 'data');
     const leftShowRows = Math.max(leftRowCount, MinRows);
     this.fullFillRow(rows, leftShowRows - 2);
+    CodeMirrorConfig.readOnly = !!disabled;
 
     return (
       <div className="schema-editor">
@@ -338,24 +334,28 @@ class SchemaEditor extends React.Component {
                       <td className="enum">
                         {
                           item.enum && item.enum.length > 0 && (
-                            <Tooltip title={<div>{(item.enum || []).map(attr => <div key={attr.value}>{`${attr.value} ${attr.remark ? ': ' + attr.remark : ''}`}</div>)}</div>}>
+                            <Tooltip title={<div>{(item.enum || []).map(attr => <div key={attr.value}>{`${attr.value} ${attr.description ? ': ' + attr.description : ''}`}</div>)}</div>}>
                               <div className="enum-select">
                                 {
-                                  (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.remark ? `(${attr.remark})` : ''}</span>)
+                                  (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.description ? `(${attr.description})` : ''}</span>)
                                 }
                               </div>
                             </Tooltip>
                           )
                         }
-                        <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
-                          <Icon type="edit" />
-                        </span>
+                        {
+                          !disabled && (
+                            <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
+                              <Icon type="edit" />
+                            </span>
+                          )
+                        }
                       </td> :
                       <td></td>
                     }
                     {
                       item.type ? <td>
-                        <input className="re-input" type="text" value={item.remark} data-line={idx + 1} onFocus={this.handleSyncTableHightlight} onChange={e => { this.handleRemarkChange(item, e); }} />
+                        <input className="re-input" disabled={disabled} type="text" value={item.description} data-line={idx + 1} onFocus={this.handleSyncTableHightlight} onChange={e => { this.handleRemarkChange(item, e); }} />
                       </td> : <td></td>
                     }
                   </tr>
@@ -375,7 +375,7 @@ class SchemaEditor extends React.Component {
           onOk={this.handleSaveEnums}
           onCancel={() => { this.setState({ enumsModal: false }); }}
         >
-          <BulkEditor configs={BulkEditorAccounts} value={this.state.list} onChange={this.handleBulkEditorChange} />
+          <BulkEditor configs={BulkEditorEnums} value={this.state.list} onChange={this.handleBulkEditorChange} />
         </Modal>
       </div>
     );

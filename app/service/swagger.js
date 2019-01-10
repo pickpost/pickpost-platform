@@ -19,7 +19,8 @@ exports.sync = async function(model, swagger) {
 
   const actions = [];
 
-  const projectApis = await API.find({ projectId: project._id });
+  // 查询现有的所有接口
+  const projectApis = await API.find({ apiType: 'SPI' });
   const projectApiUrls = projectApis.map(item => item.url);
 
   Object.keys(swagger.paths).forEach(bizType => {
@@ -31,6 +32,7 @@ exports.sync = async function(model, swagger) {
 
     if (projectApiUrls.includes(bizType)) {
       action = API.updateOne({ url: bizType }, { $set: {
+        projectId: project._id.toString(),
         requestAutoSchema,
         responseAutoSchema,
         swaggerSyncAt: new Date(),

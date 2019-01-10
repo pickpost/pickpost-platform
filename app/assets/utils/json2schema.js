@@ -27,7 +27,7 @@ function json2schema(json, pathMap, parentsPath) {
         });
         return props;
       })(),
-      remark: '',
+      description: '',
       path: newParentsPath,
     };
   } else if (Array.isArray(json)) {
@@ -37,7 +37,7 @@ function json2schema(json, pathMap, parentsPath) {
       items: (function() {
         return json.length <= 0 ? null : json2schema(json[0], pathMap, newParentsPath + '[0]');
       })(),
-      remark: '',
+      description: '',
       path: newParentsPath,
     };
   } else {
@@ -46,7 +46,7 @@ function json2schema(json, pathMap, parentsPath) {
       type: getType(json),
       example: json,
       enum: [],
-      remark: '',
+      description: '',
       path: newParentsPath,
     };
   }
