@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Avatar, Button } from 'antd';
+import { setCookie } from './utils/utils';
+
 import './home.less';
 
 // const socketServer = location.protocol + '//' + location.host + '/socket2';
@@ -17,6 +19,12 @@ import './home.less';
 
 const user = window.context && window.context.user || {};
 export default class Container extends React.Component {
+
+  componentDidMount() {
+    // 设置已访问 Cookie
+    setCookie('pickpost_home', 'visited');
+  }
+
   render() {
     return (
       <div style={{ height: '100%' }} ref={dom => { this.container = dom; }}>
