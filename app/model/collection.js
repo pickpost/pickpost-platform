@@ -13,6 +13,9 @@ module.exports = app => {
     members: { type: Array },
     envs: { type: Array },
     accounts: { type: Array },
+    spaceId: { type: String },
+    parentId: { type: String },
+    type: { type: String }, // file or folder
   }, {
     timestamps: true,
   });
