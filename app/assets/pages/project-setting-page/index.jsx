@@ -1,17 +1,18 @@
 import React from 'react';
-import moment from 'moment';
 import ajax from 'xhr-plus';
-import { Form, Select, Input, Button, Tag, Popover } from 'antd';
+import {
+  Form, Select, Input, Button, Switch,
+  Icon, Tooltip, Upload, message,
+} from 'antd';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
 import BulkEditor from '../../components/bulk-editor';
-import { TypeColorMap } from '../../../common/constants';
 
 import './style.less';
 
 const createForm = Form.create;
 const FormItem = Form.Item;
 const Option = Select.Option;
+const Dragger = Upload.Dragger;
 
 const BulkEditorAccounts = [{
   field: 'username',
@@ -37,6 +38,11 @@ const BulkEditorEnvs = [{
   width: '30%',
 }];
 
+const formItemLayout = {
+  labelCol: { span: 24 },
+  wrapperCol: { span: 24 },
+};
+
 class Project extends React.Component {
   state = {
     ownersOption: [],
@@ -54,53 +60,6 @@ class Project extends React.Component {
       projectId,
     });
   }
-
-  apisColumns = [{
-    title: '名称',
-    dataIndex: 'name',
-    key: 'name',
-    width: '260px',
-  }, {
-    title: '类型',
-    dataIndex: 'methods',
-    key: 'methods',
-    render: methods => {
-      return methods.map(m => (<Tag key={m} color={TypeColorMap[m]}>{m}</Tag>));
-    },
-  }, {
-    title: '地址',
-    dataIndex: 'url',
-    key: 'url',
-    width: '400px',
-  }, {
-    title: '最近更新',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
-    render: updatedAt => {
-      return moment(updatedAt).format('YYYY-MM-DD HH:mm:ss');
-    },
-  }, {
-    title: '操作',
-    dataIndex: 'operation',
-    key: 'operation',
-    render: (_, api) => {
-      const DeleteFileButtons = (
-        <div className="action-btns">
-          <Button type="danger" onClick={this.handleDeleteAPI.bind(this, api)}>从应用删除接口</Button>
-        </div>
-      );
-      return (
-        <div className="actions" onClick={e => e.stopPropagation()}>
-          <Link to={`/api-detail/${api._id}/doc`}>文档</Link>
-          <Link to={`/api-detail/${api._id}/test`}>测试</Link>
-          <Link to={`/api-detail/${api._id}/mock`}>Mock</Link>
-          <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-            <Link to={`/api-detail/${api._id}/mock?belong=collection_${this.props.params.collectionId}`}>删除</Link>
-          </Popover>
-        </div>
-      );
-    },
-  }];
 
   handleSearchMembers(type, keyword) {
     if (keyword === '') {
@@ -155,108 +114,152 @@ class Project extends React.Component {
     });
   }
 
-  render() {
-    window._t_ = this;
-    const { projectSettingModel, params } = this.props;
-    const { project: { name, desc, owners, envs, accounts } } = projectSettingModel;
-    const { projectId } = params;
-    const { getFieldDecorator, getFieldError } = this.props.form;
-    const formItemLayout = {
-      labelCol: { span: 24 },
-      wrapperCol: { span: 24 },
+  handleSwitchChecked = (checked) => {
+    const { projectId } = this.props.params;
+    this.props.dispatch({
+      type: 'projectSettingModel/switchChecked',
+      projectId,
+      checked,
+    });
+  }
+
+  smartDockDetail = () => {
+    const uploadProps = {
+      accept: '.json',
+      name: 'swagger',
+      action: '/openapi/sync/upload', // 上传文件接口地址
+      showUploadList: false,
+      onChange(info) {
+        const { response, status } = info.file;
+        if (status === 'done') {
+          if (response.status === 'success') {
+            message.success('接口文档同步成功 !');
+          } else {
+            message.error(`${response.msg}`);
+          }
+        } else if (status === 'error') {
+          message.error(`${response.msg}`);
+        }
+      },
     };
 
     return (
-      <div className="form-content">
-        <Form layout="vertical" hideRequiredMark={true}>
-          {getFieldDecorator('_id', {
-            initialValue: projectId,
-          })(
-            <Input type="hidden" />
-          )}
-          <FormItem
-            label="名称"
-            {...formItemLayout}
-            help={getFieldError('name')}
-          >
-            {getFieldDecorator('name', {
-              initialValue: name,
-              rules: [{ required: true, message: '应用名称不能为空' }],
-            })(
-              <Input placeholder="请输入应用名称" />
-            )}
-          </FormItem>
-          <FormItem
-            label="描述"
-            {...formItemLayout}
-            help={getFieldError('desc')}
-          >
-            {getFieldDecorator('desc', {
-              initialValue: desc,
-            })(
-              <Input placeholder="请输入应用描述" />
-            )}
-          </FormItem>
-          <FormItem
-            label="管理员"
-            {...formItemLayout}
-          >
-            {getFieldDecorator('owners', {
-              initialValue: owners,
-              rules: [{ required: true, message: '管理员不能为空' }],
-            })(
-              <Select
-                mode="multiple"
-                notFoundContent=""
-                style={{ width: '100%' }}
-                placeholder="请选择管理员"
-                onSearch={keyword => { this.handleSearchMembers('owners', keyword); }}
-                filterOption={false}
-                labelInValue
-                optionLabelProp="name"
-              >
-                {
-                  this.state.ownersOption.map(item => (
-                    <Option key={item.empId} value={item.empId} name={item.name}>
-                      {item.avatar_url && <img className="option-user" src={item.avatar_url} width={30} height={30} alt="" />}
-                      <span className="option-name">{item.name} - {item.username || item.empId}</span>
-                    </Option>
-                  ))
-                }
-              </Select>
-            )}
-          </FormItem>
-          {
-            <div>
-              <FormItem
-                label="服务器地址"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('envs', {
-                  initialValue: envs && envs[0] ? envs : [{}],
-                })(
-                  <BulkEditor configs={BulkEditorEnvs} />
-                )}
-              </FormItem>
-              <FormItem
-                label="测试账户"
-                {...formItemLayout}
-              >
-                {getFieldDecorator('accounts', {
-                  initialValue: accounts && accounts[0] ? accounts : [{}],
-                })(
-                  <BulkEditor configs={BulkEditorAccounts} />
-                )}
-              </FormItem>
-            </div>
-          }
+      <Dragger {...uploadProps}>
+        <p className="ant-upload-text">通过文件上传同步文档 (可选)</p>
+      </Dragger>
+    );
+  }
 
-          <div>
-            <Button className="submit" type="primary" size="default" htmlType="submit" onClick={this.handleSaveProject}>
-              更新
-          </Button>
-          </div>
-        </Form>
+  render() {
+    window._t_ = this;
+    const { projectSettingModel, params } = this.props;
+    const { project: { name, desc, owners, envs, accounts, smartDoc } } = projectSettingModel;
+    const { projectId } = params;
+    const { getFieldDecorator, getFieldError } = this.props.form;
+
+    return (
+      <div className="setting-page">
+        <div className="form-content">
+          <h2 className="setting-sub-title">基础设置</h2>
+          <Form layout="vertical" hideRequiredMark={true}>
+            {getFieldDecorator('_id', {
+              initialValue: projectId,
+            })(
+              <Input type="hidden" />
+            )}
+            <FormItem
+              label="名称"
+              {...formItemLayout}
+              help={getFieldError('name')}
+            >
+              {getFieldDecorator('name', {
+                initialValue: name,
+                rules: [{ required: true, message: '应用名称不能为空' }],
+              })(
+                <Input placeholder="请输入应用名称" />
+              )}
+            </FormItem>
+            <FormItem
+              label="描述"
+              {...formItemLayout}
+              help={getFieldError('desc')}
+            >
+              {getFieldDecorator('desc', {
+                initialValue: desc,
+              })(
+                <Input placeholder="请输入应用描述" />
+              )}
+            </FormItem>
+            <FormItem
+              label="管理员"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('owners', {
+                initialValue: owners,
+                rules: [{ required: true, message: '管理员不能为空' }],
+              })(
+                <Select
+                  mode="multiple"
+                  notFoundContent=""
+                  style={{ width: '100%' }}
+                  placeholder="请选择管理员"
+                  onSearch={keyword => { this.handleSearchMembers('owners', keyword); }}
+                  filterOption={false}
+                  labelInValue
+                  optionLabelProp="name"
+                >
+                  {
+                    this.state.ownersOption.map(item => (
+                      <Option key={item.empId} value={item.empId} name={item.name}>
+                        {item.avatar_url && <img className="option-user" src={item.avatar_url} width={30} height={30} alt="" />}
+                        <span className="option-name">{item.name} - {item.username || item.empId}</span>
+                      </Option>
+                    ))
+                  }
+                </Select>
+              )}
+            </FormItem>
+            <FormItem
+              label="服务器URL"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('envs', {
+                initialValue: envs && envs[0] ? envs : [{}],
+              })(
+                <BulkEditor configs={BulkEditorEnvs} />
+              )}
+            </FormItem>
+            <FormItem
+              label="测试账户"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('accounts', {
+                initialValue: accounts && accounts[0] ? accounts : [{}],
+              })(
+                <BulkEditor configs={BulkEditorAccounts} />
+              )}
+            </FormItem>
+            <Button className="submit" type="primary" size="default"
+              htmlType="submit" onClick={this.handleSaveProject}>更新
+            </Button>
+          </Form>
+        </div>
+        <div className="smart-content">
+          <Form layout="vertical" hideRequiredMark={true}>
+            <h2 className="setting-sub-title">智能文档
+              <Tooltip className="icon-tip" placement="topLeft" title="开启后可通过SDK或者上传文件同步文档至PickPost">
+                <Icon type="question-circle" />
+              </Tooltip>
+            </h2>
+            <h3 className="smart-switch-title">开启智能文档<a target="_blank" href="https://yuque.antfin-inc.com/pickpost/helper/eyk7yb#rztlkg">如何接入智能文档同步功能 ?</a></h3>
+            <FormItem
+              {...formItemLayout}
+            >
+              <Switch checked={smartDoc} onChange={this.handleSwitchChecked} checkedChildren="开" unCheckedChildren="关" />
+            </FormItem>
+            {this.smartDockDetail()}
+          </Form>
+        </div>
       </div>
     );
   }

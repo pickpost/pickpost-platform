@@ -33,8 +33,7 @@ export default {
           });
         }
       } catch (e) {
-        message.error(e.message);
-        message.error('查询接口集失败');
+        message.error(e.message || '查询接口集失败');
       }
     },
   },

@@ -2,7 +2,7 @@ import React from 'react';
 import { string } from 'prop-types';
 import { Icon } from 'antd';
 import { Link } from 'dva/router';
-import { apiTypes as API_TYPES } from '../../../../../common/constants';
+import { ApiTypes as API_TYPES } from '../../../../../common/constants';
 
 export default class ApiNav extends React.Component {
   static propTypes = {

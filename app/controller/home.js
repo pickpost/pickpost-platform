@@ -2,6 +2,11 @@
 const _ = require('lodash');
 
 exports.index = async function (ctx) {
+  if (ctx.headers.cookie.indexOf('pickpost_home=visited') >= 0) {
+    ctx.redirect('/collections');
+    return;
+  }
+
   await this.render('home.jsx', {
     user: {
       cname: _.get(ctx, 'session.user.cname'),

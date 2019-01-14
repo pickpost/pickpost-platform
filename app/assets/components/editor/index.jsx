@@ -15,6 +15,8 @@ require('codemirror/addon/lint/lint');
 require('codemirror/addon/lint/javascript-lint');
 require('../../utils/codemirror-json-lint');
 require('codemirror/addon/lint/lint.css');
+require('codemirror/addon/display/fullscreen');
+require('codemirror/addon/display/fullscreen.css');
 
 require('codemirror/addon/fold/foldgutter');
 require('codemirror/addon/fold/brace-fold');
@@ -35,6 +37,11 @@ const CodeMirrorConfig = {
   smartIndent: true,
   matchBrackets: true,
   styleActiveLine: true,
+  extraKeys: {
+    Esc: (cm) => {
+      if (cm.getOption('fullScreen')) cm.setOption('fullScreen', false);
+    },
+  },
 };
 
 @autobind
@@ -47,6 +54,7 @@ export default class Editor extends React.Component {
       showModal: false,
       tagTitle: '',
       tagIndex: 0,
+      fullscreen: false,
     };
   }
 
@@ -108,6 +116,11 @@ export default class Editor extends React.Component {
     });
   }
 
+  fullscreen() {
+    this.instance.setOption('fullScreen', true);
+    this.instance.focus();
+  }
+
   handleDoubleClick(index) {
     const { list } = this.state;
     this.setState({
@@ -151,7 +164,7 @@ export default class Editor extends React.Component {
   }
 
   render() {
-    const { list, selected, showModal, tagTitle } = this.state;
+    const { list, selected, showModal, tagTitle, fullscreen } = this.state;
     const { mode } = this.props;
 
     const BulkEditorEnvs = [{
@@ -188,6 +201,9 @@ export default class Editor extends React.Component {
           {
             mode !== 'bulk' && (
               <div className="top-action">
+                <div className="format-code" onClick={this.fullscreen.bind(this)}>
+                  全屏
+                </div>
                 <div className="format-code" onClick={this.formatCode.bind(this)}>
                   格式化
                 </div>
@@ -213,7 +229,7 @@ export default class Editor extends React.Component {
                 list[selected] &&
                 <CodeMirror
                   value={codemirrorValue}
-                  options={CodeMirrorConfig}
+                  options={{ ...CodeMirrorConfig, fullscreen }}
                   editorDidMount={ editor => { this.instance = editor; }}
                   onBeforeChange={(editor, data, value) => {
                     this.handleInputChange(selected, value);

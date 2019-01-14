@@ -1,9 +1,8 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Icon } from 'antd';
-import { Link } from 'dva/router';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import ApiNav from '../../components/api-nav';
 
 import './style.less';
 
@@ -26,26 +25,7 @@ class Api extends React.PureComponent {
       <div className="collection-apis-page">
         <div className="api-main">
           {
-            apiId && (
-              <div className="tabs-header">
-                <Link to={`/project/${projectId}/apis/list?groupId=${this.groupId || ''}`} activeClassName="active">
-                  <Icon type="left" /> 返回列表
-                </Link>
-                <div className="split-line"></div>
-                <Link to={`/project/${projectId}/apis/doc/${apiId}`} activeClassName="active">
-                  <Icon type="profile" /> 文档
-                </Link>
-                <Link to={`/project/${projectId}/apis/test/${apiId}`} activeClassName="active">
-                  <Icon type="rocket" /> 测试
-                </Link>
-                <Link to={`/project/${projectId}/apis/mock/${apiId}`} activeClassName="active">
-                  <Icon type="api" /> Mock
-                </Link>
-                <Link to={`/project/${projectId}/apis/setting/${apiId}`} activeClassName="active">
-                  <Icon type="setting" /> 设置
-                </Link>
-              </div>
-            )
+            apiId && <ApiNav groupId={this.groupId} apiId={apiId} uniqueId={projectId} source="project" {...this.props} />
           }
 
           {this.props.children}

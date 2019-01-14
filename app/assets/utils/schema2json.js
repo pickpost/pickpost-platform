@@ -3,10 +3,12 @@ function hasValue(val) {
 }
 
 function schema2json(schema) {
+  if (!schema) return {};
+
   let root;
-  if (schema.type === 'object') {
+  if (schema.type === 'object' && schema.properties) {
     root = root || {};
-    Object.keys(schema.properties).forEach(key => {
+    Object.keys(schema.properties || {}).forEach(key => {
       root[key] = schema2json(schema.properties[key]);
     });
   } else if (schema.type === 'array') {

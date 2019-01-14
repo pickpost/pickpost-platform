@@ -50,6 +50,7 @@ module.exports = app => {
   const jsonp = app.jsonp();
   router.all('/mock/:apiType/:projectName/**', jsonp, controller.mock.mockapi);
   router.all('/openapi/sync/spi', controller.sync.spiSync);
+  router.post('/openapi/sync/upload', controller.sync.uploadSwagger);
 
   // ProxyAPI
   router.all('/auth', controller.proxy.auth);

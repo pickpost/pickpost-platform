@@ -1,7 +1,10 @@
 'use strict';
 
-const schema = require('../common/schema');
-const { APISchema } = schema;
+const fs = require('fs');
+const fsExtra = require('fs-extra');
+const path = require('path');
+const pump = require('mz-modules/pump');
+const swagger = require('../service/swagger');
 
 /**
  * 同步 SPI Schema
@@ -11,59 +14,49 @@ const { APISchema } = schema;
  * this.request.body 获取请求body
  */
 exports.spiSync = async function (ctx) {
-  const API = ctx.model.Api;
-  const Project = ctx.model.Project;
-  const { appName, apis } = this.request.body;
-
-  const project = await Project.findOne({
-    name: appName,
-  });
-
-  // 1. 判断是否存在该后端应用
-  if (!project) {
+  try {
+    const result = await swagger.sync(ctx.model, ctx.request.body);
+    this.body = {
+      status: 'success',
+      data: result,
+    };
+  } catch (err) {
     this.body = {
       status: 'fail',
-      data: {},
-      msg: '该应用不存在',
+      msg: err.message,
     };
-    return;
   }
+};
+/**
+ * 上传swagger文档接口
+ * @param {Object} ctx
+ * this.params 获取url中的:xx
+ * this.query 获取url中的QueryString参数
+ * this.request.body 获取请求body
+ */
+exports.uploadSwagger = async function (ctx) {
+  const stream = await ctx.getFileStream();
+  const filename = Date.now() + '' + Number.parseInt(Math.random() * 10000) + path.extname(stream.filename);
+  const target = path.join('app/public/upload', filename);
 
-  const actions = [];
+  fsExtra.ensureDirSync('app/public/upload');
+  const writeStream = fs.createWriteStream(target);
 
-  // const apiList = JSON.parse(apis);
-  const apiList = apis;
-  const projectApis = await API.find({ projectId: project._id });
-  const projectApiUrls = projectApis.map(item => item.url);
-
-  apiList.forEach(item => {
-    let action = null;
-    // 判断接口是否存在，存在走更新，不存在走创建
-    if (!item.bizType) return;
-
-    if (projectApiUrls.includes(item.bizType)) {
-      action = API.updateOne({ url: item.bizType }, { $set: {
-        requestAutoSchema: item.requestSchema,
-        responseAutoSchema: item.responseSchema,
-      } });
-    } else {
-      action = API.create({
-        ...APISchema,
-        projectId: project._id.toString(),
-        apiType: 'SPI',
-        url: item.bizType,
-        requestAutoSchema: item.requestSchema,
-        responseAutoSchema: item.responseSchema,
-      });
-    }
-
-    actions.push(action);
-  });
-
-  const result = await Promise.all(actions);
-
-  this.body = {
-    status: 'success',
-    data: result,
-  };
+  try {
+    // 写入文件
+    await pump(stream, writeStream);
+    const resultFile = fs.readFileSync(target, 'utf8');
+    const result = await swagger.sync(ctx.model, JSON.parse(resultFile));
+    this.body = {
+      status: 'success',
+      data: result,
+    };
+  } catch (err) {
+    this.body = {
+      status: 'fail',
+      msg: err.message,
+    };
+  } finally {
+    fsExtra.remove(target);
+  }
 };

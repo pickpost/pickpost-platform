@@ -24,6 +24,7 @@ module.exports = app => {
     requestAutoSchema: { type: Object },
     responseAutoSchema: { type: Object },
     creater: { type: Object },
+    swaggerSyncAt: { type: Date },
   }, {
     timestamps: true,
   });

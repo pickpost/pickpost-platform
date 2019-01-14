@@ -2,11 +2,17 @@ import React from 'react';
 import { Avatar, Icon } from 'antd';
 import { Link } from 'dva/router';
 import GlobalSearch from '../global-search';
+import { setCookie } from '../../utils/utils';
 
 import './style.less';
 
 const user = window.context.user;
 class Header extends React.Component {
+  gotoHomePage() {
+    setCookie('pickpost_home', '');
+    location.href = '/';
+  }
+
   render() {
     const { uplevel, title } = this.props;
 
@@ -61,7 +67,7 @@ class Header extends React.Component {
             <span>PickPost</span>
           </Link>
           <div className="enter pull-right">
-            <a className="help-link" href="/">首页</a>
+            <a className="help-link" onClick={this.gotoHomePage}>首页</a>
             <Avatar src={user.avatar} />
           </div>
           <div className="global-search pull-right">
