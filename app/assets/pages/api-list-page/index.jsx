@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { browserHistory, Link } from 'dva/router';
 import Highlighter from 'react-highlight-words';
+import pubsub from 'pubsub.js';
 import Info from '../../components/info';
 import { TypeColorMap } from '../../../common/constants';
 import Dragrow from './components/dragrow';
@@ -168,6 +169,12 @@ class Collection extends React.PureComponent {
     ),
   })
 
+  handleCopyApi = () => {
+    pubsub.publish('globalSearch', {
+      source: 'copyApi',
+    });
+  }
+
   handleSearch = (selectedKeys, confirm) => {
     confirm();
     this.setState({ searchText: selectedKeys[0] });
@@ -213,6 +220,9 @@ class Collection extends React.PureComponent {
           {
             collectionId && collection && (
               <Info title={collection.name} desc={collection.desc}>
+                <Button size="default" className="new-btn pull-right mar-right" onClick={this.handleCopyApi} icon="copy">
+                  复制接口
+                </Button>
                 <Link to={`/api_fe/create?collectionId=${collectionId}`}>
                   <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
                     新增接口

@@ -3,6 +3,7 @@ import { Icon, Input, AutoComplete } from 'antd';
 import ajax from 'xhr-plus';
 import key from 'keymaster';
 import debounce from 'lodash/debounce';
+import pubsub from 'pubsub.js';
 
 import './style.less';
 
@@ -30,6 +31,23 @@ export default class GlobalSearch extends React.PureComponent {
       e.preventDefault();
       this.handleUnfocus();
     });
+
+    pubsub.subscribe('globalSearch', (data) => {
+      if (data && data.source === 'copyApi') {
+        this.setState({
+          trigger: true,
+          restrict: [ 'api' ],
+        }, () => {
+          this.focus();
+        });
+      } else {
+        this.setState({
+          trigger: true,
+        }, () => {
+          this.focus();
+        });
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -38,16 +56,16 @@ export default class GlobalSearch extends React.PureComponent {
   }
 
   handleFocus = () => {
-    this.setState({
-      focus: true,
-    }, () => {
-      document.getElementById('global-search-input').focus();
-    });
+    pubsub.publish('globalSearch');
+  }
+
+  focus = () => {
+    document.getElementById('global-search-input').focus();
   }
 
   handleUnfocus = () => {
     this.setState({
-      focus: false,
+      trigger: false,
     });
   }
 
@@ -79,7 +97,7 @@ export default class GlobalSearch extends React.PureComponent {
   }
 
   render() {
-    const { dataSource, focus } = this.state;
+    const { dataSource, trigger } = this.state;
     const options = dataSource.map((group, gIdx) => (
       <OptGroup
         key={group.type + '_' + gIdx}
@@ -100,10 +118,10 @@ export default class GlobalSearch extends React.PureComponent {
     return (
       <div>
         <div>
-          <Input onFocus={this.handleFocus} placeholder={keyNames} style={{ width: 280 }} suffix={<Icon type="search" className="certain-category-icon" />} />
+          <Input onFocus={this.handleFocus} id="global-search-top" placeholder={keyNames} style={{ width: 280 }} suffix={<Icon type="search" className="certain-category-icon" />} />
         </div>
         {
-          focus && (
+          trigger && (
             <div>
               <div className="certain-category-search-wrapper" style={{ width: 500 }}>
                 <AutoComplete
