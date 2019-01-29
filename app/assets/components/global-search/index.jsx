@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon, Input, AutoComplete, Button, message } from 'antd';
-import ajax from 'xhr-plus';
 import key from 'keymaster';
 import debounce from 'lodash/debounce';
 import pubsub from 'pubsub.js';
+import ajax from '../../utils/ajax';
 
 import './style.less';
 
@@ -78,8 +78,7 @@ export default class GlobalSearch extends React.PureComponent {
     ajax({
       url: '/api/globalsearch',
       method: 'get',
-      type: 'json',
-      data: {
+      params: {
         keyword: e,
       },
     }).then(res => {

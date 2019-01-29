@@ -68,7 +68,7 @@ exports.projectsShow = async function (ctx) {
 exports.projectsNew = async function (ctx) {
   const Project = ctx.model.Project;
   const reqBody = this.request.body;
-  const project = JSON.parse(reqBody.project);
+  const project = reqBody.project;
 
   if (project.owners.length <= 0) {
     this.body = {
@@ -90,7 +90,7 @@ exports.projectsNew = async function (ctx) {
 exports.projectsUpdate = async function (ctx) {
   const Project = ctx.model.Project;
   const reqBody = this.request.body;
-  const project = JSON.parse(reqBody.project);
+  const project = reqBody.project;
   delete project._id;
   const result = await Project.updateOne({ _id: this.params.id }, { $set: updateFill(project) });
 

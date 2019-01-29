@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 import { userInfo } from '../../utils/utils';
 
 export default {
@@ -16,7 +16,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: '/api/projects',
           method: 'get',
-          type: 'json',
         });
 
         if (status === 'success') {
@@ -33,7 +32,6 @@ export default {
       const { status, data } = yield call(ajax, {
         url: `/api/apis/${apiId}`,
         method: 'get',
-        type: 'json',
       });
 
       if (status === 'success') {
@@ -53,12 +51,11 @@ export default {
       api.creater = userInfo();
       try {
         const { status, errMsg } = yield call(ajax, {
+          method: api._id ? 'put' : 'post',
           url,
           data: {
-            api: JSON.stringify(api),
+            api,
           },
-          method: api._id ? 'put' : 'post',
-          type: 'json',
         });
         if (status === 'success') {
           message.success(api._id ? '保存成功' : '创建成功');

@@ -33,7 +33,7 @@ exports.fileShow = async function (ctx) {
 exports.fileNew = async function (ctx) {
   const File = ctx.model.File;
   const reqBody = this.request.body;
-  const file = JSON.parse(reqBody.file);
+  const file = reqBody.file;
   const result = await File.insertOne(createFill(file));
 
   this.body = {
@@ -45,7 +45,7 @@ exports.fileNew = async function (ctx) {
 exports.fileUpdate = async function (ctx) {
   const File = ctx.model.File;
   const reqBody = this.request.body;
-  const file = JSON.parse(reqBody.file);
+  const file = reqBody.file;
   const result = await File.updateOne({ _id: this.params.id }, { $set: updateFill(file) });
 
   this.body = {

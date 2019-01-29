@@ -1,4 +1,4 @@
-import ajax from 'xhr-plus';
+import ajax from '../../utils/ajax';
 import { message } from 'antd';
 
 export default {
@@ -16,8 +16,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: '/api/projects',
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {

@@ -30,8 +30,7 @@ exports.folderShow = async function (ctx) {
 
 exports.folderNew = async function (ctx) {
   const Folder = ctx.model.Folder;
-  const folderStr = this.request.body.folder;
-  const c = JSON.parse(folderStr);
+  const c = this.request.body.folder;
 
   const result = await Folder.insertOne(createFill(c));
 
@@ -43,8 +42,7 @@ exports.folderNew = async function (ctx) {
 
 exports.folderUpdate = async function (ctx) {
   const Folder = ctx.model.Folder;
-  const folderStr = this.request.body.folder;
-  const c = JSON.parse(folderStr);
+  const c = this.request.body.folder;
   delete c._id;
   const result = await Folder.updateOne({ _id: this.params.id }, { $set: updateFill(c) });
 

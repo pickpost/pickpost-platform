@@ -1,8 +1,7 @@
-import ajax from 'xhr-plus';
-// import key from 'keymaster';
 import { message } from 'antd';
 import { mockParse, keyValueParse, getEnvByUrl } from '../../utils/utils';
 import get from 'lodash/get';
+import ajax from '../../utils/ajax';
 import { getCookie } from './service';
 import { ApiTypes } from '../../../common/constants';
 
@@ -66,7 +65,6 @@ export default {
       const { status, data } = yield call(ajax, {
         url: `/api/apis/${apiId}`,
         method: 'get',
-        type: 'json',
       });
 
       if (status === 'success') {
@@ -146,7 +144,7 @@ export default {
         url,
         type: 'json',
         method: 'put',
-        data: { project: JSON.stringify({ envs }) },
+        data: { project: { envs } },
       });
 
       if (result && result.status === 'success') {
@@ -168,7 +166,7 @@ export default {
         url,
         type: 'json',
         method: 'put',
-        data: { project: JSON.stringify({ gateways }) },
+        data: { project: { gateways } },
       });
       if (result && result.status === 'success') {
         yield put({
@@ -191,7 +189,7 @@ export default {
           type: 'json',
           method: 'put',
           data: {
-            project: JSON.stringify({ accounts }),
+            project: { accounts },
           },
         });
         if (accountsData.status === 'success') {

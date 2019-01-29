@@ -7,15 +7,15 @@ module.exports = app => {
   const collectionSchema = new Schema({
     name: { type: String },
     desc: { type: String },
-    auth: { type: String },
-    public: { type: Boolean },
-    owners: { type: Array },
-    members: { type: Array },
-    envs: { type: Array },
     accounts: { type: Array },
     spaceId: { type: String },
     parentId: { type: String },
     type: { type: String }, // file or folder
+    owners: { type: Array },
+    members: { type: Array },
+    envs: { type: Array },
+    public: { type: Boolean },
+    auth: { type: String },
   }, {
     timestamps: true,
   });

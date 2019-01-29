@@ -45,10 +45,10 @@ exports.collectionsShow = async function (ctx) {
 
 exports.collectionsNew = async function (ctx) {
   const Collection = ctx.model.Collection;
-  const collectionStr = this.request.body.collection;
-  const c = JSON.parse(collectionStr);
+  const { owners = [], type } = this.request.body;
 
-  if (c.owners.length <= 0) {
+  // 如果是项目必须这是管理员
+  if (type !== 'folder' && owners.length <= 0) {
     this.body = {
       status: 'fail',
       message: '管理员不能为空',
@@ -57,7 +57,7 @@ exports.collectionsNew = async function (ctx) {
     return;
   }
 
-  const result = await Collection.create(createFill(c));
+  const result = await Collection.create(createFill(this.request.body));
 
   this.body = {
     status: 'success',
@@ -68,9 +68,7 @@ exports.collectionsNew = async function (ctx) {
 exports.collectionsUpdate = async function (ctx) {
   const workid = this.session.user.workid;
   const Collection = ctx.model.Collection;
-  const collectionStr = this.request.body.collection;
-  const c = JSON.parse(collectionStr);
-  delete c._id;
+  delete this.request.body._id;
   const colData = await Collection.findOne({
     _id: this.params.id,
   });
@@ -84,7 +82,11 @@ exports.collectionsUpdate = async function (ctx) {
     };
     return;
   }
-  const result = await Collection.updateOne({ _id: this.params.id }, { $set: updateFill(c) });
+  const result = await Collection.updateOne({
+    _id: this.params.id,
+  }, {
+    $set: updateFill(this.request.body),
+  });
 
   this.body = {
     status: 'success',

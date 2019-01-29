@@ -1,9 +1,9 @@
 import React from 'react';
 import { Icon, Menu, message } from 'antd';
 import { connect } from 'dva';
-import ajax from 'xhr-plus';
 import cloneDeep from 'lodash/cloneDeep';
 import { Link } from 'dva/router';
+import ajax from '../../utils/ajax';
 import Layout from '../../layout/default.jsx';
 
 import './style.less';
@@ -173,8 +173,7 @@ class Collection extends React.PureComponent {
       ajax({
         url: '/api/search',
         method: 'get',
-        type: 'json',
-        data: { keyword },
+        params: { keyword },
       }).then(({ status, data }) => {
         if (status === 'success') {
           const memberList = data.users.map(v => ({

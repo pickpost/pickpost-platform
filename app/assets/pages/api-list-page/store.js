@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'apiListModel',
@@ -15,8 +15,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: `/api/collections/${collectionId}`,
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {
@@ -37,8 +35,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: `/api/projects/${projectId}`,
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {
@@ -66,10 +62,9 @@ export default {
           params.projectId = projectId;
         }
         const { status, data } = yield call(ajax, {
-          url: '/api/apis',
           method: 'get',
-          type: 'json',
-          data: { ...params },
+          url: '/api/apis',
+          params: { ...params },
         });
         if (status === 'success') {
           yield put({
@@ -88,10 +83,9 @@ export default {
       try {
         if (!projectId) return;
         const { status, data } = yield call(ajax, {
-          url: '/api/apis',
           method: 'get',
-          type: 'json',
-          data: {
+          url: '/api/apis',
+          params: {
             projectId,
           },
         });
@@ -112,9 +106,8 @@ export default {
     *deleteAPI({ apiId, projectId, collectionId }, { call, put }) { // 如果删除的是当前展示的
       try {
         const { status } = yield call(ajax, {
-          url: `/api/apis/${apiId}`,
           method: 'DELETE',
-          type: 'json',
+          url: `/api/apis/${apiId}`,
         });
         if (status === 'success') {
           message.success('删除成功');
@@ -134,7 +127,6 @@ export default {
         const { status } = yield call(ajax, {
           url: '/api/apisUnlink',
           method: 'POST',
-          type: 'json',
           data: {
             apiId,
             collectionId,

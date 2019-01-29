@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Icon } from 'antd';
+import { Avatar, Icon, Dropdown, Menu } from 'antd';
 import { Link } from 'dva/router';
 import GlobalSearch from '../global-search';
 import { setCookie } from '../../utils/utils';
@@ -31,9 +31,23 @@ class Header extends React.Component {
       );
     }
 
+    const menu = (
+      <Menu>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
+        </Menu.Item>
+        <Menu.Item>
+          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3rd menu item</a>
+        </Menu.Item>
+      </Menu>
+    );
+
     return (
       <div className="header">
-        <div className="header-row">
+        <div className="header-logo">
           {
             uplevel && (
               <Link to={this.props.uplevel} className="backbtn">
@@ -66,6 +80,13 @@ class Header extends React.Component {
             </svg>
             <span>PickPost</span>
           </Link>
+        </div>
+        <div>
+          <Dropdown overlay={menu}>
+            <div className="space-switch">
+              口碑 <Icon type="down" />
+            </div>
+          </Dropdown>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
             <Avatar src={user.avatar} />

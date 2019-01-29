@@ -1,11 +1,11 @@
 import React from 'react';
-import ajax from 'xhr-plus';
 import {
   Form, Select, Input, Button, Switch,
   Icon, Tooltip, Upload, message,
 } from 'antd';
 import { connect } from 'dva';
 import BulkEditor from '../../components/bulk-editor';
+import ajax from '../../utils/ajax';
 
 import './style.less';
 
@@ -74,8 +74,7 @@ class Project extends React.Component {
       ajax({
         url: '/api/search',
         method: 'get',
-        type: 'json',
-        data: { keyword },
+        params: { keyword },
       }).then(({ status, data }) => {
         if (status === 'success') {
           const newState = { ...this.state };

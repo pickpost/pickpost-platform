@@ -1,10 +1,11 @@
 import React from 'react';
 import { Row, Col, Pagination, Icon, Button, Tabs } from 'antd';
 import { connect } from 'dva';
-import { Link } from 'dva/router';
+import { Link, browserHistory } from 'dva/router';
 import { isBelong } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
 import Card from '../../components/card';
+import GroupCreate from './components/group-create';
 
 import './style.less';
 
@@ -24,6 +25,10 @@ class Index extends React.PureComponent {
         type: 'collectionsModel/collections',
       });
     }
+  }
+
+  saveFormRef = formRef => {
+    this.formRef = formRef;
   }
 
   handleCategoryChange = category => {
@@ -47,10 +52,46 @@ class Index extends React.PureComponent {
     });
   }
 
+  handleShowGroupCreate = () => {
+    this.props.dispatch({
+      type: 'collectionsModel/setFolderModal',
+      visible: true,
+    });
+  }
+
+  handleCancel = () => {
+    this.props.dispatch({
+      type: 'collectionsModel/setFolderModal',
+      visible: false,
+    });
+  }
+
+  handleCreateFolder = () => {
+    const form = this.formRef.props.form;
+    form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+
+      this.props.dispatch({
+        type: values.folderId ? 'collectionsModel/updateFolder' : 'collectionsModel/createFolder',
+        name: values.name,
+        _id: values.folderId,
+        form,
+      });
+    });
+  }
+
+  handleGotoCreateCollection = () => {
+    browserHistory.push({
+      pathname: '/collections/new',
+    });
+  }
+
   render() {
     const { collectionsModel } = this.props;
     const { pageSize } = this.state;
-    const { collections, category, currentPage } = collectionsModel;
+    const { collections, category, currentPage, showFolderModal } = collectionsModel;
     let filteredCollections = [];
 
     collections.forEach(collection => {
@@ -58,6 +99,11 @@ class Index extends React.PureComponent {
       if (category === 'ME' && !isBelong(collection)) {
         return;
       }
+
+      if (collection.type === 'folder') {
+        return;
+      }
+
       filteredCollections.push(collection);
     });
     const total = filteredCollections.length;
@@ -81,11 +127,14 @@ class Index extends React.PureComponent {
               <Tabs
                 activeKey={category}
                 tabBarExtraContent={
-                  <Link to="/collections/new">
-                    <Button size="default" className="new-btn" type="primary" icon="plus">
-                      新建需求
+                  <div className="add-actions">
+                    <Button onClick={this.handleShowGroupCreate} size="default" className="new-btn" type="primary" icon="plus">
+                      新建产品组
                     </Button>
-                  </Link>
+                    <Button onClick={this.handleGotoCreateCollection} size="default" className="new-btn" type="primary" icon="plus">
+                      新建产品
+                    </Button>
+                  </div>
                 }
                 onChange={this.handleCategoryChange}
               >
@@ -93,8 +142,8 @@ class Index extends React.PureComponent {
                 <TabPane tab="所有的" key="ALL"></TabPane>
               </Tabs>
             </div>
-
           </div>
+          <h3>产品线名称</h3>
           <Row gutter={pageSize}>
             {
               filteredCollections.map(p => (
@@ -104,6 +153,13 @@ class Index extends React.PureComponent {
           </Row>
           <Pagination defaultCurrent={1} defaultPageSize={pageSize} total={total} current={currentPage} pageSize={pageSize} onChange={this.onPageChange} />
         </main>
+        <GroupCreate
+          wrappedComponentRef={this.saveFormRef}
+          folderId={''}
+          visible={showFolderModal}
+          onCancel={this.handleCancel}
+          onCreate={this.handleCreateFolder}
+        />
       </Layout>
     );
   }

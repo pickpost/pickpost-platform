@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Select, Input, Button } from 'antd';
-import ajax from 'xhr-plus';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
+import ajax from '../../utils/ajax';
 import { isOwner, isMember } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
 import './style.less';
@@ -75,8 +75,7 @@ class CollectionsPage extends React.PureComponent {
       ajax({
         url: '/api/search',
         method: 'get',
-        type: 'json',
-        data: { keyword },
+        params: { keyword },
       }).then(({ status, data }) => {
         if (status === 'success') {
           const newState = { ...this.state };

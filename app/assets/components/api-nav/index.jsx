@@ -1,5 +1,5 @@
 import React from 'react';
-import ajax from 'xhr-plus';
+import ajax from '../../utils/ajax';
 import { string } from 'prop-types';
 import { Icon } from 'antd';
 import { Link } from 'dva/router';
@@ -27,7 +27,6 @@ export default class ApiNav extends React.Component {
       ajax({
         url: `/api/apis/${params.apiId}`,
         method: 'get',
-        type: 'json',
       }).then(res => {
         if (res.status === 'success') {
           this.setState({

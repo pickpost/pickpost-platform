@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 function getChromeToken() {
   return new Promise(resolve => {
@@ -29,9 +29,8 @@ export function getCookie(authStrategy, env, account, password) {
     if (authStrategy) {
       ajax({
         url: '/auth',
-        type: 'json',
         method: 'get',
-        data: { type: authStrategy, userid: account, pwd: password, env },
+        params: { type: authStrategy, userid: account, pwd: password, env },
       }).then(result => {
         if (result && result.status === 'success') {
           resolve(result.data.cookieStr);

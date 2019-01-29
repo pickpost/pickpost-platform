@@ -1,5 +1,6 @@
-import ajax from 'xhr-plus';
 import moment from 'moment';
+import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'apiDocModel',
@@ -9,13 +10,12 @@ export default {
       yield put({
         type: 'reset',
       });
-      const { status, data } = yield call(ajax, {
-        url: `/api/apis/${apiId}`,
-        method: 'get',
-        type: 'json',
-      });
 
-      if (status === 'success') {
+      try {
+        const { data } = yield call(ajax, {
+          url: `/api/apis/${apiId}`,
+          method: 'get',
+        });
         const { swaggerSyncAt, updatedAt } = data;
         let nValue = '';
 
@@ -35,6 +35,8 @@ export default {
             autoSwitch: nValue,
           },
         });
+      } catch (err) {
+        message.error(err.message || '系统异常');
       }
     },
   },

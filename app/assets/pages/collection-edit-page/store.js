@@ -1,6 +1,6 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'collectionEditModel',
@@ -14,7 +14,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: `/api/collections/${id}`,
           method: 'get',
-          type: 'json',
         });
 
         if (status === 'success') {
@@ -38,7 +37,7 @@ export default {
         const { status } = yield call(ajax, {
           url,
           data: {
-            collection: JSON.stringify(collection),
+            ...collection,
           },
           method: id ? 'put' : 'post',
           type: 'json',

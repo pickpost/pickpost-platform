@@ -1,4 +1,4 @@
-import ajax from 'xhr-plus';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'apiMockModel',
@@ -22,7 +22,6 @@ export default {
       const { status, data } = yield call(ajax, {
         url: `/api/apis/${apiId}`,
         method: 'get',
-        type: 'json',
       });
 
       if (status === 'success') {

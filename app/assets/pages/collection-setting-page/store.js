@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'collectionSettingModel',
@@ -15,9 +15,7 @@ export default {
           url: `/api/collections/${id}`,
           method: 'put',
           type: 'json',
-          data: {
-            collection: JSON.stringify(collection),
-          },
+          data: collection,
         });
         if (status === 'success') {
           message.success('需求信息更新成功');
@@ -35,8 +33,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: `/api/collections/${id}`,
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {
@@ -80,8 +76,7 @@ export default {
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
           method: 'get',
-          type: 'json',
-          data: {
+          params: {
             collectionId: id,
           },
         });
