@@ -1,45 +1,28 @@
 .collections-page {
   padding-bottom: 90px;
 
-  .index-tit {
+  .header-tabs {
     font-size: 12px;
     margin: 24px 0 0;
-    display: flex;
-    align-items: center;
 
-    .index-main {
-      flex: auto;
-    }
-
-    .no-active {
-      color: #697B8C;
+    .add-actions {
+      button {
+        margin-left: 10px;
+      }
     }
   }
 
-  .add-actions {
-    button {
+  .group-name {
+    .anticon {
+      cursor: pointer;
       margin-left: 10px;
-    }
-  }
-
-  .ant-list-item-content-single {
-    display: block;
-  }
-
-  .index-proj {
-    background-color: #fff;
-    border-color: #e8e8e8;
-
-    a {
-      color: inherit;
+      color: #BBC1C7;
     }
 
-    .ant-list-item:last-child {
-      border-bottom: 1px solid #e8e8e8;
+    &:hover {
+      .anticon {
+        color: #40a9ff;
+      }
     }
-  }
-
-  .ant-pagination {
-    float: right;
   }
 }

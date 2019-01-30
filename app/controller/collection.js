@@ -2,6 +2,7 @@
 
 const utils = require('../common/utils');
 const { createFill, updateFill } = utils;
+const arrayToTree = require('array-to-tree');
 
 exports.collectionsIndex = async function (ctx) {
   const Collection = ctx.model.Collection;
@@ -21,13 +22,31 @@ exports.collectionsIndex = async function (ctx) {
     const apisCount = collectionAPIList.filter(c => c.collectionId + '' === item._id + '' && c.type !== 'folder').length;
     return {
       ...item,
+      _id: item._id.toString(),
       apisCount,
     };
   });
 
+  const tree = arrayToTree(collections, {
+    parentProperty: 'parentId',
+    customID: '_id',
+  });
+
+  // 把无分组的归类到默认分组
+  const defaultGroup = {
+    name: '默认分组',
+    parentId: '',
+    _id: '',
+    type: 'folder',
+    children: tree.filter(item => item.type !== 'folder'),
+  };
+
+  const last = tree.filter(item => item.type === 'folder');
+  last.push(defaultGroup);
+
   this.body = {
     status: 'success',
-    data: collections,
+    data: last,
   };
 };
 
@@ -66,22 +85,23 @@ exports.collectionsNew = async function (ctx) {
 };
 
 exports.collectionsUpdate = async function (ctx) {
-  const workid = this.session.user.workid;
+  // const workid = this.session.user.workid;
   const Collection = ctx.model.Collection;
   delete this.request.body._id;
-  const colData = await Collection.findOne({
-    _id: this.params.id,
-  });
-  const users = colData.owners.concat(colData.members) || [];
+  // const colData = await Collection.findOne({
+  //   _id: this.params.id,
+  // });
+  // const users = colData.owners.concat(colData.members) || [];
   // workid不在owner或members列表中
-  if (!users.map(v => v.key).includes(workid)) {
-    this.body = {
-      status: 'fail',
-      data: {},
-      msg: '没有权限',
-    };
-    return;
-  }
+  // if (!users.map(v => v.key).includes(workid)) {
+  //   this.body = {
+  //     status: 'fail',
+  //     data: {},
+  //     msg: '没有权限',
+  //   };
+  //   return;
+  // }
+
   const result = await Collection.updateOne({
     _id: this.params.id,
   }, {

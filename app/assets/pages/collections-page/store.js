@@ -5,15 +5,17 @@ import ajax from '../../utils/ajax';
 export default {
   namespace: 'collectionsModel',
   state: {
+    groups: [],
     collections: [],
     apis: [],
     filter: '',
     currentPage: 1,
     category: 'ME', // 1:ALL  2:ME
     showFolderModal: false,
+    groupSelectVisible: false,
   },
   effects: {
-    *collections({ id, apiId }, { call, put }) {
+    *collections({}, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/collections',
@@ -26,6 +28,7 @@ export default {
             data: {
               category: data.find(isBelong) ? 'ME' : 'ALL',
               collections: data,
+              groups: data.filter(item => item.type === 'folder'),
             },
           });
         }
@@ -36,8 +39,8 @@ export default {
     *createFolder({ form, name, _id }, { call, put }) {
       try {
         yield call(ajax, {
-          url: '/api/collections',
-          method: 'POST',
+          url: _id ? `/api/collections/${_id}` : '/api/collections',
+          method: _id ? 'put' : 'post',
           data: {
             name,
             type: 'folder',
@@ -49,9 +52,37 @@ export default {
           type: 'setFolderModal',
           visible: false,
         });
+
+        yield put({
+          type: 'collections',
+        });
         form.resetFields();
       } catch (e) {
         message.error(_id ? '更新失败' : '创建失败');
+      }
+    },
+    *changeGroup({groupId, collectionId}, { call, put }) {
+      try {
+        yield call(ajax, {
+          url: `/api/collections/${collectionId}`,
+          method: 'put',
+          data: {
+            parentId: groupId,
+          },
+        });
+
+        yield put({
+          type: 'setData',
+          data: {
+            groupSelectVisible: false,
+          },
+        });
+
+        yield put({
+          type: 'collections',
+        });
+      } catch (e) {
+        message.error(e.message || '移动失败');
       }
     },
   },

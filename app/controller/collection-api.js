@@ -2,7 +2,6 @@
 
 const arrayToTree = require('array-to-tree');
 
-
 exports.getCollectionApis = async function (ctx) {
   const CollectionAPI = ctx.model.CollectionApi;
   const { collectionId } = this.query;
