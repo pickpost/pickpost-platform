@@ -1,6 +1,7 @@
 import React from 'react';
-import { Avatar, Icon, Dropdown, Menu } from 'antd';
+import { Avatar, Icon, Form, Input, Button, Modal } from 'antd';
 import { Link } from 'dva/router';
+import classNames from 'classnames';
 import GlobalSearch from '../global-search';
 import { setCookie } from '../../utils/utils';
 
@@ -8,13 +9,57 @@ import './style.less';
 
 const user = window.context.user;
 class Header extends React.Component {
+  state = {
+    visible: false,
+    createFormVisible: false,
+  }
+
   gotoHomePage() {
     setCookie('pickpost_home', '');
     location.href = '/';
   }
 
+  showSpaceList = () => {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  hideSpaceList = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+
+  showCreateForm = () => {
+    this.setState({
+      createFormVisible: true,
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+    });
+  }
   render() {
     const { uplevel, title } = this.props;
+    const { visible, createFormVisible } = this.state;
+    const { getFieldDecorator } = this.props.form;
+
+    const spaces = [
+      {
+        _id: 12312,
+        name: '口碑',
+      },
+      {
+        _id: 1222312,
+        name: '支付宝',
+      },
+    ];
 
     if (title) {
       return (
@@ -30,20 +75,6 @@ class Header extends React.Component {
         </div>
       );
     }
-
-    const menu = (
-      <Menu>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">1st menu item</a>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.taobao.com/">2nd menu item</a>
-        </Menu.Item>
-        <Menu.Item>
-          <a target="_blank" rel="noopener noreferrer" href="http://www.tmall.com/">3rd menu item</a>
-        </Menu.Item>
-      </Menu>
-    );
 
     return (
       <div className="header">
@@ -82,11 +113,9 @@ class Header extends React.Component {
           </Link>
         </div>
         <div>
-          <Dropdown overlay={menu}>
-            <div className="space-switch">
-              口碑 <Icon type="down" />
-            </div>
-          </Dropdown>
+          <div className="space-switch" onClick={this.showSpaceList}>
+            口碑 <Icon type="down" />
+          </div>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
             <Avatar src={user.avatar} />
@@ -95,9 +124,55 @@ class Header extends React.Component {
             <GlobalSearch />
           </div>
         </div>
+        <Modal
+          visible={visible}
+          title="切换工作空间"
+          onCancel={this.hideSpaceList}
+          footer={null}
+        >
+          <ul className="space-list ant-select-dropdown-menu-item-group-list">
+            {
+              spaces.map(item => (
+                <li
+                  key={item._id}
+                  className={classNames('ant-select-dropdown-menu-item', { active: item._id === 12312 })}
+                  data-id={item._id}
+                  onClick={this.handleSelect}
+                >
+                  <Icon type="check" /> {item.name}
+                </li>
+              ))
+            }
+          </ul>
+
+          {
+            !createFormVisible && (
+              <div className="add-space" onClick={this.showCreateForm}>
+                <Icon type="plus" /> 新建空间
+              </div>
+            )
+          }
+
+          {
+            createFormVisible && (
+              <div className="create-space-form">
+                <h3>新建空间</h3>
+                <Form onSubmit={this.handleSubmit}>
+                  <Form.Item style={{ flex: 'auto', marginRight: 10 }}>
+                    {getFieldDecorator('spaceName', {
+                    })(<Input type="text" placeholder="请输入空间名称" />)}
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit" >创建</Button>
+                  </Form.Item>
+                </Form>
+              </div>
+            )
+          }
+        </Modal>
       </div>
     );
   }
 }
 
-export default Header;
+export default Form.create()(Header);
