@@ -86,6 +86,15 @@ class Collection extends React.PureComponent {
 
   componentDidMount() {
     const { collectionId, projectId } = this.props.params;
+    pubsub.subscribe('copyApiStatus', (status) => {
+      if (status === 'success') {
+        this.props.dispatch({
+          type: 'apiListModel/collectionApis',
+          collectionId,
+          groupId: this.props.location.query.groupId || '',
+        });
+      }
+    });
 
     // 获取接口列表
     if (collectionId) {
@@ -170,9 +179,15 @@ class Collection extends React.PureComponent {
   })
 
   handleCopyApi = () => {
-    pubsub.publish('globalSearch', {
+    const { params: { collectionId }, location: { query: { groupId }}} = this.props;
+    console.log(this.props, collectionId, groupId);
+    pubsub.publish('globalSearch', [{
       source: 'copyApi',
-    });
+      data: {
+        collectionId,
+        groupId,
+      },
+    }]);
   }
 
   handleSearch = (selectedKeys, confirm) => {
