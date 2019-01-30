@@ -89,6 +89,10 @@ class Collection extends React.PureComponent {
     pubsub.subscribe('copyApiStatus', (status) => {
       if (status === 'success') {
         this.props.dispatch({
+          type: 'collectionApisModel/getApisTree',
+          collectionId,
+        });
+        this.props.dispatch({
           type: 'apiListModel/collectionApis',
           collectionId,
           groupId: this.props.location.query.groupId || '',
