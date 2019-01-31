@@ -4,6 +4,7 @@ import { Link } from 'dva/router';
 import classNames from 'classnames';
 import GlobalSearch from '../global-search';
 import { setCookie } from '../../utils/utils';
+import ajax from '../../utils/ajax';
 
 import './style.less';
 
@@ -12,6 +13,24 @@ class Header extends React.Component {
   state = {
     visible: false,
     createFormVisible: false,
+    spaces: [],
+  }
+
+  componentDidMount() {
+    this.fetchSpaces();
+  }
+
+  fetchSpaces = () => {
+    ajax({
+      method: 'get',
+      url: '/api/spaces',
+    }).then(res => {
+      console.log(res);
+      this.setState({
+        createFormVisible: false,
+        spaces: res.data,
+      });
+    });
   }
 
   gotoHomePage() {
@@ -41,25 +60,22 @@ class Header extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        ajax({
+          method: 'post',
+          url: '/api/spaces',
+          data: {
+            name: values.spaceName,
+          },
+        }).then(() => {
+          this.fetchSpaces();
+        });
       }
     });
   }
   render() {
     const { uplevel, title } = this.props;
-    const { visible, createFormVisible } = this.state;
+    const { visible, createFormVisible, spaces } = this.state;
     const { getFieldDecorator } = this.props.form;
-
-    const spaces = [
-      {
-        _id: 12312,
-        name: '口碑',
-      },
-      {
-        _id: 1222312,
-        name: '支付宝',
-      },
-    ];
 
     if (title) {
       return (

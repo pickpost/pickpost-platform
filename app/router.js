@@ -3,6 +3,11 @@
 module.exports = app => {
   const { router, controller } = app;
   // RESTful APIs
+  router.get('/api/spaces', controller.space.index);
+  router.post('/api/spaces', controller.space.create);
+  router.put('/api/spaces/:id', controller.space.update);
+  router.delete('/api/spaces/:id', controller.space.destroy);
+
   router.get('/api/projects', controller.project.projectsIndex);
   router.get('/api/projects/:id', controller.project.projectsShow);
   router.post('/api/projects', controller.project.projectsNew);
@@ -31,20 +36,6 @@ module.exports = app => {
   router.get('/api/search', controller.api.searchByKeyWord);
   router.get('/api/getuser', controller.api.getUser);
   router.get('/api/globalsearch', controller.api.globalSearch);
-
-  // View Testing Start
-  router.get('/api/folder', controller.folder.folderIndex);
-  router.get('/api/folder/:id', controller.folder.folderShow);
-  router.post('/api/folder', controller.folder.folderNew);
-  router.delete('/api/folder/:id', controller.folder.folderDestroy);
-  router.put('/api/folder/:id', controller.folder.folderUpdate);
-
-  router.get('/api/file', controller.file.fileIndex);
-  router.post('/api/file', controller.file.fileNew);
-  router.delete('/api/file/:id', controller.file.fileDestroy);
-  router.get('/api/file/:id', controller.file.fileShow);
-  router.put('/api/file/:id', controller.file.fileUpdate);
-  // View Testing End
 
   // MockAPI
   const jsonp = app.jsonp();
