@@ -47,12 +47,23 @@
 
 .certain-search-item-count {
   position: absolute;
-  color: #999;
+  top: 4px;
   right: 16px;
+  margin: 0;
+  height: 30px;
+  padding-right: 30px;
   max-width: 300px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  span {
+    color: #999;
+  }
+  .btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
 }
 
 .certain-category-search.ant-select-focused .certain-category-icon {

@@ -43,6 +43,7 @@
     "mockjs": "^1.0.1-beta3",
     "path-to-regexp": "^1.7.0",
     "prop-types": "^15.5.10",
+    "pubsub.js": "^1.5.2",
     "query-string": "^5.0.0",
     "react": "^15.5.4",
     "react-codemirror2": "^5.1.0",

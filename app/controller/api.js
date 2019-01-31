@@ -130,7 +130,7 @@ exports.apisNew = async function (ctx) {
   const CollectionAPI = ctx.model.CollectionApi;
   const reqBody = this.request.body;
   const api = JSON.parse(reqBody.api);
-  const newApi = Object.assign(APISchema, api);
+  const newApi = Object.assign({}, APISchema, api);
   let apiId = api._id;
 
   const sameAPI = await API.findOne({
@@ -152,8 +152,8 @@ exports.apisNew = async function (ctx) {
   // 如果传入了 collectionId 则需要做接口集的关联操作
   if (api.collectionId) {
     const sameCollectionApi = await CollectionAPI.findOne({
-      apiId,
-      _id: api.collectionId,
+      apiId: apiId.toString(),
+      collectionId: api.collectionId,
     });
 
     if (!sameCollectionApi) {
