@@ -3,7 +3,7 @@ import { Avatar, Icon, Form, Input, Button, Modal } from 'antd';
 import { Link } from 'dva/router';
 import classNames from 'classnames';
 import GlobalSearch from '../global-search';
-import { setCookie } from '../../utils/utils';
+import { setCookie, getQueryParamByName } from '../../utils/utils';
 import ajax from '../../utils/ajax';
 
 import './style.less';
@@ -14,6 +14,7 @@ class Header extends React.Component {
     visible: false,
     createFormVisible: false,
     spaces: [],
+    currentSpace: {},
   }
 
   componentDidMount() {
@@ -25,10 +26,14 @@ class Header extends React.Component {
       method: 'get',
       url: '/api/spaces',
     }).then(res => {
-      console.log(res);
+      const spaces = res.data || [];
+      const spaceId = getQueryParamByName('space');
+      const currentSpace = spaces.find(item => item._id === spaceId) || spaces[0];
+
       this.setState({
         createFormVisible: false,
-        spaces: res.data,
+        spaces,
+        currentSpace,
       });
     });
   }
@@ -64,7 +69,8 @@ class Header extends React.Component {
           method: 'post',
           url: '/api/spaces',
           data: {
-            name: values.spaceName,
+            name: values.name,
+            alias: values.alias,
           },
         }).then(() => {
           this.fetchSpaces();
@@ -72,9 +78,15 @@ class Header extends React.Component {
       }
     });
   }
+
+  handleSelect = (e) => {
+    const { id } = e.currentTarget.dataset;
+    location.href = `/collections?space=${id}`;
+  }
+
   render() {
     const { uplevel, title } = this.props;
-    const { visible, createFormVisible, spaces } = this.state;
+    const { visible, createFormVisible, spaces, currentSpace } = this.state;
     const { getFieldDecorator } = this.props.form;
 
     if (title) {
@@ -130,7 +142,7 @@ class Header extends React.Component {
         </div>
         <div>
           <div className="space-switch" onClick={this.showSpaceList}>
-            口碑 <Icon type="down" />
+            {currentSpace.name} <Icon type="swap" />
           </div>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
@@ -151,7 +163,7 @@ class Header extends React.Component {
               spaces.map(item => (
                 <li
                   key={item._id}
-                  className={classNames('ant-select-dropdown-menu-item', { active: item._id === 12312 })}
+                  className={classNames('ant-select-dropdown-menu-item', { active: item._id === currentSpace._id })}
                   data-id={item._id}
                   onClick={this.handleSelect}
                 >
@@ -175,8 +187,12 @@ class Header extends React.Component {
                 <h3>新建空间</h3>
                 <Form onSubmit={this.handleSubmit}>
                   <Form.Item style={{ flex: 'auto', marginRight: 10 }}>
-                    {getFieldDecorator('spaceName', {
-                    })(<Input type="text" placeholder="请输入空间名称" />)}
+                    {getFieldDecorator('name', {
+                    })(<Input type="text" placeholder="空间名称，如：口碑" />)}
+                  </Form.Item>
+                  <Form.Item style={{ flex: 'auto', marginRight: 10 }}>
+                    {getFieldDecorator('alias', {
+                    })(<Input type="text" placeholder="空间别名，如：koubei" />)}
                   </Form.Item>
                   <Form.Item>
                     <Button type="primary" htmlType="submit" >创建</Button>
