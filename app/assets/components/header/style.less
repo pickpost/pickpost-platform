@@ -112,6 +112,9 @@
 
     .anticon {
       margin-right: 10px;
+    }
+
+    .checked-icon, .edit-icon {
       visibility: hidden;
     }
 
@@ -119,9 +122,23 @@
       background: #e7f7fe;
       color: #1890ff;
 
-      .anticon {
+      .checked-icon {
+        visibility: visible;
+        color: #1890ff;
+      }
+    }
+
+    &:hover {
+      .edit-icon {
         visibility: visible;
       }
+    }
+  }
+
+  .actions-zone {
+    float: right;
+    .space-alias {
+      margin-right: 30px;
     }
   }
 }
