@@ -5,7 +5,11 @@ module.exports = app => {
   const Schema = mongoose.Schema;
 
   const projectSchema = new Schema({
-    name: { type: String },
+    name: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     desc: { type: String },
     auth: { type: String },
     public: { type: Boolean },

@@ -15,11 +15,14 @@ export default {
     groupSelectVisible: false,
   },
   effects: {
-    *collections({}, { call, put }) {
+    *collections({ spaceAlias }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/collections',
           method: 'get',
+          params: {
+            spaceAlias,
+          },
         });
         if (status === 'success') {
           // 判断如果属于个人的接口为空，默认定位到全部
@@ -36,13 +39,14 @@ export default {
         message.error(e.message || '查询接口集失败');
       }
     },
-    *createFolder({ form, name, _id }, { call, put }) {
+    *createFolder({ form, name, _id, spaceAlias }, { call, put }) {
       try {
         yield call(ajax, {
           url: _id ? `/api/collections/${_id}` : '/api/collections',
           method: _id ? 'put' : 'post',
           data: {
             name,
+            spaceAlias,
             type: 'folder',
           },
         });

@@ -21,23 +21,38 @@ exports.index = async function (ctx) {
 exports.create = async function (ctx) {
   const Space = ctx.model.Space;
   const data = createFill(this.request.body);
-  const result = await Space.create(data);
 
-  this.body = {
-    status: 'success',
-    data: result,
-  };
+  try {
+    const result = await Space.create(data);
+    this.body = {
+      status: 'success',
+      data: result,
+    };
+  } catch (err) {
+    this.body = {
+      status: 'fail',
+      message: err.errmsg || '系统错误',
+    };
+  }
 };
 
 exports.update = async function (ctx) {
   const spaceModel = ctx.model.Space;
   const reqBody = this.request.body;
-  const result = await spaceModel.updateOne({ _id: this.params.id }, { $set: updateFill(reqBody) });
 
-  this.body = {
-    status: 'success',
-    data: result,
-  };
+  try {
+    const result = await spaceModel.updateOne({ _id: this.params.id }, { $set: updateFill(reqBody) });
+
+    this.body = {
+      status: 'success',
+      data: result,
+    };
+  } catch (err) {
+    this.body = {
+      status: 'fail',
+      message: err.errmsg || '系统错误',
+    };
+  }
 };
 
 exports.destroy = async function (ctx) {

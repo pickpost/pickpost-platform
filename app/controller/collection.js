@@ -4,12 +4,26 @@ const utils = require('../common/utils');
 const { createFill, updateFill } = utils;
 const arrayToTree = require('array-to-tree');
 
+async function getSpaceIdByAlias(model, alias) {
+  let spaceId = '';
+  // 把 spaceAlias 转换为 spaceId
+  const matchedSpace = await model.Space.findOne({ alias });
+  if (matchedSpace) {
+    spaceId = matchedSpace._id;
+  }
+
+  return spaceId;
+}
+
 exports.collectionsIndex = async function (ctx) {
   const Collection = ctx.model.Collection;
   const CollectionAPI = ctx.model.CollectionApi;
 
+  const spaceId = await getSpaceIdByAlias(ctx.model, ctx.query.spaceAlias);
   // 所有的接口集列表
-  let collections = await Collection.find({}).sort({ createdAt: 'desc' }).lean();
+  let collections = await Collection.find({
+    spaceId,
+  }).sort({ createdAt: 'desc' }).lean();
   const collectionIds = collections.map(item => item._id);
 
   // 一次查询接口集接口关联表
@@ -62,9 +76,15 @@ exports.collectionsShow = async function (ctx) {
   };
 };
 
+/**
+ * 产品或产品组创建
+ * @param {object} ctx 上下文
+ */
 exports.collectionsNew = async function (ctx) {
   const Collection = ctx.model.Collection;
-  const { owners = [], type } = this.request.body;
+  const { owners = [], type, spaceAlias } = this.request.body;
+
+  const spaceId = await getSpaceIdByAlias(ctx.model, spaceAlias);
 
   // 如果是项目必须这是管理员
   if (type !== 'folder' && owners.length <= 0) {
@@ -76,7 +96,8 @@ exports.collectionsNew = async function (ctx) {
     return;
   }
 
-  const result = await Collection.create(createFill(this.request.body));
+  delete this.request.body.spaceAlias;
+  const result = await Collection.create(createFill({ ...this.request.body, spaceId }));
 
   this.body = {
     status: 'success',
@@ -88,6 +109,7 @@ exports.collectionsUpdate = async function (ctx) {
   // const workid = this.session.user.workid;
   const Collection = ctx.model.Collection;
   delete this.request.body._id;
+  delete this.request.body.spaceAlias;
   // const colData = await Collection.findOne({
   //   _id: this.params.id,
   // });

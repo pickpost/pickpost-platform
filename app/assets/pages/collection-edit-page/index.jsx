@@ -49,6 +49,7 @@ class CollectionsPage extends React.PureComponent {
         this.props.dispatch({
           type: 'collectionEditModel/saveCollection',
           id: values._id || '',
+          spaceAlias: this.props.location.query.space,
           collection: {
             desc: values.desc,
             name: values.name,

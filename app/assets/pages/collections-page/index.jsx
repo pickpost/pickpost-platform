@@ -19,11 +19,13 @@ class Index extends React.PureComponent {
       pageSize: 20,
     };
   }
+
   componentDidMount() {
-    const { collectionsModel: { collections } } = this.props;
+    const { collectionsModel: { collections }, location: { query } } = this.props;
     if (!collections.length) {
       this.props.dispatch({
         type: 'collectionsModel/collections',
+        spaceAlias: query.space,
       });
     }
   }
@@ -78,6 +80,7 @@ class Index extends React.PureComponent {
         type: 'collectionsModel/createFolder',
         name: values.name,
         _id: values.folderId,
+        spaceAlias: this.props.location.query.space,
         form,
       });
     });
@@ -86,6 +89,9 @@ class Index extends React.PureComponent {
   handleGotoCreateCollection = () => {
     browserHistory.push({
       pathname: '/collections/new',
+      query: {
+        space: this.props.location.query.space,
+      },
     });
   }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Icon, Form, Input, Button, Modal } from 'antd';
+import { Avatar, Icon, Form, Input, Button, Modal, message } from 'antd';
 import { Link } from 'dva/router';
 import classNames from 'classnames';
 import GlobalSearch from '../global-search';
@@ -86,7 +86,10 @@ class Header extends React.Component {
             alias: values.alias,
           },
         }).then(() => {
+          message.success('操作成功');
           this.fetchSpaces();
+        }, (errMsg) => {
+          message.error(errMsg.message);
         });
       }
     });

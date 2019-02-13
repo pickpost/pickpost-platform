@@ -31,12 +31,13 @@ export default {
         });
       }
     },
-    *saveCollection({ id, collection }, { call, put }) {
+    *saveCollection({ id, collection, spaceAlias }, { call, put }) {
       const url = id ? `/api/collections/${id}` : '/api/collections';
       try {
         const { status } = yield call(ajax, {
           url,
           data: {
+            spaceAlias,
             ...collection,
           },
           method: id ? 'put' : 'post',

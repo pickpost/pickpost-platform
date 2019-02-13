@@ -5,13 +5,11 @@ axios.interceptors.response.use(res => {
 });
 
 export default function ajax(options) {
-  return new Promise((resolve, reject) => {
-    axios(options).then((res) => {
-      if (res && res.status === 'success') {
-        resolve(res);
-      } else {
-        reject(new Error(res.message || '系统错误'));
-      }
-    });
+  return axios(options).then((res) => {
+    if (res && res.status === 'success') {
+      return res;
+    }
+
+    throw new Error(res.message || '系统错误');
   });
 }

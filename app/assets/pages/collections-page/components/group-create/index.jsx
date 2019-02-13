@@ -19,6 +19,9 @@ const GroupCreate = Form.create()(
           onOk={onCreate}
         >
           <Form layout="vertical">
+            {getFieldDecorator('spaceId')(
+              <Input type="hidden" />
+            )}
             {getFieldDecorator('folderId')(
               <Input type="hidden" />
             )}
