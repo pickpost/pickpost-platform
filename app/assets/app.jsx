@@ -6,6 +6,12 @@ import { Router, Route, browserHistory } from 'dva/router';
 import './app.less';
 
 // Pages && Models
+import LoginPage from './pages/login-page';
+import LoginModel from './pages/login-page/store';
+
+import RegisterPage from './pages/register-page';
+import RegisterModel from './pages/register-page/store';
+
 import APIEditPage from './pages/api-edit-page';
 import APIEditModel from './pages/api-edit-page/store';
 
@@ -66,6 +72,9 @@ const app = dva({
 // app.use(createLoading());
 
 // 3. Model
+app.model(LoginModel);
+app.model(RegisterModel);
+
 app.model(APIEditModel);
 app.model(APIDocModel);
 app.model(APITestModel);
@@ -94,6 +103,8 @@ export default class Container extends React.Component {
       return (
         <Router history={history}>
           <Route path="/workspace" component={CollectionsPage} context={context} />
+          <Route path="/login" component={LoginPage} context={context} />
+          <Route path="/register" component={RegisterPage} context={context} />
           {/* 列表页 */}
           <Route path="/collections" component={CollectionsPage} context={context} />
           <Route path="/projects" component={ProjectsPage} context={context} />
