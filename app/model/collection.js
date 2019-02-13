@@ -18,6 +18,14 @@ module.exports = app => {
     auth: { type: String },
   }, {
     timestamps: true,
+    toJSON: { virtuals: true },
+  });
+
+  collectionSchema.virtual('space', {
+    ref: 'Space',
+    localField: 'spaceId',
+    foreignField: '_id',
+    justOne: true,
   });
 
   return mongoose.model('Collection', collectionSchema);

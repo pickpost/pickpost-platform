@@ -68,6 +68,8 @@ exports.collectionsShow = async function (ctx) {
   const Collection = ctx.model.Collection;
   const detail = await Collection.findOne({
     _id: this.params.id,
+  }).populate({
+    path: 'space', select: 'alias',
   });
 
   this.body = {

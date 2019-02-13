@@ -70,6 +70,8 @@ exports.projectsShow = async function (ctx) {
   const Project = ctx.model.Project;
   const detail = await Project.findOne({
     _id: this.params.id,
+  }).populate({
+    path: 'space', select: 'alias',
   });
 
   this.body = {

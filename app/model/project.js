@@ -22,6 +22,14 @@ module.exports = app => {
     smartDoc: { type: Boolean },
   }, {
     timestamps: true,
+    toJSON: { virtuals: true },
+  });
+
+  projectSchema.virtual('space', {
+    ref: 'Space',
+    localField: 'spaceId',
+    foreignField: '_id',
+    justOne: true,
   });
 
   return mongoose.model('Project', projectSchema);
