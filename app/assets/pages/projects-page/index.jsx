@@ -8,14 +8,6 @@ import Layout from '../../layout/default.jsx';
 import './style.less';
 
 class ProjectsPage extends React.PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = {
-      page: 1,
-      pageSize: 16,
-    };
-  }
-
   projectColumns = [{
     title: '名称',
     dataIndex: 'name',
@@ -45,13 +37,14 @@ class ProjectsPage extends React.PureComponent {
   }];
 
   componentDidMount() {
+    const spaceAlias = this.props.location.query.space;
     this.props.dispatch({
       type: 'projectsModel/projects',
+      spaceAlias,
     });
   }
 
   handleCategoryChange(category) {
-    this.setState({ page: 1 });
     this.props.dispatch({
       type: 'projectsModel/setData',
       data: {
@@ -60,12 +53,8 @@ class ProjectsPage extends React.PureComponent {
     });
   }
 
-  onPageChange = (page, pageSize) => {
-    this.setState({ page, pageSize });
-  }
-
   render() {
-    const { projectsModel } = this.props;
+    const { projectsModel, location: { query } } = this.props;
     const { projects } = projectsModel;
     const projectData = projects.map(_v => {
       return {
@@ -81,11 +70,11 @@ class ProjectsPage extends React.PureComponent {
     return (
       <Layout>
         <aside>
-          <Link to="/collections" activeClassName="active">
+          <Link to={`/collections?space=${query.space}`} activeClassName="active">
             <Icon type="folder" />
             <div>需求</div>
           </Link>
-          <Link to="/projects" activeClassName="active">
+          <Link to={`/projects?space=${query.space}`} activeClassName="active">
             <Icon type="appstore" />
             <div>应用</div>
           </Link>
@@ -100,7 +89,7 @@ class ProjectsPage extends React.PureComponent {
                 应用是指后端系统，名称与后端系统名保持一致。
               </p>
             </div>
-            <Link to="/projects/new" className="entrance">
+            <Link to={`/projects/new?space=${query.space}`} className="entrance">
               <Button className="new-btn" type="primary" icon="plus">
                 新建应用
               </Button>

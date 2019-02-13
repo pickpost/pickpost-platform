@@ -3,6 +3,17 @@
 const utils = require('../common/utils');
 const { createFill, updateFill } = utils;
 
+async function getSpaceIdByAlias(model, alias) {
+  let spaceId = '';
+  // 把 spaceAlias 转换为 spaceId
+  const matchedSpace = await model.Space.findOne({ alias });
+  if (matchedSpace) {
+    spaceId = matchedSpace._id;
+  }
+
+  return spaceId;
+}
+
 /* *
  * this.params获取url中的:xx
  * this.query 获取url中的QueryString参数
@@ -12,7 +23,9 @@ exports.projectsIndex = async function(ctx) {
   const Project = ctx.model.Project;
   const API = ctx.model.Api;
 
-  const projects = await Project.find({}).sort({ createdAt: 'desc' });
+  const spaceId = await getSpaceIdByAlias(ctx.model, ctx.query.spaceAlias);
+
+  const projects = await Project.find({ spaceId }).sort({ createdAt: 'desc' });
   const projectIds = projects.map(item => item._id);
   const apis = await API.find({
     projectId: { $in: projectIds },
@@ -67,8 +80,9 @@ exports.projectsShow = async function (ctx) {
 
 exports.projectsNew = async function (ctx) {
   const Project = ctx.model.Project;
-  const reqBody = this.request.body;
-  const project = reqBody.project;
+  const { project, spaceAlias } = this.request.body;
+
+  const spaceId = await getSpaceIdByAlias(ctx.model, spaceAlias);
 
   if (project.owners.length <= 0) {
     this.body = {
@@ -79,7 +93,10 @@ exports.projectsNew = async function (ctx) {
     return;
   }
 
-  const result = await Project.create(createFill(project));
+  const result = await Project.create(createFill({
+    spaceId,
+    ...project,
+  }));
 
   this.body = {
     status: 'success',

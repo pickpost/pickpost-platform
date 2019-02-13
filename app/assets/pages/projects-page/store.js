@@ -11,11 +11,14 @@ export default {
     category: '2', // 1:All  2:Me
   },
   effects: {
-    *projects({}, { call, put }) {
+    *projects({ spaceAlias }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
-          url: '/api/projects',
           method: 'get',
+          url: '/api/projects',
+          params: {
+            spaceAlias,
+          },
         });
 
         if (status === 'success') {

@@ -11,34 +11,13 @@ export default {
     },
   },
   effects: {
-    *editProject({ id }, { call, put }) {
-      if (id) {
-        const { status, data } = yield call(ajax, {
-          url: `/api/projects/${id}`,
-          method: 'get',
-        });
-
-        if (status === 'success') {
-          yield put({
-            type: 'changeEditingProject',
-            project: data,
-            showEditingModal: true,
-          });
-        }
-      } else {
-        yield put({
-          type: 'changeEditingProject',
-          project: {},
-          showEditingModal: true,
-        });
-      }
-    },
-    *saveProject({ id, project }, { call, put }) {
+    *saveProject({ id, project, spaceAlias }, { call, put }) {
       const url = id ? `/api/projects/${id}` : '/api/projects';
       try {
         const { status } = yield call(ajax, {
           url,
           data: {
+            spaceAlias,
             project,
           },
           method: id ? 'put' : 'post',

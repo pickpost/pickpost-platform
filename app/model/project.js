@@ -11,6 +11,7 @@ module.exports = app => {
       unique: true,
     },
     desc: { type: String },
+    spaceId: { type: String },
     auth: { type: String },
     public: { type: Boolean },
     owners: { type: Array },

@@ -135,7 +135,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { collectionsModel } = this.props;
+    const { collectionsModel, location: { query } } = this.props;
     const { pageSize } = this.state;
     const { collections, groups, category, showFolderModal, groupSelectVisible } = collectionsModel;
     const filteredCollections = [];
@@ -152,11 +152,11 @@ class Index extends React.PureComponent {
     return (
       <Layout>
         <aside>
-          <Link to="/collections" activeClassName="active">
+          <Link to={`/collections?space=${query.space}`} activeClassName="active">
             <Icon type="folder" />
             <div>需求</div>
           </Link>
-          <Link to="/projects" activeClassName="active">
+          <Link to={`/projects?space=${query.space}`} activeClassName="active">
             <Icon type="appstore" />
             <div>应用</div>
           </Link>

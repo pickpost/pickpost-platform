@@ -30,6 +30,7 @@ class Page extends React.PureComponent {
         this.props.dispatch({
           type: 'projectEditModel/saveProject',
           id: values._id || '',
+          spaceAlias: this.props.location.query.space,
           project: {
             desc: values.desc,
             name: values.name,
