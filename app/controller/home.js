@@ -18,6 +18,8 @@ exports.index = async function (ctx) {
 };
 
 exports.app = async function (ctx) {
+  // 鉴权
+  // if (ctx.isAuthenticated()) {
   await this.render('app.jsx', {
     user: {
       cname: _.get(ctx, 'session.user.cname'),
@@ -26,6 +28,9 @@ exports.app = async function (ctx) {
       workid: _.get(ctx, 'session.user.workid'),
     },
   });
+  // } else {
+  //   ctx.redirect('/login');
+  // }
 };
 
 exports.proxy = async function () {
