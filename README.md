@@ -1,7 +1,7 @@
 <p align="center"><a href="https://github.com/pickpost" target="_blank"><img width="100"src="https://gw.alipayobjects.com/mdn/O2O_shopdecorate/afts/img/A*DrIgRp7GgDYAAAAAAAAAAABjBAAAAQ/original"></a></p>
-<h2 align="center">
+<h3 align="center">
   PickPost 前后端协作平台
-</h2>
+</h3>
 
 <p align="center">
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D8.9.1-green.svg?style=flat" alt="Node.js Version"></a>
