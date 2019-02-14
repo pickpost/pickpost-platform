@@ -1,15 +1,18 @@
-# PickPost 前后端协作平台
+<p align="center"><a href="https://github.com/pickpost" target="_blank"><img width="100"src="https://gw.alipayobjects.com/mdn/O2O_shopdecorate/afts/img/A*DrIgRp7GgDYAAAAAAAAAAABjBAAAAQ/original"></a></p>
+<h2 align="center">
+  PickPost 前后端协作平台
+</h2>
 
-## 启动本地服务
+<p align="center">
+  <a href="https://nodejs.org"><img src="https://img.shields.io/badge/node-%3E%3D8.9.1-green.svg?style=flat" alt="Node.js Version"></a>
+  <a href="https://www.mongodb.com"><img src="https://img.shields.io/badge/mongo-%3E%3D3.4.1-green.svg?style=flat" alt="MongoDB Version"></a>
+  <a href="https://opensource.org/licenses/GPL-3.0"><img src="https://img.shields.io/badge/license-GPL--3.0-blue.svg" alt="License"></a>
+</p>
+<br>
 
-> 依赖 MongoDB 数据库服务，开发前，请先启动数据库
+## 如何使用
 
-```bash
-$ npm install
-$ npm run dev
-$ open http://localhost:7001
-```
-## 生产环境启动
+### 私有服务器部署
 ```bash
 $ npm install
 $ npm run build
@@ -20,13 +23,22 @@ $ open http://localhost:7001
 ## 如何加入开发
 项目后端使用 [eggjs](https://eggjs.org/) 框架，数据库 ORM 使用 [mongoose](https://mongoosejs.com) ，前端框架使用 [ant-design](https://ant.design)。
 
+### 本地开发
+
+> 依赖 MongoDB 数据库服务，开发前，请先启动数据库
+
+```bash
+$ npm install
+$ npm run dev
+$ open http://localhost:7001
+```
+
 ### 数据库设计
 详见：`/doc/schema.md`
 
-
 提交示例：`git commit -m 'feat: 接口文档功能'`
 
-### 项目接口概览
+### 项目结构概览
 ```
 .
 ├── README.md
