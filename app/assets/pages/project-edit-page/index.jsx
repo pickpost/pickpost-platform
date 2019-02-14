@@ -1,8 +1,8 @@
 import React from 'react';
 import { Icon, Form, Select, Input, Button } from 'antd';
-import ajax from 'xhr-plus';
 import autobind from 'autobind-decorator';
 import { connect } from 'dva';
+import ajax from '../../utils/ajax';
 import { isOwner } from '../../utils/utils';
 import Layout from '../../layout/default.jsx';
 import BulkEditor from '../../components/bulk-editor';
@@ -30,6 +30,7 @@ class Page extends React.PureComponent {
         this.props.dispatch({
           type: 'projectEditModel/saveProject',
           id: values._id || '',
+          spaceAlias: this.props.location.query.space,
           project: {
             desc: values.desc,
             name: values.name,
@@ -57,8 +58,7 @@ class Page extends React.PureComponent {
       ajax({
         url: '/api/search',
         method: 'get',
-        type: 'json',
-        data: { keyword },
+        params: { keyword },
       }).then(({ status, data }) => {
         if (status === 'success') {
           const newState = { ...this.state };

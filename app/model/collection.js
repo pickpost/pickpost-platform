@@ -7,14 +7,25 @@ module.exports = app => {
   const collectionSchema = new Schema({
     name: { type: String },
     desc: { type: String },
-    auth: { type: String },
-    public: { type: Boolean },
+    accounts: { type: Array },
+    spaceId: { type: String },
+    parentId: { type: String },
+    type: { type: String }, // file or folder
     owners: { type: Array },
     members: { type: Array },
     envs: { type: Array },
-    accounts: { type: Array },
+    public: { type: Boolean },
+    auth: { type: String },
   }, {
     timestamps: true,
+    toJSON: { virtuals: true },
+  });
+
+  collectionSchema.virtual('space', {
+    ref: 'Space',
+    localField: 'spaceId',
+    foreignField: '_id',
+    justOne: true,
   });
 
   return mongoose.model('Collection', collectionSchema);

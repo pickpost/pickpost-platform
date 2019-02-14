@@ -10,6 +10,10 @@
   vertical-align: middle;
   z-index: 10;
 
+  .header-logo {
+    float: left;
+  }
+
   .backbtn {
     cursor: pointer;
     width: 48px;
@@ -34,6 +38,24 @@
 
     span {
       padding-left: 6px;
+    }
+  }
+
+  .space-switch {
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    padding: 0 20px;
+    margin-left: 10px;
+
+    &:hover {
+      background: #f2f4f5;
+    }
+
+    .anticon {
+      svg {
+        font-size: 12px;
+      }
     }
   }
 
@@ -81,5 +103,67 @@
     .ant-avatar {
       vertical-align: middle;
     }
+  }
+}
+
+.space-list {
+  li {
+    padding: 10px!important;
+
+    .anticon {
+      margin-right: 10px;
+    }
+
+    .checked-icon, .edit-icon {
+      visibility: hidden;
+    }
+
+    &.active {
+      background: #e7f7fe;
+      color: #1890ff;
+
+      .checked-icon {
+        visibility: visible;
+        color: #1890ff;
+      }
+    }
+
+    &:hover {
+      .edit-icon {
+        visibility: visible;
+      }
+    }
+  }
+
+  .actions-zone {
+    float: right;
+    .space-alias {
+      margin-right: 30px;
+    }
+  }
+}
+
+.add-space {
+  cursor: pointer;
+  border: 1px dashed #f2f2f2;
+  margin: 10px 0 0;
+  padding: 10px 10px;
+
+  .anticon {
+    margin-right: 10px;
+  }
+}
+
+.create-space-form {
+  border-top: 1px dashed #f2f2f2;
+  margin-top: 15px;
+  padding-top: 15px;
+
+  h3 {
+    font-size: 14px;
+  }
+
+  .ant-form {
+    display: flex;
   }
 }

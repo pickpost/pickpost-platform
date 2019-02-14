@@ -1,6 +1,6 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
 import { routerRedux } from 'dva/router';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'projectEditModel',
@@ -11,39 +11,16 @@ export default {
     },
   },
   effects: {
-    *editProject({ id }, { call, put }) {
-      if (id) {
-        const { status, data } = yield call(ajax, {
-          url: `/api/projects/${id}`,
-          method: 'get',
-          type: 'json',
-        });
-
-        if (status === 'success') {
-          yield put({
-            type: 'changeEditingProject',
-            project: data,
-            showEditingModal: true,
-          });
-        }
-      } else {
-        yield put({
-          type: 'changeEditingProject',
-          project: {},
-          showEditingModal: true,
-        });
-      }
-    },
-    *saveProject({ id, project }, { call, put }) {
+    *saveProject({ id, project, spaceAlias }, { call, put }) {
       const url = id ? `/api/projects/${id}` : '/api/projects';
       try {
         const { status } = yield call(ajax, {
           url,
           data: {
-            project: JSON.stringify(project),
+            spaceAlias,
+            project,
           },
           method: id ? 'put' : 'post',
-          type: 'json',
         });
         if (status === 'success') {
           // 页面跳转到接口集列表
@@ -60,9 +37,7 @@ export default {
       try {
         const { status } = yield call(ajax, {
           url: `/api/projects/${id}`,
-          data: {},
           method: 'DELETE',
-          type: 'json',
         });
         if (status === 'success') {
           // 更新侧边栏接口集

@@ -2,7 +2,7 @@
 const _ = require('lodash');
 
 exports.index = async function (ctx) {
-  if (ctx.headers.cookie.indexOf('pickpost_home=visited') >= 0) {
+  if (ctx.headers && ctx.headers.cookie && ctx.headers.cookie.indexOf('pickpost_home=visited') >= 0) {
     ctx.redirect('/collections');
     return;
   }

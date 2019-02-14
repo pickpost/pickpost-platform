@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'projectSettingModel',
@@ -13,8 +13,6 @@ export default {
         const { status, data } = yield call(ajax, {
           url: `/api/projects/${projectId}`,
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {
@@ -35,9 +33,8 @@ export default {
         const { status } = yield call(ajax, {
           url: `/api/projects/${id}`,
           method: 'put',
-          type: 'json',
           data: {
-            project: JSON.stringify(project),
+            project,
           },
         });
 
@@ -54,8 +51,7 @@ export default {
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
           method: 'get',
-          type: 'json',
-          data: {
+          params: {
             projectId,
           },
         });

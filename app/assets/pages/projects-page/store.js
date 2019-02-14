@@ -1,4 +1,4 @@
-import ajax from 'xhr-plus';
+import ajax from '../../utils/ajax';
 import { message } from 'antd';
 
 export default {
@@ -11,13 +11,14 @@ export default {
     category: '2', // 1:All  2:Me
   },
   effects: {
-    *projects({}, { call, put }) {
+    *projects({ spaceAlias }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
-          url: '/api/projects',
           method: 'get',
-          type: 'json',
-          data: {},
+          url: '/api/projects',
+          params: {
+            spaceAlias,
+          },
         });
 
         if (status === 'success') {

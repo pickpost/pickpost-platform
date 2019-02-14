@@ -193,7 +193,7 @@ export function isBelong(data) {
     return true;
   }
   // const user = { workid: '200000' };
-  return (data.owners || []).concat(data.members || []).find(o => o.key === user.workid);
+  return (data.owners || []).concat(data.members || []).filter(item => item).find(o => o.key === user.workid);
 }
 
 export function getEnvByUrl() {
@@ -219,4 +219,28 @@ export class StorageUtil {
     const adapter = isSession ? sessionStorage : localStorage;
     adapter.removeItem(key);
   }
+}
+
+export function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+  if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
+    return false;
+  }
+  let sExpires = '';
+  if (vEnd) {
+    switch (vEnd.constructor) {
+      case Number:
+        sExpires = vEnd === Infinity ? '; expires=Fri, 31 Dec 9999 23:59:59 GMT' : '; max-age=' + vEnd;
+        break;
+      case String:
+        sExpires = '; expires=' + vEnd;
+        break;
+      case Date:
+        sExpires = '; expires=' + vEnd.toUTCString();
+        break;
+      default:
+        break;
+    }
+  }
+  document.cookie = encodeURIComponent(sKey) + '=' + encodeURIComponent(sValue) + sExpires + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '') + (bSecure ? '; secure' : '');
+  return true;
 }

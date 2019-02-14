@@ -129,7 +129,7 @@ exports.apisNew = async function (ctx) {
   const API = ctx.model.Api;
   const CollectionAPI = ctx.model.CollectionApi;
   const reqBody = this.request.body;
-  const api = JSON.parse(reqBody.api);
+  const api = reqBody.api;
   const newApi = Object.assign({}, APISchema, api);
   let apiId = api._id;
 
@@ -187,7 +187,7 @@ exports.apisNew = async function (ctx) {
 exports.apisUpdate = async function (ctx) {
   const API = ctx.model.Api;
   const reqBody = this.request.body;
-  const api = JSON.parse(reqBody.api);
+  const api = reqBody.api;
   delete api._id; // 更新接口不能包含_id
   const result = await API.updateOne({ _id: this.params.id }, { $set: updateFill(api) });
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import { Icon, Menu, message } from 'antd';
 import { connect } from 'dva';
-import ajax from 'xhr-plus';
 import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get';
 import { Link } from 'dva/router';
+import ajax from '../../utils/ajax';
 import Layout from '../../layout/default.jsx';
 
 import './style.less';
@@ -173,8 +174,7 @@ class Collection extends React.PureComponent {
       ajax({
         url: '/api/search',
         method: 'get',
-        type: 'json',
-        data: { keyword },
+        params: { keyword },
       }).then(({ status, data }) => {
         if (status === 'success') {
           const memberList = data.users.map(v => ({
@@ -264,11 +264,11 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params } = this.props;
+    const { params, collectionModel } = this.props;
     const { collectionId } = params;
 
     return (
-      <Layout uplevel={'/collections'}>
+      <Layout uplevel={`/collections?space=${get(collectionModel, 'collection.space.alias')}`}>
         <aside>
           <Link to={`/collection/${collectionId}/apis/list`} className={this.isMatchUrl() ? 'active' : ''}>
             <Icon type="bars" />

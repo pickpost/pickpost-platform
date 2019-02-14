@@ -1,20 +1,109 @@
 import React from 'react';
-import { Avatar, Icon } from 'antd';
+import { Avatar, Icon, Form, Input, Button, Modal, message } from 'antd';
 import { Link } from 'dva/router';
+import classNames from 'classnames';
 import GlobalSearch from '../global-search';
-import { setCookie } from '../../utils/utils';
+import { setCookie, getQueryParamByName } from '../../utils/utils';
+import ajax from '../../utils/ajax';
 
 import './style.less';
 
 const user = window.context.user;
 class Header extends React.Component {
+  state = {
+    visible: false,
+    createFormVisible: false,
+    spaces: [],
+    currentSpace: {},
+  }
+
+  componentDidMount() {
+    this.fetchSpaces();
+  }
+
+  fetchSpaces = () => {
+    ajax({
+      method: 'get',
+      url: '/api/spaces',
+    }).then(res => {
+      const spaces = res.data || [];
+      const spaceAlias = getQueryParamByName('space');
+      const currentSpace = spaces.find(item => item.alias === spaceAlias) || spaces[0];
+
+      this.setState({
+        createFormVisible: false,
+        spaces,
+        currentSpace,
+      });
+    });
+  }
+
   gotoHomePage() {
     setCookie('pickpost_home', '');
     location.href = '/';
   }
 
+  showSpaceList = () => {
+    this.setState({
+      visible: true,
+    });
+  }
+
+  hideSpaceList = () => {
+    this.setState({
+      visible: false,
+    });
+  }
+
+  showCreateForm = () => {
+    this.setState({
+      createFormVisible: true,
+    });
+  }
+
+  handleEditSpace(item, e) {
+    e.stopPropagation();
+    this.setState({
+      createFormVisible: true,
+    }, () => {
+      this.props.form.setFieldsValue({
+        _id: item._id,
+        name: item.name,
+        alias: item.alias,
+      });
+    });
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        ajax({
+          method: values._id ? 'put' : 'post',
+          url: values._id ? `/api/spaces/${values._id}` : '/api/spaces',
+          data: {
+            name: values.name,
+            alias: values.alias,
+          },
+        }).then(() => {
+          message.success('操作成功');
+          this.fetchSpaces();
+        }, (errMsg) => {
+          message.error(errMsg.message);
+        });
+      }
+    });
+  }
+
+  handleSelect = (e) => {
+    const { alias } = e.currentTarget.dataset;
+    location.href = `/collections?space=${alias}`;
+  }
+
   render() {
     const { uplevel, title } = this.props;
+    const { visible, createFormVisible, spaces, currentSpace } = this.state;
+    const { getFieldDecorator, getFieldValue } = this.props.form;
 
     if (title) {
       return (
@@ -33,7 +122,7 @@ class Header extends React.Component {
 
     return (
       <div className="header">
-        <div className="header-row">
+        <div className="header-logo">
           {
             uplevel && (
               <Link to={this.props.uplevel} className="backbtn">
@@ -66,6 +155,11 @@ class Header extends React.Component {
             </svg>
             <span>PickPost</span>
           </Link>
+        </div>
+        <div>
+          <div className="space-switch" onClick={this.showSpaceList}>
+            {currentSpace.name} <Icon type="swap" />
+          </div>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
             <Avatar src={user.avatar} />
@@ -74,9 +168,69 @@ class Header extends React.Component {
             <GlobalSearch />
           </div>
         </div>
+        <Modal
+          visible={visible}
+          title="切换工作空间"
+          onCancel={this.hideSpaceList}
+          footer={null}
+        >
+          <ul className="space-list ant-select-dropdown-menu-item-group-list">
+            {
+              spaces.map(item => (
+                <li
+                  key={item._id}
+                  className={classNames('ant-select-dropdown-menu-item', { active: item._id === currentSpace._id })}
+                  data-alias={item.alias}
+                  onClick={this.handleSelect}
+                >
+                  <Icon className="checked-icon" type="check" /> {item.name}
+                  <span className="actions-zone">
+                    <span className="space-alias"> {item.alias} </span>
+                    <Icon className="edit-icon" type="edit" onClick={this.handleEditSpace.bind(this, item)} />
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+          {
+            !createFormVisible && (
+              <div className="add-space" onClick={this.showCreateForm}>
+                <Icon type="plus" />
+                {getFieldValue('_id') ? '编辑空间' : '新建空间'}
+              </div>
+            )
+          }
+          {
+            createFormVisible && (
+              <div className="create-space-form">
+                <h3>{getFieldValue('_id') ? '编辑空间' : '新建空间'}</h3>
+                <Form onSubmit={this.handleSubmit}>
+                  {getFieldDecorator('_id')(
+                    <Input type="hidden" />
+                  )}
+                  <Form.Item style={{ flex: 'auto', marginRight: 10 }}>
+                    {getFieldDecorator('name', {
+                      rules: [{ required: true, message: '请输入空间名称' }],
+                    })(<Input type="text" placeholder="空间名称，如：口碑" />)}
+                  </Form.Item>
+                  <Form.Item style={{ flex: 'auto', marginRight: 10 }}>
+                    {getFieldDecorator('alias', {
+                      rules: [{ required: true, message: '请输入空间唯一标识' }],
+                    })(<Input type="text" placeholder="空间别名，如：koubei" />)}
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" htmlType="submit" >
+                      {getFieldValue('_id') ? '更新' : '创建'}
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </div>
+            )
+          }
+        </Modal>
       </div>
     );
   }
 }
 
-export default Header;
+export default Form.create()(Header);

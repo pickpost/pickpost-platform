@@ -1,5 +1,5 @@
-import ajax from 'xhr-plus';
 import { message } from 'antd';
+import ajax from '../../utils/ajax';
 
 export default {
   namespace: 'collectionModel',
@@ -8,35 +8,12 @@ export default {
     collection: {},
   },
   effects: {
-    // 更新需求信息
-    *saveCollection({ id, collection }, { call }) {
-      try {
-        const { status } = yield call(ajax, {
-          url: `/api/collections/${id}`,
-          method: 'put',
-          type: 'json',
-          data: {
-            collection: JSON.stringify(collection),
-          },
-        });
-        if (status === 'success') {
-          message.success('需求信息更新成功');
-        } else {
-          message.error('系统异常');
-        }
-      } catch (e) {
-        message.error('系统异常');
-      }
-    },
-
     // 获取需求信息
     *collection({ id }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: `/api/collections/${id}`,
           method: 'get',
-          type: 'json',
-          data: {},
         });
 
         if (status === 'success') {
@@ -46,6 +23,27 @@ export default {
               collection: data,
             },
           });
+        }
+      } catch (e) {
+        message.error('系统异常');
+      }
+    },
+
+    // 更新需求信息
+    *saveCollection({ id, collection }, { call }) {
+      try {
+        const { status } = yield call(ajax, {
+          url: `/api/collections/${id}`,
+          method: 'put',
+          type: 'json',
+          data: {
+            ...collection,
+          },
+        });
+        if (status === 'success') {
+          message.success('需求信息更新成功');
+        } else {
+          message.error('系统异常');
         }
       } catch (e) {
         message.error('系统异常');
@@ -79,8 +77,7 @@ export default {
         const { status, data } = yield call(ajax, {
           url: '/api/apis',
           method: 'get',
-          type: 'json',
-          data: {
+          params: {
             collectionId: id,
           },
         });
