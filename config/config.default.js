@@ -44,6 +44,11 @@ module.exports = appInfo => {
     },
   };
 
+  config.passportLocal = {
+    // usernameField: 'username',
+    // passwordField: 'password',
+  };
+
   config.mongoose = {
     client: {
       url: 'mongodb://127.0.0.1/pickpost',
