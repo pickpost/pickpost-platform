@@ -158,7 +158,7 @@ class Header extends React.Component {
         </div>
         <div>
           <div className="space-switch" onClick={this.showSpaceList}>
-            {currentSpace.name} <Icon type="swap" />
+            {currentSpace && currentSpace.name} <Icon type="swap" />
           </div>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>

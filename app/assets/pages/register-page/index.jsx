@@ -18,8 +18,13 @@ class RegisterPage extends React.PureComponent {
     });
   }
 
+  handleSmsCode = () => {
+    console.log('发送验证码');
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
+    const addonAfter = <span className="addonAfter" onClick={this.handleSmsCode}>发送验证码</span>;
     return (
       <div className="register-page">
         <h2>注册账号</h2>
@@ -32,10 +37,17 @@ class RegisterPage extends React.PureComponent {
             )}
           </Form.Item>
           <Form.Item>
+            {getFieldDecorator('code', {
+              rules: [{ required: true, message: '请输入验证码!' }],
+            })(
+              <Input prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="验证码" addonAfter={addonAfter} />
+            )}
+          </Form.Item>
+          <Form.Item>
             {getFieldDecorator('password', {
               rules: [{ required: true, message: 'Please input your Password!' }],
             })(
-              <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
+              <Input.Password prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
             )}
           </Form.Item>
           <Form.Item>
