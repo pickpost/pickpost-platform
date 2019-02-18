@@ -1,6 +1,7 @@
 import React from 'react';
 import { Avatar, Icon, Form, Input, Button, Modal, message } from 'antd';
 import { Link } from 'dva/router';
+import { connect } from 'dva';
 import classNames from 'classnames';
 import GlobalSearch from '../global-search';
 import { setCookie, getQueryParamByName } from '../../utils/utils';
@@ -11,7 +12,6 @@ import './style.less';
 const user = window.context.user;
 class Header extends React.Component {
   state = {
-    visible: false,
     createFormVisible: false,
     spaces: [],
     currentSpace: {},
@@ -44,14 +44,16 @@ class Header extends React.Component {
   }
 
   showSpaceList = () => {
-    this.setState({
-      visible: true,
+    this.props.dispatch({
+      type: 'globalModel/toggleSpaceModal',
+      show: true,
     });
   }
 
   hideSpaceList = () => {
-    this.setState({
-      visible: false,
+    this.props.dispatch({
+      type: 'globalModel/toggleSpaceModal',
+      show: false,
     });
   }
 
@@ -101,10 +103,10 @@ class Header extends React.Component {
   }
 
   render() {
-    const { uplevel, title } = this.props;
-    const { visible, createFormVisible, spaces, currentSpace } = this.state;
+    const { uplevel, title, visible } = this.props;
+    const { createFormVisible, spaces, currentSpace } = this.state;
     const { getFieldDecorator, getFieldValue } = this.props.form;
-
+    console.log('xxxxx', visible);
     if (title) {
       return (
         <div className="header">
@@ -233,4 +235,8 @@ class Header extends React.Component {
   }
 }
 
-export default Form.create()(Header);
+export default connect(({ globalModel }) => {
+  return {
+    visible: globalModel.spaceModalVisible,
+  };
+})(Form.create()(Header));

@@ -21,6 +21,7 @@ module.exports = app => {
     toJSON: { virtuals: true },
   });
 
+  // 当spanceId值为''时会报错
   collectionSchema.virtual('space', {
     ref: 'Space',
     localField: 'spaceId',
