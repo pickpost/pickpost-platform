@@ -37,10 +37,10 @@ class ProjectsPage extends React.PureComponent {
   }];
 
   componentDidMount() {
-    const spaceAlias = this.props.location.query.space;
+    const { location: { query } } = this.props;
     this.props.dispatch({
       type: 'projectsModel/projects',
-      spaceAlias,
+      spaceAlias: query.space,
     });
   }
 

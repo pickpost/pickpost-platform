@@ -6,6 +6,8 @@ import { Router, Route, browserHistory } from 'dva/router';
 import './app.less';
 
 // Pages && Models
+import GlobalModel from './layout/globalStore'; // Global Model
+
 import LoginPage from './pages/login-page';
 import LoginModel from './pages/login-page/store';
 
@@ -75,6 +77,8 @@ const app = dva({
 // app.use(createLoading());
 
 // 3. Model
+app.model(GlobalModel);
+
 app.model(LoginModel);
 app.model(RegisterModel);
 app.model(ResetPasswordModel);

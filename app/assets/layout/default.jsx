@@ -1,10 +1,11 @@
 // 框架布局
 import React from 'react';
+import { connect } from 'dva';
 import Header from '../components/header';
 
 import './default.less';
 
-export default class LayoutDefault extends React.Component {
+class LayoutDefault extends React.PureComponent {
   render() {
     const { children, uplevel, title } = this.props;
     return (
@@ -17,3 +18,10 @@ export default class LayoutDefault extends React.Component {
     );
   }
 }
+
+export default connect(({ globalModel }) => {
+  return {
+    globalModel,
+  };
+})(LayoutDefault);
+
