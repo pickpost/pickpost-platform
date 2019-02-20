@@ -14,6 +14,9 @@ import LoginModel from './pages/login-page/store';
 import RegisterPage from './pages/register-page';
 import RegisterModel from './pages/register-page/store';
 
+import ResetPasswordPage from './pages/reset-password-page';
+import ResetPasswordModel from './pages/reset-password-page/store';
+
 import APIEditPage from './pages/api-edit-page';
 import APIEditModel from './pages/api-edit-page/store';
 
@@ -78,6 +81,7 @@ app.model(GlobalModel);
 
 app.model(LoginModel);
 app.model(RegisterModel);
+app.model(ResetPasswordModel);
 
 app.model(APIEditModel);
 app.model(APIDocModel);
@@ -109,6 +113,7 @@ export default class Container extends React.Component {
           <Route path="/workspace" component={CollectionsPage} context={context} />
           <Route path="/login" component={LoginPage} context={context} />
           <Route path="/register" component={RegisterPage} context={context} />
+          <Route path="/resetPassword" component={ResetPasswordPage} context={context} />
           {/* 列表页 */}
           <Route path="/collections" component={CollectionsPage} context={context} />
           <Route path="/projects" component={ProjectsPage} context={context} />

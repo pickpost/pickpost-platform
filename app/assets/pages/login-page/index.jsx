@@ -45,7 +45,7 @@ class LoginPage extends React.PureComponent {
             })(
               <Checkbox>记住我</Checkbox>
             )}
-            <Link className="login-form-forgot" to="/">忘记密码</Link>
+            <Link className="login-form-forgot" to="/resetPassword">忘记密码</Link>
             <Button type="primary" htmlType="submit" className="login-form-button"> 登录 </Button>
             Or <Link to="/register">注册</Link>
           </Form.Item>
