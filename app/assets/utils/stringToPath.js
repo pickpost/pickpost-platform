@@ -40,4 +40,9 @@ const stringToPath = string => {
   return result;
 };
 
+
+// const ex = 'root.data.merchantActivityV.promos.0.equity.itemInfos.0.itemDesc';
+// console.log(stringToPath(ex));
+
+
 export default stringToPath;

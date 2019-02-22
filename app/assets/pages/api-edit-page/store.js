@@ -11,11 +11,14 @@ export default {
     },
   },
   effects: {
-    *fetchProjectList({}, { call, put }) {
+    *fetchProjectList({ collectionId }, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/projects',
           method: 'get',
+          params: {
+            collectionId,
+          },
         });
 
         if (status === 'success') {
