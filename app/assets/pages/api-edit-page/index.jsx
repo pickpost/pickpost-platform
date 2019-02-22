@@ -19,8 +19,10 @@ const RadioGroup = Radio.Group;
 @autobind
 class Index extends React.PureComponent {
   componentDidMount() {
+    const { location: { query: { collectionId } } } = this.props;
     this.props.dispatch({
       type: 'apiEditModel/fetchProjectList',
+      collectionId,
     });
 
     const { params: { apiId } } = this.props;

@@ -22,8 +22,15 @@ async function getSpaceIdByAlias(model, alias) {
 exports.projectsIndex = async function(ctx) {
   const Project = ctx.model.Project;
   const API = ctx.model.Api;
+  const { collectionId, spaceAlias } = ctx.query;
 
-  const spaceId = await getSpaceIdByAlias(ctx.model, ctx.query.spaceAlias);
+  let spaceId = '';
+  if (collectionId) {
+    const matchedCollection = await ctx.model.Collection.findOne({ _id: collectionId });
+    spaceId = matchedCollection.spaceId;
+  } else if (spaceAlias) {
+    spaceId = await getSpaceIdByAlias(ctx.model, spaceAlias);
+  }
 
   const projects = await Project.find({ spaceId }).sort({ createdAt: 'desc' });
   const projectIds = projects.map(item => item._id);

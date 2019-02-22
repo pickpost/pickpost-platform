@@ -1,7 +1,9 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
 import set from 'lodash/set';
+import debounce from 'lodash/debounce';
 import JSON5 from 'json5';
+import JSONAST from 'json5-to-ast';
 import { Modal, Icon, Tooltip } from 'antd';
 import BulkEditor from '../bulk-editor';
 import json2schema from '../../utils/json2schema';
@@ -46,10 +48,10 @@ const BulkEditorEnums = [{
   width: '',
 }];
 
-const MinRows = 3;
-
+// 更新 schema 指定 node
 function setSchemaData(schema, path, key, value2) {
-  const pathArr = stringToPath(path);
+  // stringToPath 对 数组路径 [0] 解析有问题，所以将数据转化为 .0.
+  const pathArr = stringToPath(path.replace(/\[/g, '.').replace(/\]/, ''));
   const newPath = [];
   pathArr.forEach((i, idx) => {
     if (idx === 0) return;
@@ -71,15 +73,75 @@ function execute(fn) {
   return new Fn('return ' + fn)();
 }
 
+function astToList(ast, result, parentsPath) {
+  const newParentsPath = parentsPath || 'root';
+  if (ast.type === 'Object' && ast.children) {
+    ast.children.forEach(item => {
+      astToList(item, result, newParentsPath);
+    });
+  } else if (ast.type === 'Array' && ast.children) {
+    ast.children.forEach((item, index) => {
+      astToList(item, result, newParentsPath + '[' + index + ']');
+    });
+  } else if (ast.type === 'Property') {
+    if (!result[ast.loc.start.line - 1]) {
+      result[ast.loc.start.line - 1] = {
+        prop: ast.key.value,
+        path: newParentsPath + '.' + ast.key.value,
+      };
+    }
+
+    if (ast.value) {
+      astToList(ast.value, result, newParentsPath + '.' + ast.key.value);
+    }
+  }
+}
+
+function jsonToRows(jsonStr, pathMap) {
+  let result = Array(jsonStr.split('\n').length).fill('');
+  const exampleAst = JSONAST(jsonStr, {
+    loc: true,
+  });
+
+  console.log('exampleAst', exampleAst);
+
+  astToList(exampleAst, result);
+  result.shift();
+
+  result = result.map(item => {
+    const matchItem = pathMap[item.path] || {};
+    return {
+      ...item,
+      description: matchItem.description,
+      enum: matchItem.enum,
+      type: matchItem.type,
+    };
+  });
+  return result;
+}
+
+function updateRowsDetail(rows, pathMap) {
+  return rows.map(item => {
+    const matchItem = pathMap[item.path] || {};
+    return {
+      ...item,
+      description: matchItem.description,
+      enum: matchItem.enum,
+      type: matchItem.type,
+    };
+  });
+}
+
 @autobind
 class SchemaEditor extends React.Component {
   constructor(props) {
     super(props);
     this.instance = null;
     const json = schema2json(props.value);
-    const rows = (JSON.stringify(json, null, '\t') || '').split('\n').length;
+    // const rows = (JSON.stringify(json, null, '\t') || '').split('\n').length;
     const defaultJsonStr = '{\n\t\n}'; // 默认三行
     const jsonStr = json ? JSON.stringify(json, null, '\t') : defaultJsonStr;
+    this.pathMap = this.generatePathMap(props.value, 'root', {});
     this.state = {
       jsonStr,
       schema: props.value,
@@ -88,27 +150,24 @@ class SchemaEditor extends React.Component {
       enumsMap: {},
       enumsModal: false,
       jsonErrorMessage: '',
-      leftRowCount: rows,
       hightLightLine: 0,
+      rows: jsonToRows(jsonStr, this.pathMap),
     };
-    this.pathMap = this.generatePathMap(props.value, 'root', {});
   }
 
   pathMap = {}
 
   // 左侧JSON改变时，只同步整个 Schema 结构，不同步额外信息。
-  handleJSONChange = value => {
-    const rows = value.split('\n').length;
-    this.setState({
-      jsonStr: value,
-      leftRowCount: rows,
-    });
+  handleJSONChange = debounce(value => {
     if (this.props && this.props.onChange) {
       try {
         const json = JSON5.parse(value);
         const newSchema = json2schema(json, this.pathMap, 'root');
+        // 更新右侧 rows
+        const rows = jsonToRows(value, this.pathMap);
         this.setState({
           schema: newSchema,
+          rows,
           jsonErrorMessage: '',
         });
         this.props.onChange(newSchema);
@@ -119,7 +178,7 @@ class SchemaEditor extends React.Component {
         });
       }
     }
-  }
+  }, 300)
 
   formatJSON() {
     const { jsonStr } = this.state;
@@ -164,6 +223,7 @@ class SchemaEditor extends React.Component {
       title: schema.title,
       description: schema.description,
       enum: schema.enum,
+      type: schema.type,
     };
 
     if (schema.items) {
@@ -183,67 +243,28 @@ class SchemaEditor extends React.Component {
     });
   }
 
-  renderTable(rows, properties, str) {
-    for (const prop in properties) {
-      const path = str + '.' + prop + '';
-
-      // 如果没有description，则不会更新当前行的备注信息
-      if (!properties[prop].description) {
-        properties[prop].description = '';
-      }
-
-      rows.push({
-        prop,
-        path,
-        ...properties[prop],
-      });
-
-      if (properties[prop].properties) {
-        this.renderTable(rows, properties[prop].properties, path + '[0]');
-      }
-
-      if (properties[prop].items) {
-        if (properties[prop].items.type === 'object') {
-          rows.push({ });
-        }
-        this.renderTable(rows, properties[prop].items.properties, path + '[0]');
-        if (properties[prop].items.type === 'object') {
-          rows.push({ });
-        }
-      }
-
-      // 如果是对象，尾要加占位
-      if (properties[prop].type === 'object') {
-        rows.push({ });
-      }
-
-      // 如果是数组，只有当数组内存在子项时需要尾部加占位
-      if (properties[prop].type === 'array' && properties[prop].items) {
-        rows.push({ });
-      }
-    }
-  }
-
   handleRemarkChange(item, e) { // 备注的修改
-    const { schema } = this.state;
+    const { schema, rows} = this.state;
     const value = e.target.value;
     setSchemaData(schema, item.path, 'description', value);
     // 同步 pathMap
     this.pathMap[item.path] = this.pathMap[item.path] ? { ...this.pathMap[item.path], description: value } : { description: value };
     this.setState({
       schema,
+      rows: updateRowsDetail(rows, this.pathMap),
     });
     this.props.onChange(schema);
   }
 
   handleSaveEnums = () => {
-    const { path, list, schema } = this.state;
+    const { path, list, schema, rows } = this.state;
     setSchemaData(schema, path, 'enum', list);
     // 同步 pathMap
     this.pathMap[path] = this.pathMap[path] ? { ...this.pathMap[path], enum: list } : { enum: list };
     this.setState({
       enumsModal: false,
       schema,
+      rows: updateRowsDetail(rows, this.pathMap),
     });
     this.props.onChange(schema);
   }
@@ -277,12 +298,8 @@ class SchemaEditor extends React.Component {
   }
 
   render() {
-    const { jsonStr, schema, enumsModal, leftRowCount, hightLightLine } = this.state;
+    const { jsonStr, enumsModal, hightLightLine, rows } = this.state;
     const { disabled } = this.props;
-    const rows = [];
-    this.renderTable(rows, schema.properties, 'data');
-    const leftShowRows = Math.max(leftRowCount, MinRows);
-    this.fullFillRow(rows, leftShowRows - 2);
     CodeMirrorConfig.readOnly = !!disabled;
 
     return (
@@ -297,8 +314,8 @@ class SchemaEditor extends React.Component {
                   <span className="format-action" onClick={this.formatJSON}> 格式化 </span>
                 </th>
                 <th width="8%" style={{ textAlign: 'center' }}>Key</th>
-                <th width="22%" style={{ textAlign: 'center' }}>值规则</th>
-                <th width="20%" style={{ textAlign: 'center' }}>备注</th>
+                <th width="20%" style={{ textAlign: 'center' }}>说明</th>
+                <th width="22%" style={{ textAlign: 'center' }}>枚举</th>
               </tr>
             </thead>
             <tbody>
@@ -330,42 +347,45 @@ class SchemaEditor extends React.Component {
                       item.prop ? <td className="key-style">{item.prop}</td> : <td></td>
                     }
                     {
-                      item.type === 'string' || item.type === 'number' || item.type === 'boolean' ?
-                      <td className="enum">
-                        {
-                          item.enum && item.enum.length > 0 && (
-                            <Tooltip title={<div>{(item.enum || []).map(attr => <div key={attr.value}>{`${attr.value} ${attr.description ? ': ' + attr.description : ''}`}</div>)}</div>}>
-                              <div className="enum-select">
-                                {
-                                  (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.description ? `(${attr.description})` : ''}</span>)
-                                }
-                              </div>
-                            </Tooltip>
-                          )
-                        }
-                        {
-                          !disabled && (
-                            <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
-                              <Icon type="edit" />
-                            </span>
-                          )
-                        }
-                      </td> :
-                      <td></td>
+                      item.type ? (
+                        <td>
+                          <input className="re-input" disabled={disabled} type="text"
+                            value={item.description} data-line={idx + 1} onFocus={this.handleSyncTableHightlight}
+                            onChange={e => { this.handleRemarkChange(item, e); }} />
+                        </td>
+                      ) : (
+                        <td className="disabled-td"></td>
+                      )
                     }
                     {
-                      item.type ? <td>
-                        <input className="re-input" disabled={disabled} type="text" value={item.description} data-line={idx + 1} onFocus={this.handleSyncTableHightlight} onChange={e => { this.handleRemarkChange(item, e); }} />
-                      </td> : <td></td>
+                      item.type === 'string' || item.type === 'number' || item.type === 'boolean' ? (
+                        <td className="enum">
+                          {
+                            item.enum && item.enum.length > 0 && (
+                              <Tooltip title={<div>{(item.enum || []).map(attr => <div key={attr.value}>{`${attr.value} ${attr.description ? ': ' + attr.description : ''}`}</div>)}</div>}>
+                                <div className="enum-select">
+                                  {
+                                    (item.enum || []).map((attr, i) => <span className="enum-value" key={i}><b>{attr.value} </b> {attr.description ? `(${attr.description})` : ''}</span>)
+                                  }
+                                </div>
+                              </Tooltip>
+                            )
+                          }
+                          {
+                            !disabled && (
+                              <span className="edit-icon" onClick={() => { this.enumFx(item.path, item.enum); }}>
+                                <Icon type="edit" />
+                              </span>
+                            )
+                          }
+                        </td>
+                      ) : (
+                        <td></td>
+                      )
                     }
                   </tr>
                 ))
               }
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
             </tbody>
           </table>
         </div>
