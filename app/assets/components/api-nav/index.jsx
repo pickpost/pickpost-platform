@@ -65,7 +65,7 @@ export default class ApiNav extends React.Component {
     return (
       <div>
         <div className="tabs-header">
-          <Link to={`/${source}/${uniqueId}/apis/list?groupId=${groupId}`} activeClassName="active">
+          <Link to={`/${source}/${uniqueId}/apis/list`} query={{ groupId }} activeClassName="active">
             <Icon type="left" /> 返回列表
           </Link>
           <div className="split-line"></div>

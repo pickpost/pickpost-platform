@@ -127,7 +127,7 @@ class Header extends React.Component {
         <div className="header-logo">
           {
             uplevel && (
-              <Link to={this.props.uplevel} query={{ space }} className="backbtn">
+              <Link to={this.props.uplevel} className="backbtn">
                 <Icon type="left" />
               </Link>
             )

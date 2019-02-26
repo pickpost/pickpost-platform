@@ -251,7 +251,7 @@ class Collection extends React.PureComponent {
                 <Button size="default" className="new-btn pull-right mar-right" onClick={this.handleCopyApi} icon="copy">
                   复制接口
                 </Button>
-                <Link to={`/api_fe/create?collectionId=${collectionId}`} query={{ space: query.space }}>
+                <Link to="/api_fe/create" query={{ collectionId, space: query.space }}>
                   <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
                     新增接口
                   </Button>
@@ -262,7 +262,7 @@ class Collection extends React.PureComponent {
           {
             projectId && project && (
               <Info title={project.name} desc={project.desc}>
-                <Link to={`/api_fe/create?projectId=${projectId}`} query={{ space: query.space }}>
+                <Link to="/api_fe/create" query={{ projectId, space: query.space }}>
                   <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
                     新增接口
                   </Button>
