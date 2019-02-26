@@ -63,7 +63,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { apiSettingModel, params: { collectionId, projectId } } = this.props;
+    const { apiSettingModel, params: { collectionId, projectId }, location: { query } } = this.props;
     const { editingAPI, projectList } = apiSettingModel;
 
     const formItemLayout = {
@@ -95,7 +95,9 @@ class Index extends React.PureComponent {
               <Input type="hidden" />
             )}
             <FormItem
-              label={<span>所属应用 <Link className="help-tips" to="/projects/new">没有找到应用，去新建一个</Link></span>}
+              label={<span>
+                所属应用 <Link className="help-tips" to="/projects/new" query={{ space: query.space }}>没有找到应用，去新建一个</Link>
+              </span>}
               {...formItemLayout}
               help={getFieldError('projectId')}
             >

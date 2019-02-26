@@ -18,7 +18,7 @@ class Collection extends React.PureComponent {
       searchText: '',
     };
 
-    const { collectionId, projectId } = props.params;
+    const { location: { query }, params: { collectionId, projectId }} = props;
     this.apisColumns = [{
       title: '名称',
       dataIndex: 'name',
@@ -74,9 +74,14 @@ class Collection extends React.PureComponent {
         );
         return (
           <div className="actions" onClick={e => e.stopPropagation()}>
-            <Link to={collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`}>详情</Link>
+            <Link
+              to={collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`}
+              query={{ space: query.space }}
+            >
+              详情
+            </Link>
             <Popover overlayClassName="action-btns-wrapper" trigger="click" content={DeleteFileButtons}>
-              <Link to="">删除</Link>
+              <Link>删除</Link>
             </Popover>
           </div>
         );
@@ -231,7 +236,11 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params: { collectionId, projectId }, location: { query: { groupId } }, apiListModel: { apis, collection, project } } = this.props;
+    const {
+      params: { collectionId, projectId },
+      location: { query },
+      apiListModel: { apis, collection, project },
+    } = this.props;
 
     return (
       <div className="api-list-page">
@@ -242,7 +251,7 @@ class Collection extends React.PureComponent {
                 <Button size="default" className="new-btn pull-right mar-right" onClick={this.handleCopyApi} icon="copy">
                   复制接口
                 </Button>
-                <Link to={`/api_fe/create?collectionId=${collectionId}`}>
+                <Link to={`/api_fe/create?collectionId=${collectionId}`} query={{ space: query.space }}>
                   <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
                     新增接口
                   </Button>
@@ -253,7 +262,7 @@ class Collection extends React.PureComponent {
           {
             projectId && project && (
               <Info title={project.name} desc={project.desc}>
-                <Link to={`/api_fe/create?projectId=${projectId}`}>
+                <Link to={`/api_fe/create?projectId=${projectId}`} query={{ space: query.space }}>
                   <Button size="default" className="new-btn pull-right" type="primary" icon="plus">
                     新增接口
                   </Button>
@@ -275,7 +284,8 @@ class Collection extends React.PureComponent {
                   browserHistory.push({
                     pathname: collectionId ? `/collection/${collectionId}/apis/doc/${api._id}` : `/project/${projectId}/apis/doc/${api._id}`,
                     query: {
-                      groupId,
+                      groupId: query.groupId,
+                      space: query.space,
                     },
                   });
                 },

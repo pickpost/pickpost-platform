@@ -2,7 +2,6 @@ import React from 'react';
 import { Icon, Menu, message } from 'antd';
 import { connect } from 'dva';
 import cloneDeep from 'lodash/cloneDeep';
-import get from 'lodash/get';
 import { Link } from 'dva/router';
 import ajax from '../../utils/ajax';
 import Layout from '../../layout/default.jsx';
@@ -264,21 +263,32 @@ class Collection extends React.PureComponent {
   }
 
   render() {
-    const { params, collectionModel } = this.props;
-    const { collectionId } = params;
+    const { params: { collectionId }, location: { query } } = this.props;
 
     return (
-      <Layout uplevel={`/collections?space=${get(collectionModel, 'collection.space.alias')}`}>
+      <Layout uplevel={`/collections?space=${query.space}`} space={query.space}>
         <aside>
-          <Link to={`/collection/${collectionId}/apis/list`} className={this.isMatchUrl() ? 'active' : ''}>
+          <Link
+            to={`/collection/${collectionId}/apis/list`}
+            query={{ space: query.space}}
+            className={this.isMatchUrl() ? 'active' : ''}
+          >
             <Icon type="bars" />
             <div>接口</div>
           </Link>
-          <Link to={`/collection/${collectionId}/members`} activeClassName="active">
+          <Link
+            to={`/collection/${collectionId}/members`}
+            query={{ space: query.space }}
+            activeClassName="active"
+          >
             <Icon type="team" />
             <div>成员</div>
           </Link>
-          <Link to={`/collection/${collectionId}/setting`} activeClassName="active">
+          <Link
+            to={`/collection/${collectionId}/setting`}
+            query={{ space: query.space }}
+            activeClassName="active"
+          >
             <Icon type="setting" />
             <div>设置</div>
           </Link>

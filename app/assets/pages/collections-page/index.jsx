@@ -150,13 +150,13 @@ class Index extends React.PureComponent {
     });
 
     return (
-      <Layout>
+      <Layout space={query.space}>
         <aside>
-          <Link to={`/collections?space=${query.space}`} activeClassName="active">
+          <Link to="/collections" query={{ space: query.space }} activeClassName="active">
             <Icon type="folder" />
             <div>需求</div>
           </Link>
-          <Link to={`/projects?space=${query.space}`} activeClassName="active">
+          <Link to="/projects" query={{ space: query.space }} activeClassName="active">
             <Icon type="appstore" />
             <div>应用</div>
           </Link>
@@ -192,7 +192,9 @@ class Index extends React.PureComponent {
                   {
                     (groupItem.children || []).map(p => (
                       <Col span={6} key={p._id}>
-                        <Card collection={p} onChangeGroup={this.handleShowGroupSelect} />
+                        <Link to={`/collection/${p._id}/apis/list`} query={{ space: query.space }}>
+                          <Card collection={p} onChangeGroup={this.handleShowGroupSelect} />
+                        </Link>
                       </Col>
                     ))
                   }

@@ -21,16 +21,24 @@ class Project extends React.Component {
   }
 
   render() {
-    const { params: { projectId }, projectModel } = this.props;
+    const { params: { projectId }, projectModel, location: { query } } = this.props;
 
     return (
-      <Layout uplevel={`/projects?space=${get(projectModel, 'project.space.alias')}`}>
+      <Layout uplevel={`/projects?space=${get(projectModel, 'project.space.alias')}`} space={query.space}>
         <aside>
-          <Link to={`/project/${projectId}/apis/list`} className={this.isMatchUrl() ? 'active' : ''}>
+          <Link
+            to={`/project/${projectId}/apis/list`}
+            query={{ space: query.space }}
+            className={this.isMatchUrl() ? 'active' : ''}
+          >
             <Icon type="bars" />
             <div>接口</div>
           </Link>
-          <Link to={`/project/${projectId}/setting`} activeClassName="active">
+          <Link
+            to={`/project/${projectId}/setting`}
+            query={{ space: query.space }}
+            activeClassName="active"
+          >
             <Icon type="setting" />
             <div>设置</div>
           </Link>

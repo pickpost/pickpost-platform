@@ -79,6 +79,7 @@ class Page extends React.PureComponent {
   render() {
     const { ownersOption } = this.state;
     const { editingProject } = this.props.projectEditModel;
+    const { location: { query }} = this.props;
     const formItemLayout = {
       labelCol: { span: 24 },
       wrapperCol: { span: 24 },
@@ -125,7 +126,7 @@ class Page extends React.PureComponent {
     }];
 
     return (
-      <Layout title="新建应用">
+      <Layout title="新建应用" space={query.space}>
         <main className="single-page">
           <div className="collection-new">
             <div className="form-header">

@@ -103,10 +103,10 @@ class Header extends React.Component {
   }
 
   render() {
-    const { uplevel, title, visible } = this.props;
+    const { uplevel, title, visible, space } = this.props;
     const { createFormVisible, spaces, currentSpace } = this.state;
     const { getFieldDecorator, getFieldValue } = this.props.form;
-    console.log('xxxxx', visible);
+
     if (title) {
       return (
         <div className="header">
@@ -127,12 +127,12 @@ class Header extends React.Component {
         <div className="header-logo">
           {
             uplevel && (
-              <Link to={this.props.uplevel} className="backbtn">
+              <Link to={this.props.uplevel} query={{ space }} className="backbtn">
                 <Icon type="left" />
               </Link>
             )
           }
-          <Link to="/collections" className="logo-tit">
+          <Link to="/collections" query={{ space }} className="logo-tit">
             <svg width="37px" height="20px" viewBox="0 0 37 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
               <defs>
                 <linearGradient x1="75.7401524%" y1="56.669876%" x2="0%" y2="0%" id="linearGradient-1">

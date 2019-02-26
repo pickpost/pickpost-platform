@@ -3,7 +3,6 @@ import { connect } from 'dva';
 import { Input, Menu, Dropdown, Button, Icon } from 'antd';
 import { browserHistory, Link } from 'dva/router';
 import Folder from '../../components/folder';
-// import File from '../../components/file';
 import ApiNav from './components/api-nav';
 import FolderCreate from './components/folder-create';
 import { DragDropContext } from 'react-dnd';
@@ -37,12 +36,13 @@ class Api extends React.PureComponent {
 
   handleMenuClick = e => {
     if (e.key === 'file') {
-      const { collectionId } = this.props.collectionApisModel;
+      const { location: { query }, collectionApisModel: { collectionId }} = this.props;
 
       browserHistory.push({
         pathname: '/api_fe/create',
         query: {
           collectionId,
+          space: query.space,
         },
       });
     } else if (e.key === 'folder') {
@@ -97,12 +97,13 @@ class Api extends React.PureComponent {
   }
 
   handleToggleCollection = id => {
-    const { collectionId } = this.props.collectionApisModel;
+    const { location: { query }, collectionApisModel: { collectionId }} = this.props;
     // 跳转带分组信息的列表
     browserHistory.push({
       pathname: `/collection/${collectionId}/apis/list`,
       query: {
         groupId: id || 'none',
+        space: query.space,
       },
     });
     this.groupId = id || 'none';
@@ -127,13 +128,14 @@ class Api extends React.PureComponent {
   }
 
   handleAddFile = folder => {
-    const { collectionId } = this.props.collectionApisModel;
+    const { location: { query }, collectionApisModel: { collectionId }} = this.props;
 
     browserHistory.push({
       pathname: '/api_fe/create',
       query: {
         collectionId,
         groupId: folder._id,
+        space: query.space,
       },
     });
   }
@@ -148,7 +150,7 @@ class Api extends React.PureComponent {
   }
 
   render() {
-    const { collectionApisModel, collectionModel, params: { collectionId, apiId }, location: { query: { groupId }} } = this.props;
+    const { collectionApisModel, collectionModel, params: { collectionId, apiId }, location: { query: { groupId, space }} } = this.props;
     const { filterApis, keywords, showFolderModal, collectionApis, folderId } = collectionApisModel;
 
     const showApis = keywords ? filterApis : collectionApis;
@@ -176,7 +178,11 @@ class Api extends React.PureComponent {
               </Button>
             </Dropdown>
           </div>
-          <Link className={ !groupId ? 'all-apis active' : 'all-apis'} to={`/collection/${collectionId}/apis/list`}>
+          <Link
+            to={`/collection/${collectionId}/apis/list`}
+            query={{ space }}
+            className={ !groupId ? 'all-apis active' : 'all-apis'}
+          >
             <Icon type="bars" />
             全部接口
           </Link>

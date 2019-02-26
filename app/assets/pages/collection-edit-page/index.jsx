@@ -97,6 +97,7 @@ class CollectionsPage extends React.PureComponent {
   render() {
     const { ownersOption, membersOption } = this.state;
     const { editingCollection } = this.props.collectionEditModel;
+    const { location: { query }} = this.props;
 
     const formItemLayout = {
       labelCol: { span: 24 },
@@ -128,7 +129,7 @@ class CollectionsPage extends React.PureComponent {
     }
 
     return (
-      <Layout title="新建需求">
+      <Layout title="新建需求" space={query.space}>
         <main className="single-page">
           <div className="collection-new">
             <div className="form-header">

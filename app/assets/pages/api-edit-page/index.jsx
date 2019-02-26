@@ -73,7 +73,7 @@ class Index extends React.PureComponent {
   }
 
   render() {
-    const { apiEditModel, params: { apiId }, location: { query: { collectionId, projectId, groupId } } } = this.props;
+    const { apiEditModel, params: { apiId }, location: { query: { collectionId, projectId, groupId, space } } } = this.props;
     const { editingAPI, projectList } = apiEditModel;
 
     const formItemLayout = {
@@ -92,7 +92,7 @@ class Index extends React.PureComponent {
     const titleText = apiId ? '编辑接口' : '新建接口';
 
     return (
-      <Layout title={titleText}>
+      <Layout title={titleText} space={space}>
         <main className="single-page">
           <div className="collection-new">
             <div className="form-header">
@@ -123,7 +123,7 @@ class Index extends React.PureComponent {
                   <Input type="hidden" />
                 )}
                 <FormItem
-                  label={<span>所属应用 <Link className="help-tips" to="/projects/new">没有找到应用，去新建一个</Link></span>}
+                  label={<span>所属应用 <Link className="help-tips" to="/projects/new" query={{ space }}>没有找到应用，去新建一个</Link></span>}
                   {...formItemLayout}
                   help={getFieldError('projectId')}
                 >

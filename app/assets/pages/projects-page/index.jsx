@@ -53,6 +53,13 @@ class ProjectsPage extends React.PureComponent {
     });
   }
 
+  handleGotoDetail = (record, space) => {
+    browserHistory.push({
+      pathname: `/project/${record.key}/apis/list`,
+      query: { space },
+    });
+  }
+
   render() {
     const { projectsModel, location: { query } } = this.props;
     const { projects } = projectsModel;
@@ -68,15 +75,13 @@ class ProjectsPage extends React.PureComponent {
     });
 
     return (
-      <Layout>
+      <Layout space={query.space}>
         <aside>
-          <Link to={`/collections?space=${query.space}`} activeClassName="active">
-            <Icon type="folder" />
-            <div>需求</div>
+          <Link to="/collections" query={{ space: query.space }} activeClassName="active">
+            <Icon type="folder" /> <div>需求</div>
           </Link>
-          <Link to={`/projects?space=${query.space}`} activeClassName="active">
-            <Icon type="appstore" />
-            <div>应用</div>
+          <Link to="/projects" query={{ space: query.space }} activeClassName="active">
+            <Icon type="appstore" /> <div>应用</div>
           </Link>
         </aside>
         <main className="projects-main">
@@ -89,7 +94,7 @@ class ProjectsPage extends React.PureComponent {
                 应用是指后端系统，名称与后端系统名保持一致。
               </p>
             </div>
-            <Link to={`/projects/new?space=${query.space}`} className="entrance">
+            <Link to="/projects/new" query={{ space: query.space }} className="entrance">
               <Button className="new-btn" type="primary" icon="plus">
                 新建应用
               </Button>
@@ -99,15 +104,9 @@ class ProjectsPage extends React.PureComponent {
             className="projects-table"
             columns={this.projectColumns}
             dataSource={projectData}
-            onRow={record => {
-              return {
-                onClick: () => {
-                  browserHistory.push({
-                    pathname: `/project/${record.key}/apis/list`,
-                  });
-                },
-              };
-            }}
+            onRow={record => ({
+              onClick: () => { this.handleGotoDetail(record, query.space); },
+            })}
           />
         </main>
       </Layout>

@@ -7,10 +7,11 @@ import './default.less';
 
 class LayoutDefault extends React.PureComponent {
   render() {
-    const { children, uplevel, title } = this.props;
+    const { children, uplevel, title, space } = this.props;
+
     return (
       <div className="layout">
-        <Header uplevel={uplevel} title={title} />
+        <Header uplevel={uplevel} space={space} title={title} />
         <div className="container">
           {children}
         </div>
