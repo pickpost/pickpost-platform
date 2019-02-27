@@ -45,8 +45,8 @@ module.exports = appInfo => {
   };
 
   config.passportLocal = {
-    // usernameField: 'username',
-    // passwordField: 'password',
+    usernameField: 'email',
+    passwordField: 'password',
   };
 
   config.mongoose = {

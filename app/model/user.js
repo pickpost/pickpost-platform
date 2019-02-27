@@ -7,8 +7,13 @@ module.exports = app => {
   const userSchema = new Schema({
     userId: { type: String },
     username: { type: String },
+    password: { type: String },
     avatar: { type: String },
-    email: { type: Array },
+    email: { // 一个邮件只能注册一个账号
+      type: String,
+      required: true,
+      unique: true,
+    },
     spaceId: { type: String }, // 当前选中空间
   }, {
     timestamps: true,

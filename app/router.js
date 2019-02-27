@@ -51,9 +51,12 @@ module.exports = app => {
   // router.io.of('/socket2').route('ping2', router.io.controller.socket.index);
 
   // 跨域支持
-  router.all('/proxy.html', controller.home.proxy);
+  router.all('/proxy.html', controller.page.proxy);
 
   // 页面路由
-  router.get('/', controller.home.index);
-  router.get('*', controller.home.app);
+  router.get('/', controller.page.home);
+  router.get('/login', controller.page.login);
+  router.get('/register', controller.page.register);
+  router.get('/reset-password', controller.page.resetPassword);
+  router.get('*', controller.page.app);
 };
