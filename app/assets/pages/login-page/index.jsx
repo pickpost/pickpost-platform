@@ -13,7 +13,11 @@ class LoginPage extends React.PureComponent {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
+        this.props.dispatch({
+          type: 'loginModel/login',
+          username: values.username,
+          password: values.password,
+        });
       }
     });
   }
@@ -23,19 +27,19 @@ class LoginPage extends React.PureComponent {
     return (
       <div className="login-page">
         <h2>登录</h2>
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form onSubmit={this.handleSubmit} method="post" action="/api/login" className="login-form">
           <Form.Item>
-            {getFieldDecorator('userName', {
-              rules: [{ required: true, message: 'Please input your username!' }],
+            {getFieldDecorator('username', {
+              rules: [{ required: true, message: '请输入用户名' }],
             })(
-              <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
+              <Input name="email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
             )}
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
+              rules: [{ required: true, message: '请输入密码' }],
             })(
-              <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
+              <Input name="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
             )}
           </Form.Item>
           <Form.Item>

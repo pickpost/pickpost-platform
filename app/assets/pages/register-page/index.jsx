@@ -10,9 +10,15 @@ import './index.less';
 
 class RegisterPage extends React.PureComponent {
   handleSubmit = (e) => {
+    const { dispatch } = this.props;
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        dispatch({
+          type: 'registerModel/register',
+          email: values.email,
+          password: values.password,
+        });
         console.log('Received values of form: ', values);
       }
     });
@@ -30,7 +36,7 @@ class RegisterPage extends React.PureComponent {
         <h2>注册账号</h2>
         <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item>
-            {getFieldDecorator('userName', {
+            {getFieldDecorator('email', {
               rules: [{ required: true, message: 'Please input your username!' }],
             })(
               <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
@@ -45,7 +51,7 @@ class RegisterPage extends React.PureComponent {
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('password', {
-              rules: [{ required: true, message: 'Please input your Password!' }],
+              rules: [{ required: true, message: '请输入密码' }],
             })(
               <Input.Password prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
             )}

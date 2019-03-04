@@ -2,6 +2,7 @@
 
 module.exports = app => {
   const { router, controller } = app;
+
   // RESTful APIs
   router.get('/api/spaces', controller.space.index);
   router.post('/api/spaces', controller.space.create);
@@ -37,6 +38,9 @@ module.exports = app => {
   router.get('/api/getuser', controller.api.getUser);
   router.get('/api/globalsearch', controller.api.globalSearch);
 
+  router.post('/api/login', controller.auth.login);
+  router.post('/api/register', controller.auth.register);
+
   // MockAPI
   const jsonp = app.jsonp();
   router.all('/mock/:apiType/:projectName/**', jsonp, controller.mock.mockapi);
@@ -56,6 +60,7 @@ module.exports = app => {
   // 页面路由
   router.get('/', controller.page.home);
   router.get('/login', controller.page.login);
+  router.get('/logout', controller.auth.logout);
   router.get('/register', controller.page.register);
   router.get('/reset-password', controller.page.resetPassword);
   router.get('*', controller.page.app);

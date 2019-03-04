@@ -102,6 +102,10 @@ class Header extends React.Component {
     location.href = `/collections?space=${alias}`;
   }
 
+  handleLogout = () => {
+    location.href = '/logout';
+  }
+
   render() {
     const { uplevel, title, visible, space } = this.props;
     const { createFormVisible, spaces, currentSpace } = this.state;
@@ -164,6 +168,7 @@ class Header extends React.Component {
           </div>
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
+            <a className="help-link" onClick={this.handleLogout}>退出</a>
             <Avatar src={user.avatar} />
           </div>
           <div className="global-search pull-right">
