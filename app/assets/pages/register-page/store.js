@@ -5,7 +5,7 @@ export default {
   namespace: 'registerModel',
   state: {},
   effects: {
-    *register({ email, password }, { call }) {
+    *register({ email, password, code }, { call }) {
       try {
         yield call(ajax, {
           url: '/api/register',
@@ -13,6 +13,7 @@ export default {
           data: {
             email,
             password,
+            code,
           },
         });
 

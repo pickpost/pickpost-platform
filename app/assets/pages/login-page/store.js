@@ -5,13 +5,13 @@ export default {
   namespace: 'loginModel',
   state: {},
   effects: {
-    *login({ username, password }, { call }) {
+    *login({ email, password }, { call }) {
       try {
         yield call(ajax, {
           url: '/api/login',
           method: 'post',
           data: {
-            username,
+            email,
             password,
           },
         });

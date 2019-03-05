@@ -17,6 +17,7 @@ class RegisterPage extends React.PureComponent {
           type: 'registerModel/register',
           email: values.email,
           password: values.password,
+          code: values.code,
         });
       }
     });

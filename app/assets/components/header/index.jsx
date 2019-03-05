@@ -169,7 +169,7 @@ class Header extends React.Component {
           <div className="enter pull-right">
             <a className="help-link" onClick={this.gotoHomePage}>首页</a>
             <a className="help-link" onClick={this.handleLogout}>退出</a>
-            <Avatar src={user.avatar} />
+            <Avatar src={user.avatar} title={user.email} />
           </div>
           <div className="global-search pull-right">
             <GlobalSearch />

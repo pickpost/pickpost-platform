@@ -15,7 +15,7 @@ class LoginPage extends React.PureComponent {
       if (!err) {
         this.props.dispatch({
           type: 'loginModel/login',
-          username: values.username,
+          email: values.email,
           password: values.password,
         });
       }
@@ -37,7 +37,7 @@ class LoginPage extends React.PureComponent {
         <h2>登录</h2>
         <Form onSubmit={this.handleSubmit} method="post" action="/api/login" className="login-form">
           <Form.Item>
-            {getFieldDecorator('username', {
+            {getFieldDecorator('email', {
               rules: [
                 { required: true, message: '请输入邮箱地址' },
                 { validator: this.mailValidator },
