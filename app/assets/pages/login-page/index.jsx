@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'dva';
-import { createForm } from 'rc-form';
 import { Link } from 'dva/router';
 import {
   Form, Icon, Input, Button, Checkbox,
 } from 'antd';
+import validator from 'validator';
 
 import './index.less';
 
@@ -22,6 +22,14 @@ class LoginPage extends React.PureComponent {
     });
   }
 
+  mailValidator = (rule, value, callback) => {
+    if (value && !validator.isEmail(value)) {
+      callback('请输入正确的邮箱地址');
+    } else {
+      callback();
+    }
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -30,7 +38,10 @@ class LoginPage extends React.PureComponent {
         <Form onSubmit={this.handleSubmit} method="post" action="/api/login" className="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
-              rules: [{ required: true, message: '请输入邮箱地址' }],
+              rules: [
+                { required: true, message: '请输入邮箱地址' },
+                { validator: this.mailValidator },
+              ],
             })(
               <Input name="email" prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
             )}
@@ -63,4 +74,4 @@ export default connect(({ loginModel }) => {
   return {
     loginModel,
   };
-})(createForm()(LoginPage));
+})(Form.create()(LoginPage));

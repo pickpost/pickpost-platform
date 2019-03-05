@@ -1,17 +1,16 @@
 import React from 'react';
 import { connect } from 'dva';
-import { createForm } from 'rc-form';
 import { Link } from 'dva/router';
 import {
-  Form, Icon, Input, Button,
+  Form, Icon, Input, Button, message,
 } from 'antd';
+import validator from 'validator';
 
 import './index.less';
 
 class RegisterPage extends React.PureComponent {
-  handleSubmit = (e) => {
+  handleSubmit = () => {
     const { dispatch } = this.props;
-    e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -26,10 +25,22 @@ class RegisterPage extends React.PureComponent {
   handleSmsCode = () => {
     const { dispatch, form } = this.props;
     const email = form.getFieldValue('email');
+    if (!email || !validator.isEmail(email)) {
+      message.warn('请先输入正确的邮箱地址');
+      return;
+    }
     dispatch({
       type: 'registerModel/sendEmail',
       email,
     });
+  }
+
+  mailValidator = (rule, value, callback) => {
+    if (value && !validator.isEmail(value)) {
+      callback('请输入正确的邮箱地址');
+    } else {
+      callback();
+    }
   }
 
   render() {
@@ -38,10 +49,13 @@ class RegisterPage extends React.PureComponent {
     return (
       <div className="register-page">
         <h2>注册账号</h2>
-        <Form onSubmit={this.handleSubmit} className="login-form">
+        <Form className="login-form">
           <Form.Item>
             {getFieldDecorator('email', {
-              rules: [{ required: true, message: '请输入邮箱' }],
+              rules: [
+                { required: true, message: '请输入邮箱' },
+                { validator: this.mailValidator },
+              ],
             })(
               <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
             )}
@@ -61,7 +75,7 @@ class RegisterPage extends React.PureComponent {
             )}
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-form-button"> 注册 </Button>
+            <Button type="primary" onClick={this.handleSubmit} className="login-form-button"> 注册 </Button>
             <Link className="login-form-forgot" to="/login">已有账号</Link>
           </Form.Item>
         </Form>
@@ -74,4 +88,4 @@ export default connect(({ registerModel }) => {
   return {
     registerModel,
   };
-})(createForm()(RegisterPage));
+})(Form.create()(RegisterPage));
