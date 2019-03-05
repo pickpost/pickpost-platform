@@ -34,21 +34,21 @@ class RegisterPage extends React.PureComponent {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const addonAfter = <span className="addonAfter" onClick={this.handleSmsCode}>发送验证码</span>;
+    const addonAfter = <span className="addon-after" onClick={this.handleSmsCode}>发送验证码</span>;
     return (
       <div className="register-page">
         <h2>注册账号</h2>
         <Form onSubmit={this.handleSubmit} className="login-form">
           <Form.Item>
             {getFieldDecorator('email', {
-              rules: [{ required: true, message: 'Please input your username!' }],
+              rules: [{ required: true, message: '请输入邮箱' }],
             })(
-              <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
+              <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
             )}
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('code', {
-              rules: [{ required: true, message: '请输入验证码!' }],
+              rules: [{ required: true, message: '请输入验证码' }],
             })(
               <Input prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="验证码" addonAfter={addonAfter} />
             )}

@@ -30,9 +30,9 @@ class LoginPage extends React.PureComponent {
         <Form onSubmit={this.handleSubmit} method="post" action="/api/login" className="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
-              rules: [{ required: true, message: '请输入用户名' }],
+              rules: [{ required: true, message: '请输入邮箱地址' }],
             })(
-              <Input name="email" prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
+              <Input name="email" prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="邮箱" />
             )}
           </Form.Item>
           <Form.Item>
