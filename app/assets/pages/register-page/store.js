@@ -22,6 +22,19 @@ export default {
         message.error(err.message || '系统异常');
       }
     },
+    *sendEmail({ email }, { call }) {
+      try {
+        yield call(ajax, {
+          url: '/api/send_verify_code',
+          method: 'post',
+          data: {
+            email,
+          },
+        });
+      } catch (err) {
+        message.error(err.message || '系统异常');
+      }
+    },
   },
   reducers: {
     setData(state, { data }) {

@@ -11,23 +11,22 @@ exports.home = async function (ctx) {
 
   await this.render('home.jsx', {
     user: {
-      cname: _.get(ctx, 'session.user.cname'),
-      email: _.get(ctx, 'session.user.email'),
-      avatar: _.get(ctx, 'session.user.avatar_url'),
-      workid: _.get(ctx, 'session.user.workid'),
+      cname: _.get(ctx, 'user.cname'),
+      email: _.get(ctx, 'user.email'),
+      avatar: _.get(ctx, 'user.avatar'),
+      workid: _.get(ctx, 'user.workid'),
     },
   });
 };
 
 exports.app = async function (ctx) {
-  // 鉴权
   if (ctx.isAuthenticated()) {
     await this.render('app.jsx', {
       user: {
-        cname: _.get(ctx, 'session.user.cname'),
-        email: _.get(ctx, 'session.user.email'),
-        avatar: _.get(ctx, 'session.user.avatar_url'),
-        workid: _.get(ctx, 'session.user.workid'),
+        cname: _.get(ctx, 'user.cname'),
+        email: _.get(ctx, 'user.email'),
+        avatar: _.get(ctx, 'user.avatar'),
+        workid: _.get(ctx, 'user.workid'),
       },
     });
   } else {
@@ -38,10 +37,10 @@ exports.app = async function (ctx) {
 exports.login = async function (ctx) {
   await this.render('app.jsx', {
     user: {
-      cname: _.get(ctx, 'session.user.cname'),
-      email: _.get(ctx, 'session.user.email'),
-      avatar: _.get(ctx, 'session.user.avatar_url'),
-      workid: _.get(ctx, 'session.user.workid'),
+      cname: _.get(ctx, 'user.cname'),
+      email: _.get(ctx, 'user.email'),
+      avatar: _.get(ctx, 'user.avatar'),
+      workid: _.get(ctx, 'user.workid'),
     },
   });
 };
@@ -49,10 +48,10 @@ exports.login = async function (ctx) {
 exports.register = async function (ctx) {
   await this.render('app.jsx', {
     user: {
-      cname: _.get(ctx, 'session.user.cname'),
-      email: _.get(ctx, 'session.user.email'),
-      avatar: _.get(ctx, 'session.user.avatar_url'),
-      workid: _.get(ctx, 'session.user.workid'),
+      cname: _.get(ctx, 'user.cname'),
+      email: _.get(ctx, 'user.email'),
+      avatar: _.get(ctx, 'user.avatar'),
+      workid: _.get(ctx, 'user.workid'),
     },
   });
 };
@@ -60,10 +59,10 @@ exports.register = async function (ctx) {
 exports.resetPassword = async function (ctx) {
   await this.render('app.jsx', {
     user: {
-      cname: _.get(ctx, 'session.user.cname'),
-      email: _.get(ctx, 'session.user.email'),
-      avatar: _.get(ctx, 'session.user.avatar_url'),
-      workid: _.get(ctx, 'session.user.workid'),
+      cname: _.get(ctx, 'user.cname'),
+      email: _.get(ctx, 'user.email'),
+      avatar: _.get(ctx, 'user.avatar'),
+      workid: _.get(ctx, 'user.workid'),
     },
   });
 };

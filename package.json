@@ -60,7 +60,11 @@
     "unirest": "^0.5.1",
     "url-pattern": "^1.0.3",
     "urllib": "^2.26.0",
-    "zombie": "^5.0.8"
+    "zombie": "^5.0.8",
+    "nodemailer": "^4.6.2",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "egg-validate": "^1.0.0",
+    "validator": "^9.4.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",

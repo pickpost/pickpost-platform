@@ -49,6 +49,19 @@ module.exports = appInfo => {
     passwordField: 'password',
   };
 
+  // 邮箱配置
+  config.mail_opts = {
+    host: 'smtp.126.com',
+    port: 25,
+    auth: {
+      user: 'pickpost_test@126.com',
+      pass: '',
+    },
+    secure: false,
+    // ignoreTLS: true,
+    // secureConnection: true,
+  };
+
   config.mongoose = {
     client: {
       url: 'mongodb://127.0.0.1/pickpost',

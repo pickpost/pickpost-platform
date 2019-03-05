@@ -19,13 +19,17 @@ class RegisterPage extends React.PureComponent {
           email: values.email,
           password: values.password,
         });
-        console.log('Received values of form: ', values);
       }
     });
   }
 
   handleSmsCode = () => {
-    console.log('发送验证码');
+    const { dispatch, form } = this.props;
+    const email = form.getFieldValue('email');
+    dispatch({
+      type: 'registerModel/sendEmail',
+      email,
+    });
   }
 
   render() {

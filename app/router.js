@@ -40,6 +40,7 @@ module.exports = app => {
 
   router.post('/api/login', controller.auth.login);
   router.post('/api/register', controller.auth.register);
+  router.post('/api/send_verify_code', controller.auth.sendVerfifyCode);
 
   // MockAPI
   const jsonp = app.jsonp();
