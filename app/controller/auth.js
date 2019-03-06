@@ -45,11 +45,12 @@ exports.register = async function (ctx) {
   };
 };
 
-exports.sendVerfifyCode = async function(ctx) {
+exports.sendVerfifyCode = async function (ctx) {
   const { service } = ctx;
 
   const reqBody = ctx.request.body;
   const email = validator.trim(reqBody.email || '').toLowerCase();
+  const resetPassword = reqBody.resetPassword;
 
   let errorMsg;
   if (!validator.isEmail(email)) {
@@ -57,16 +58,25 @@ exports.sendVerfifyCode = async function(ctx) {
   }
 
   if (!errorMsg) {
-    const randomCode = generateRandomCode();
-    await service.mail.sendVerifyCode(email, randomCode);
-    // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
-    const { smsCodeMap = {} } = ctx.session;
-    smsCodeMap[email] = randomCode;
-    ctx.session.smsCodeMap = smsCodeMap;
+    const UserModel = ctx.model.User;
+    const user = await UserModel.findOne({ email });
+    if (user && !resetPassword) {
+      this.body = {
+        status: 'fail',
+        message: '该邮箱已经注册，请登录',
+      };
+    } else {
+      const randomCode = generateRandomCode();
+      await service.mail.sendVerifyCode(email, randomCode);
+      // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
+      const { smsCodeMap = {} } = ctx.session;
+      smsCodeMap[email] = randomCode;
+      ctx.session.smsCodeMap = smsCodeMap;
 
-    this.body = {
-      status: 'success',
-    };
+      this.body = {
+        status: 'success',
+      };
+    }
   } else {
     this.body = {
       status: 'fail',
@@ -75,7 +85,7 @@ exports.sendVerfifyCode = async function(ctx) {
   }
 };
 
-exports.login = async function(ctx) {
+exports.login = async function (ctx) {
   const UserModel = ctx.model.User;
   const reqBody = ctx.request.body;
   const email = validator.trim(reqBody.email || '').toLowerCase();
@@ -120,7 +130,82 @@ exports.login = async function(ctx) {
   }
 };
 
-exports.logout = async function(ctx) {
+exports.logout = async function (ctx) {
   ctx.logout();
   ctx.redirect(ctx.get('referer') || '/');
+};
+
+exports.searchPass = async function (ctx) {
+  const reqBody = ctx.request.body;
+  const email = validator.trim(reqBody.email || '').toLowerCase();
+
+  let errorMsg;
+  if (!validator.isEmail(email)) {
+    errorMsg = '邮箱不合法';
+  }
+
+  if (!errorMsg) {
+    const UserModel = ctx.model.User;
+    const user = await UserModel.findOne({ email });
+    if (user) {
+      this.body = {
+        status: 'success',
+      };
+    } else {
+      this.body = {
+        status: 'fail',
+        message: '该邮箱没有注册',
+      };
+    }
+  } else {
+    this.body = {
+      status: 'fail',
+      message: errorMsg,
+    };
+  }
+};
+
+exports.resetPassword = async function (ctx) {
+  const UserModel = ctx.model.User;
+  const reqBody = ctx.request.body;
+  const email = validator.trim(reqBody.email || '').toLowerCase();
+  const password = reqBody.password;
+
+  let errorMsg;
+  if (!validator.isEmail(email)) {
+    errorMsg = '邮箱不合法';
+  } else if (!validateCode(ctx, email, reqBody.code)) {
+    errorMsg = '验证码不正确';
+  }
+
+  if (errorMsg) {
+    this.body = {
+      status: 'fail',
+      message: errorMsg,
+    };
+    return;
+  }
+
+  const result = await UserModel.findOneAndUpdate({ email }, { password });
+
+  if (result) {
+    // 将用户信息记录到 session
+    await ctx.login({
+      avatar: result.avatar,
+      email: result.email,
+      id: result.id,
+      username: result.username,
+      userId: result.userId,
+    });
+
+    this.body = {
+      status: 'success',
+      data: {},
+    };
+  } else {
+    this.body = {
+      status: 'fail',
+      message: '重置失败',
+    };
+  }
 };

@@ -50,7 +50,7 @@ class LoginPage extends React.PureComponent {
             {getFieldDecorator('password', {
               rules: [{ required: true, message: '请输入密码' }],
             })(
-              <Input name="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
+              <Input.Password name="password" prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />
             )}
           </Form.Item>
           <Form.Item>

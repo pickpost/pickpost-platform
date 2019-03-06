@@ -25,13 +25,16 @@ export default {
     },
     *sendEmail({ email }, { call }) {
       try {
-        yield call(ajax, {
+        const res = yield call(ajax, {
           url: '/api/send_verify_code',
           method: 'post',
           data: {
             email,
           },
         });
+        if (res.status === 'success') {
+          message.success(`验证码已发送至${email}`);
+        }
       } catch (err) {
         message.error(err.message || '系统异常');
       }

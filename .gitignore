@@ -36,3 +36,4 @@ deploy.js
 app/public/assets/
 config/manifest.json
 .public/upload
+package-lock.json

@@ -154,7 +154,7 @@ export default class Container extends React.Component {
   }
 
   render() {
-    return (<div style={{ minWidth: '1260px', height: '100%' }} ref={ dom => { this.container = dom; }} />);
+    return (<div style={{ minWidth: '1260px', height: '100%' }} ref={dom => { this.container = dom; }} />);
   }
 }
 
