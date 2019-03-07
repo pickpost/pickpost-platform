@@ -8,9 +8,35 @@ import './index.less';
 class ResetPasswordPage extends React.PureComponent {
 
   state = {
+    timer: null,
+    countNum: 0,
     confirmDirty: false,
     autoCompleteResult: [],
   };
+
+  componentWillUnmount() {
+    if (this.state.timer != null) {
+      clearInterval(this.state.timer);
+    }
+  }
+
+  // 倒计时 n秒内不能再次发送验证码
+  countDown = () => {
+    if (this.state.timer) {
+      clearInterval(this.state.timer);
+    }
+    this.state.timer = setInterval(() => {
+      let { countNum } = this.state;
+      countNum--;
+      this.setState({
+        countNum,
+      }, () => {
+        if (countNum <= 0) {
+          clearInterval(this.state.timer);
+        }
+      });
+    }, 1000);
+  }
 
   // 找回密码form: 确认邮箱是否注册过
   handleSearchPass = () => {
@@ -36,6 +62,11 @@ class ResetPasswordPage extends React.PureComponent {
     dispatch({
       type: 'resetPasswordModel/sendEmail',
       email,
+    });
+    this.setState({
+      countNum: 30,
+    }, () => {
+      this.countDown();
     });
   }
 
@@ -87,7 +118,8 @@ class ResetPasswordPage extends React.PureComponent {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { searchPass, email } = this.props.resetPasswordModel;
-    const addonAfter = <span className="addonAfter" onClick={this.handleSmsCode}>发送验证码</span>;
+    const { countNum } = this.state;
+    const addonAfter = countNum !== 0 ? <span className="addon-after">{countNum}秒</span> : <span className="addon-after" onClick={this.handleSmsCode}>发送验证码</span>;
     return (
       <div className="page">
         <h2>{searchPass ? '找回密码' : '重置密码'}</h2>
@@ -114,7 +146,7 @@ class ResetPasswordPage extends React.PureComponent {
               {getFieldDecorator('email', {
                 rules: [{ required: true, message: '请输入邮箱' }],
               })(
-                <Input prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} value={email} disabled={true} />} />
+                <Input disabled prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} value={email} />} />
               )}
             </Form.Item>
             <Form.Item>

@@ -7,6 +7,18 @@ import validator from 'validator';
 import './index.less';
 
 class RegisterPage extends React.PureComponent {
+
+  state = {
+    timer: null,
+    countNum: 0,
+  };
+
+  componentWillUnmount() {
+    if (this.state.timer != null) {
+      clearInterval(this.state.timer);
+    }
+  }
+
   handleSubmit = () => {
     const { dispatch } = this.props;
     this.props.form.validateFields((err, values) => {
@@ -32,6 +44,29 @@ class RegisterPage extends React.PureComponent {
       type: 'registerModel/sendEmail',
       email,
     });
+    this.setState({
+      countNum: 30,
+    }, () => {
+      this.countDown();
+    });
+  }
+
+  // 倒计时 n秒内不能再次发送验证码
+  countDown = () => {
+    if (this.state.timer) {
+      clearInterval(this.state.timer);
+    }
+    this.state.timer = setInterval(() => {
+      let { countNum } = this.state;
+      countNum--;
+      this.setState({
+        countNum,
+      }, () => {
+        if (countNum <= 0) {
+          clearInterval(this.state.timer);
+        }
+      });
+    }, 1000);
   }
 
   mailValidator = (rule, value, callback) => {
@@ -44,7 +79,8 @@ class RegisterPage extends React.PureComponent {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const addonAfter = <span className="addon-after" onClick={this.handleSmsCode}>发送验证码</span>;
+    const { countNum } = this.state;
+    const addonAfter = countNum !== 0 ? <span className="addon-after">{countNum}秒</span> : <span className="addon-after" onClick={this.handleSmsCode}>发送验证码</span>;
     return (
       <div className="register-page">
         <h2>注册账号</h2>
