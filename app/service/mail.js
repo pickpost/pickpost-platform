@@ -35,9 +35,27 @@ class MailService extends Service {
     const to = who;
     const subject = config.name + '帐号激活';
     const html = '<p>您好：</p>' +
-    '<p>本次注册的验证码为：' + code + '</p>' +
-    '<p>若您没有在' + config.name + '进行账号注册，说明有人滥用了您的电子邮箱，请删除此邮件，我们对给您造成的打扰感到抱歉。</p>' +
-    '<p> PickPost 谨上。</p>';
+      '<p>本次注册的验证码为：' + code + '</p>' +
+      '<p>若您没有在' + config.name + '进行账号注册，说明有人滥用了您的电子邮箱，请删除此邮件，我们对给您造成的打扰感到抱歉。</p>' +
+      '<p> PickPost 谨上。</p>';
+
+    await this.sendMail({
+      from,
+      to,
+      subject,
+      html,
+    });
+  }
+
+  async sendResetPasswordCode(who, code) {
+    const { config } = this;
+    const from = `PickPost <${config.mail_opts.auth.user}>`;
+    const to = who;
+    const subject = config.name + '重置密码';
+    const html = '<p>您好：</p>' +
+      '<p>本次重置密码的验证码为：' + code + '</p>' +
+      '<p>若您没有在' + config.name + '进行账号密码重置，说明有人滥用了您的电子邮箱，请删除此邮件，我们对给您造成的打扰感到抱歉。</p>' +
+      '<p> PickPost 谨上。</p>';
 
     await this.sendMail({
       from,

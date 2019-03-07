@@ -139,7 +139,7 @@ class ResetPasswordPage extends React.PureComponent {
               {getFieldDecorator('code', {
                 rules: [{ required: true, message: '输入验证码' }],
               })(
-                <Input prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="验证码" addonAfter={addonAfter} />
+                <Input prefix={<Icon type="message" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="6位验证码" addonAfter={addonAfter} />
               )}
             </Form.Item>
             <Form.Item>

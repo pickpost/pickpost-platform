@@ -33,10 +33,9 @@ export default {
     *sendEmail({ email }, { call }) {
       try {
         const res = yield call(ajax, {
-          url: '/api/send_verify_code',
+          url: '/api/send_reset_password_code',
           method: 'post',
           data: {
-            resetPassword: true,
             email,
           },
         });

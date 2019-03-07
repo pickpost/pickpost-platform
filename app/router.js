@@ -43,6 +43,7 @@ module.exports = app => {
   router.post('/api/send_verify_code', controller.auth.sendVerfifyCode);
   router.post('/api/search_pass', 'auth.searchPass');
   router.post('/api/reset_password', 'auth.resetPassword');
+  router.post('/api/send_reset_password_code', 'auth.sendResetPasswordCode');
 
   // MockAPI
   const jsonp = app.jsonp();

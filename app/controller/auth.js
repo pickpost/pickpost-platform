@@ -2,6 +2,7 @@
 
 const validator = require('validator');
 const lodash = require('lodash');
+const bcrypt = require('bcryptjs');
 
 // 生成一个随机6位数字
 function generateRandomCode() {
@@ -10,6 +11,14 @@ function generateRandomCode() {
 
 function validateCode(ctx, mail, code) {
   return lodash.get(ctx.session.smsCodeMap, mail) === code;
+}
+
+function bhash(str) {
+  return bcrypt.hashSync(str, 10);
+}
+
+function bcompare(str, hash) {
+  return bcrypt.compareSync(str, hash);
 }
 
 // 从接口集中移除接口，但不物理删除接口
@@ -37,7 +46,7 @@ exports.register = async function (ctx) {
 
   await UserModel.create({
     email: reqbody.email,
-    password: reqbody.password,
+    password: bhash(reqbody.password),
   });
 
   this.body = {
@@ -45,12 +54,11 @@ exports.register = async function (ctx) {
   };
 };
 
+// 注册验证码
 exports.sendVerfifyCode = async function (ctx) {
   const { service } = ctx;
-
   const reqBody = ctx.request.body;
   const email = validator.trim(reqBody.email || '').toLowerCase();
-  const resetPassword = reqBody.resetPassword;
 
   let errorMsg;
   if (!validator.isEmail(email)) {
@@ -60,14 +68,53 @@ exports.sendVerfifyCode = async function (ctx) {
   if (!errorMsg) {
     const UserModel = ctx.model.User;
     const user = await UserModel.findOne({ email });
-    if (user && !resetPassword) {
+    if (user) {
       this.body = {
         status: 'fail',
-        message: '该邮箱已经注册，请登录',
+        message: '该邮箱已经被注册',
       };
     } else {
       const randomCode = generateRandomCode();
       await service.mail.sendVerifyCode(email, randomCode);
+      // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
+      const { smsCodeMap = {} } = ctx.session;
+      smsCodeMap[email] = randomCode;
+      ctx.session.smsCodeMap = smsCodeMap;
+
+      this.body = {
+        status: 'success',
+      };
+    }
+  } else {
+    this.body = {
+      status: 'fail',
+      message: errorMsg,
+    };
+  }
+};
+
+// 重置密码验证码
+exports.sendResetPasswordCode = async function (ctx) {
+  const { service } = ctx;
+  const reqBody = ctx.request.body;
+  const email = validator.trim(reqBody.email || '').toLowerCase();
+
+  let errorMsg;
+  if (!validator.isEmail(email)) {
+    errorMsg = '邮箱不合法';
+  }
+
+  if (!errorMsg) {
+    const UserModel = ctx.model.User;
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      this.body = {
+        status: 'fail',
+        message: '该邮箱还没有注册',
+      };
+    } else {
+      const randomCode = generateRandomCode();
+      await service.mail.sendResetPasswordCode(email, randomCode);
       // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
       const { smsCodeMap = {} } = ctx.session;
       smsCodeMap[email] = randomCode;
@@ -103,12 +150,10 @@ exports.login = async function (ctx) {
     return;
   }
 
-  const result = await UserModel.findOne({
-    email,
-    password: reqBody.password,
-  });
+  const result = await UserModel.findOne({ email });
+  const equal = bcompare(reqBody.password, result.password);
 
-  if (result) {
+  if (equal) {
     // 将用户信息记录到 session
     await ctx.login({
       avatar: result.avatar,
@@ -169,7 +214,7 @@ exports.resetPassword = async function (ctx) {
   const UserModel = ctx.model.User;
   const reqBody = ctx.request.body;
   const email = validator.trim(reqBody.email || '').toLowerCase();
-  const password = reqBody.password;
+  const password = bhash(reqBody.password);
 
   let errorMsg;
   if (!validator.isEmail(email)) {
