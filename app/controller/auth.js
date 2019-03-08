@@ -36,6 +36,13 @@ exports.register = async function (ctx) {
     errorMsg = '验证码不正确';
   }
 
+  if (!errorMsg) {
+    await UserModel.create({
+      email: reqbody.email,
+      password: bhash(reqbody.password),
+    });
+  }
+
   if (errorMsg) {
     this.body = {
       status: 'fail',
@@ -43,11 +50,6 @@ exports.register = async function (ctx) {
     };
     return;
   }
-
-  await UserModel.create({
-    email: reqbody.email,
-    password: bhash(reqbody.password),
-  });
 
   this.body = {
     status: 'success',
@@ -69,28 +71,30 @@ exports.sendVerfifyCode = async function (ctx) {
     const UserModel = ctx.model.User;
     const user = await UserModel.findOne({ email });
     if (user) {
-      this.body = {
-        status: 'fail',
-        message: '该邮箱已经被注册',
-      };
-    } else {
-      const randomCode = generateRandomCode();
-      await service.mail.sendVerifyCode(email, randomCode);
-      // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
-      const { smsCodeMap = {} } = ctx.session;
-      smsCodeMap[email] = randomCode;
-      ctx.session.smsCodeMap = smsCodeMap;
-
-      this.body = {
-        status: 'success',
-      };
+      errorMsg = '该邮箱已经被注册';
     }
-  } else {
+  }
+
+  if (!errorMsg) {
+    const randomCode = generateRandomCode();
+    await service.mail.sendVerifyCode(email, randomCode);
+    // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
+    const { smsCodeMap = {} } = ctx.session;
+    smsCodeMap[email] = randomCode;
+    ctx.session.smsCodeMap = smsCodeMap;
+  }
+
+  if (errorMsg) {
     this.body = {
       status: 'fail',
       message: errorMsg,
     };
+    return;
   }
+
+  this.body = {
+    status: 'success',
+  };
 };
 
 // 重置密码验证码
@@ -108,38 +112,17 @@ exports.sendResetPasswordCode = async function (ctx) {
     const UserModel = ctx.model.User;
     const user = await UserModel.findOne({ email });
     if (!user) {
-      this.body = {
-        status: 'fail',
-        message: '该邮箱还没有注册',
-      };
-    } else {
-      const randomCode = generateRandomCode();
-      await service.mail.sendResetPasswordCode(email, randomCode);
-      // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
-      const { smsCodeMap = {} } = ctx.session;
-      smsCodeMap[email] = randomCode;
-      ctx.session.smsCodeMap = smsCodeMap;
-
-      this.body = {
-        status: 'success',
-      };
+      errorMsg = '该邮箱还没有注册';
     }
-  } else {
-    this.body = {
-      status: 'fail',
-      message: errorMsg,
-    };
   }
-};
 
-exports.login = async function (ctx) {
-  const UserModel = ctx.model.User;
-  const reqBody = ctx.request.body;
-  const email = validator.trim(reqBody.email || '').toLowerCase();
-
-  let errorMsg;
-  if (!validator.isEmail(email)) {
-    errorMsg = '邮箱不合法';
+  if (!errorMsg) {
+    const randomCode = generateRandomCode();
+    await service.mail.sendResetPasswordCode(email, randomCode);
+    // 将 email 和 随机验证码建立一个对应关系，在注册接口进行匹对校验
+    const { smsCodeMap = {} } = ctx.session;
+    smsCodeMap[email] = randomCode;
+    ctx.session.smsCodeMap = smsCodeMap;
   }
 
   if (errorMsg) {
@@ -150,29 +133,57 @@ exports.login = async function (ctx) {
     return;
   }
 
-  const result = await UserModel.findOne({ email });
-  const equal = bcompare(reqBody.password, result.password);
+  this.body = {
+    status: 'success',
+  };
+};
 
-  if (equal) {
-    // 将用户信息记录到 session
-    await ctx.login({
-      avatar: result.avatar,
-      email: result.email,
-      id: result.id,
-      username: result.username,
-      userId: result.userId,
-    });
+// 账号登录
+exports.login = async function (ctx) {
+  const UserModel = ctx.model.User;
+  const reqBody = ctx.request.body;
+  const email = validator.trim(reqBody.email || '').toLowerCase();
+  let validUser = null;
 
-    this.body = {
-      status: 'success',
-      data: {},
-    };
-  } else {
+  // 验证逻辑
+  let errorMsg;
+  if (!validator.isEmail(email)) {
+    errorMsg = '邮箱不合法';
+  }
+
+  if (!errorMsg) {
+    validUser = await UserModel.findOne({ email });
+
+    if (!validUser) {
+      errorMsg = '该账号尚未注册';
+    } else {
+      const equal = bcompare(reqBody.password, validUser.password);
+      if (!equal) {
+        errorMsg = '密码错误';
+      }
+    }
+  }
+
+  if (errorMsg) {
     this.body = {
       status: 'fail',
-      message: '登录失败',
+      message: errorMsg,
     };
+    return;
   }
+
+  // 将用户信息记录到 session
+  await ctx.login({
+    avatar: validUser.avatar,
+    email: validUser.email,
+    id: validUser.id,
+    username: validUser.username,
+    userId: validUser.userId,
+  });
+
+  this.body = {
+    status: 'success',
+  };
 };
 
 exports.logout = async function (ctx) {
@@ -192,22 +203,22 @@ exports.searchPass = async function (ctx) {
   if (!errorMsg) {
     const UserModel = ctx.model.User;
     const user = await UserModel.findOne({ email });
-    if (user) {
-      this.body = {
-        status: 'success',
-      };
-    } else {
-      this.body = {
-        status: 'fail',
-        message: '该邮箱没有注册',
-      };
+    if (!user) {
+      errorMsg = '该邮箱没有注册';
     }
-  } else {
+  }
+
+  if (errorMsg) {
     this.body = {
       status: 'fail',
       message: errorMsg,
     };
+    return;
   }
+
+  this.body = {
+    status: 'success',
+  };
 };
 
 exports.resetPassword = async function (ctx) {
@@ -223,6 +234,22 @@ exports.resetPassword = async function (ctx) {
     errorMsg = '验证码不正确';
   }
 
+  if (!errorMsg) {
+    const result = await UserModel.findOneAndUpdate({ email }, { password });
+    if (result) {
+      // 将用户信息记录到 session
+      await ctx.login({
+        avatar: result.avatar,
+        email: result.email,
+        id: result.id,
+        username: result.username,
+        userId: result.userId,
+      });
+    } else {
+      errorMsg = '重置失败，请检查是否该邮箱是否注册。';
+    }
+  }
+
   if (errorMsg) {
     this.body = {
       status: 'fail',
@@ -231,26 +258,7 @@ exports.resetPassword = async function (ctx) {
     return;
   }
 
-  const result = await UserModel.findOneAndUpdate({ email }, { password });
-
-  if (result) {
-    // 将用户信息记录到 session
-    await ctx.login({
-      avatar: result.avatar,
-      email: result.email,
-      id: result.id,
-      username: result.username,
-      userId: result.userId,
-    });
-
-    this.body = {
-      status: 'success',
-      data: {},
-    };
-  } else {
-    this.body = {
-      status: 'fail',
-      message: '重置失败',
-    };
-  }
+  this.body = {
+    status: 'success',
+  };
 };
