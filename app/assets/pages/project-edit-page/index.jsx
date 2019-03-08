@@ -14,7 +14,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @autobind
-class Page extends React.PureComponent {
+class ProjectEditPage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,7 +84,7 @@ class Page extends React.PureComponent {
       labelCol: { span: 24 },
       wrapperCol: { span: 24 },
     };
-    const { getFieldDecorator, getFieldError } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     let isTheOwner = true;
     // 编辑的时候看当前选中的项目owner是不是已登录用户
     if (editingProject) {
@@ -94,10 +94,13 @@ class Page extends React.PureComponent {
     // 新建应用为owner
     if (!editingProject._id) {
       const { user } = window.context;
-      editingProject.owners = [{
-        key: user.workid || '000000',
-        label: user.cname || 'default',
-      }];
+      if (user && user.email) {
+        editingProject.owners = [{
+          key: user.email,
+          label: user.username,
+        }];
+      }
+
       isTheOwner = true;
     }
 
@@ -143,7 +146,6 @@ class Page extends React.PureComponent {
                 <FormItem
                   label="名称"
                   {...formItemLayout}
-                  help={getFieldError('name')}
                 >
                   {getFieldDecorator('name', {
                     initialValue: editingProject.name,
@@ -155,7 +157,6 @@ class Page extends React.PureComponent {
                 <FormItem
                   label="描述"
                   {...formItemLayout}
-                  help={getFieldError('desc')}
                 >
                   {getFieldDecorator('desc', {
                     initialValue: editingProject.desc,
@@ -275,4 +276,4 @@ export default connect(({ projectEditModel }) => {
   return {
     projectEditModel,
   };
-})(createForm()(Page));
+})(createForm()(ProjectEditPage));

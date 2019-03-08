@@ -13,7 +13,7 @@ const Option = Select.Option;
 const { TextArea } = Input;
 
 @autobind
-class CollectionsPage extends React.PureComponent {
+class CollectionEditPage extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -96,16 +96,16 @@ class CollectionsPage extends React.PureComponent {
 
   render() {
     const { ownersOption, membersOption } = this.state;
-    const { editingCollection } = this.props.collectionEditModel;
-    const { location: { query }} = this.props;
+    const { location: { query }, collectionEditModel: { editingCollection } } = this.props;
 
     const formItemLayout = {
       labelCol: { span: 24 },
       wrapperCol: { span: 24 },
     };
-    const { getFieldDecorator, getFieldError } = this.props.form;
+    const { getFieldDecorator } = this.props.form;
     let isTheOwner = true;
     let isTheMember = true;
+
     // 编辑的时候看当前选中的项目owner是不是已登录用户
     if (editingCollection) {
       isTheOwner = isOwner(editingCollection);
@@ -115,15 +115,13 @@ class CollectionsPage extends React.PureComponent {
     // 新建接口集为owner
     if (!editingCollection._id) {
       const { user } = window.context;
-      const userData = {
-        empId: user.workid,
-        name: user.cname,
-        email: user.email,
-      };
-      editingCollection.owners = [{
-        key: JSON.stringify(userData),
-        label: user.cname,
-      }];
+      if (user && user.email) {
+        editingCollection.owners = [{
+          key: user.email,
+          label: user.username,
+        }];
+      }
+
       isTheOwner = true;
       isTheMember = true;
     }
@@ -146,7 +144,6 @@ class CollectionsPage extends React.PureComponent {
                 <FormItem
                   label="名称"
                   {...formItemLayout}
-                  help={getFieldError('name')}
                 >
                   {getFieldDecorator('name', {
                     initialValue: editingCollection.name,
@@ -158,7 +155,6 @@ class CollectionsPage extends React.PureComponent {
                 <FormItem
                   label="描述"
                   {...formItemLayout}
-                  help={getFieldError('desc')}
                 >
                   {getFieldDecorator('desc', {
                     initialValue: editingCollection.desc,
@@ -187,9 +183,9 @@ class CollectionsPage extends React.PureComponent {
                     >
                       {
                         ownersOption.map(item => (
-                          <Option key={item.empId} value={JSON.stringify(item)} name={item.name}>
-                            {item.avatar_url && <img className="option-user" src={item.avatar_url} width={30} height={30} alt="" />}
-                            <span className="option-name">{item.name} - {item.username || item.empId}</span>
+                          <Option key={item.email} value={item.email} name={item.username}>
+                            {item.avatar && <img className="option-user" src={item.avatar} width={30} height={30} alt="" />}
+                            <span className="option-name">{item.username}</span>
                           </Option>
                         ))
                       }
@@ -217,9 +213,9 @@ class CollectionsPage extends React.PureComponent {
                     >
                       {
                         membersOption.map(item => (
-                          <Option key={item.empId} value={JSON.stringify(item)} name={item.name}>
+                          <Option key={item.email} value={item.email} name={item.username}>
                             {item.avatar_url && <img className="option-user" src={item.avatar_url} width={30} height={30} alt="" />}
-                            <span className="option-name">{item.name} - {item.username || item.empId}</span>
+                            <span className="option-name">{item.username}</span>
                           </Option>
                         ))
                       }
@@ -244,4 +240,4 @@ export default connect(({ collectionEditModel }) => {
   return {
     collectionEditModel,
   };
-})(createForm()(CollectionsPage));
+})(createForm()(CollectionEditPage));
