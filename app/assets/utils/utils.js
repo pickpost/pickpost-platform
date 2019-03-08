@@ -200,27 +200,6 @@ export function getEnvByUrl() {
   return '';
 }
 
-export class StorageUtil {
-  static setItem(key, val, isSession = false) {
-    const adapter = isSession ? sessionStorage : localStorage;
-    adapter.setItem(key, JSON.stringify(val));
-  }
-
-  static getItem(key, isSession = false) {
-    const adapter = isSession ? sessionStorage : localStorage;
-    try {
-      return JSON.parse(adapter.getItem(key));
-    } catch (err) {
-      return adapter.getItem(key);
-    }
-  }
-
-  static delItem(key, isSession = false) {
-    const adapter = isSession ? sessionStorage : localStorage;
-    adapter.removeItem(key);
-  }
-}
-
 export function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
   if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) {
     return false;
@@ -243,4 +222,8 @@ export function setCookie(sKey, sValue, vEnd, sPath, sDomain, bSecure) {
   }
   document.cookie = encodeURIComponent(sKey) + '=' + encodeURIComponent(sValue) + sExpires + (sDomain ? '; domain=' + sDomain : '') + (sPath ? '; path=' + sPath : '') + (bSecure ? '; secure' : '');
   return true;
+}
+
+export function getSpaceAlias() {
+  return getQueryParamByName('space');
 }

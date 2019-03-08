@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { isBelong } from '../../utils/utils';
+import { isBelong, getSpaceAlias } from '../../utils/utils';
 import ajax from '../../utils/ajax';
 
 export default {
@@ -15,13 +15,13 @@ export default {
     groupSelectVisible: false,
   },
   effects: {
-    *collections({ spaceAlias }, { call, put }) {
+    *collections({}, { call, put }) {
       try {
         const { status, data } = yield call(ajax, {
           url: '/api/collections',
           method: 'get',
           params: {
-            spaceAlias,
+            spaceAlias: getSpaceAlias(),
           },
         });
         if (status === 'success') {
@@ -39,14 +39,14 @@ export default {
         message.error(e.message || '查询接口集失败');
       }
     },
-    *createFolder({ form, name, _id, spaceAlias }, { call, put }) {
+    *createFolder({ form, name, _id }, { call, put }) {
       try {
         yield call(ajax, {
           url: _id ? `/api/collections/${_id}` : '/api/collections',
           method: _id ? 'put' : 'post',
           data: {
             name,
-            spaceAlias,
+            spaceAlias: getSpaceAlias(),
             type: 'folder',
           },
         });
