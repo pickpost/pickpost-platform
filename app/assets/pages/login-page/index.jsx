@@ -62,7 +62,13 @@ class LoginPage extends React.PureComponent {
             )}
             <Link className="login-form-forgot" to="/resetPassword">忘记密码</Link>
             <Button type="primary" htmlType="submit" className="login-form-button"> 登录 </Button>
-            Or <Link to="/register">注册</Link>
+            <div className="login-line">
+              <a href="/passport/github">
+                <Icon type="github" style={{ color: '#000', fontSize: '16px', marginRight: '5px' }} />
+                <span>github</span>
+              </a>
+              <Link to="/register">注册</Link>
+            </div>
           </Form.Item>
         </Form>
       </div>

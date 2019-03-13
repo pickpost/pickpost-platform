@@ -3,6 +3,13 @@
 module.exports = app => {
   const { router, controller } = app;
 
+  // github oauth
+  app.passport.mount('github');
+  // 上面的 mount 是语法糖，等价于
+  // const github = app.passport.authenticate('github', {});
+  // router.get('/passport/github', github);
+  // router.get('/passport/github/callback', github);
+
   // RESTful APIs
   router.get('/api/spaces', controller.space.index);
   router.post('/api/spaces', controller.space.create);

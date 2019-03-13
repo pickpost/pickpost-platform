@@ -49,6 +49,13 @@ module.exports = appInfo => {
     passwordField: 'password',
   };
 
+  config.passportGithub = {
+    key: '2fc848b9d25c19c1ed9a',
+    secret: '1b423376f7204b721430ec88bf9e31a52b9b1d65',
+    callbackURL: '/collections',
+    // proxy: false,
+  };
+
   // 邮箱配置
   config.mail_opts = {
     host: 'smtp.126.com',
