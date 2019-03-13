@@ -6,6 +6,8 @@ const API_RE_ALL = /.+/;
 module.exports = appInfo => {
   const config = exports = {};
 
+  config.auth_cookie_name = 'pickpost';
+
   config.security = {
     csrf: {
       ignoreJSON: false,
