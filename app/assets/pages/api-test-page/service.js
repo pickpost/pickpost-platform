@@ -16,6 +16,21 @@ function getChromeToken() {
   });
 }
 
+function getChromeTokenNew() {
+  return new Promise(resolve => {
+    const editorExtensionId = 'nbadhiplekhjpgcbnegbeadpoiemblga';
+    if (chrome && chrome.runtime) {
+      chrome.runtime.sendMessage(editorExtensionId, {}, response => {
+        const cookies = (response && response.cookies) || [];
+        const pluginCookieStr = cookies.map(item => { return `${item.name}=${item.value}`; }).join(';');
+        resolve(pluginCookieStr);
+      });
+    } else {
+      resolve('');
+    }
+  });
+}
+
 /**
  * Cet Cookies
  * @param {*} authStrategy auth | buc
@@ -42,7 +57,13 @@ export function getCookie(authStrategy, env, account, password) {
     } else {
       // 如果没有成功获得Cookie，查看chrome插件是否有cookie
       getChromeToken().then(cookie => {
-        resolve(cookie);
+        if (cookie) {
+          resolve(cookie);
+        } else {
+          getChromeTokenNew().then(cookieNew => {
+            resolve(cookieNew);
+          });
+        }
       });
     }
   });

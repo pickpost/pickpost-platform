@@ -20,24 +20,22 @@ class Collection extends React.PureComponent {
 
     const { location: { query }, params: { collectionId, projectId }} = props;
     this.apisColumns = [{
-      title: '名称',
-      dataIndex: 'name',
-      width: '200px',
-      key: 'name',
+      title: '类型',
+      dataIndex: 'apiType',
+      width: '62px',
+      key: 'apiType',
       render: (_, item) => (
-        <div title={item.name} className="ellipsis">
-          <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
-          {item.name}
-        </div>
+        <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
       ),
     }, {
-      title: '唯一标识',
-      dataIndex: 'url',
-      key: 'url',
+      title: '名称',
+      dataIndex: 'name',
+      key: 'name',
       ...this.getColumnSearchProps('url'),
       render: (_, item) => (
-        <div title={item.url} className="ellipsis item-url">
-          {item.url}
+        <div title={item.url} className="item-url">
+          {item.url}<br />
+          {item.name}
         </div>
       ),
     }, {

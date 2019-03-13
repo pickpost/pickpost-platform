@@ -20,17 +20,30 @@ exports.sync = async function(model, swagger) {
   const actions = [];
 
   // 查询现有的所有接口
-  const projectApis = await API.find({ apiType: 'SPI' });
-  const projectApiUrls = projectApis.map(item => item.url);
+  const projectSPIApis = await API.find({ apiType: 'SPI' });
+  const projectRPCApis = await API.find({ apiType: 'RPC' });
+  const projectSPIApiUrls = projectSPIApis.map(item => item.url);
+  const projectRPCApiUrls = projectRPCApis.map(item => item.url);
 
   Object.keys(swagger.paths).forEach(bizType => {
     const item = paths[bizType];
     let action = null;
-    // 判断接口是否存在，存在走更新，不存在走创建
-    const requestAutoSchema = get(item, 'spi.parameters[0].schema') || {};
-    const responseAutoSchema = get(item, 'spi.responses["200"].schema') || {};
+    let apiType = '';
+    let requestAutoSchema;
+    let responseAutoSchema;
+    if (item.spi) {
+      apiType = 'SPI';
+      requestAutoSchema = get(item, 'spi.parameters[0].schema') || {};
+      responseAutoSchema = get(item, 'spi.responses["200"].schema') || {};
+    } else if (item.rpc) {
+      apiType = 'RPC';
+      requestAutoSchema = get(item, 'rpc.parameters[0].schema') || {};
+      responseAutoSchema = get(item, 'rpc.responses["200"].schema') || {};
+    }
 
-    if (projectApiUrls.includes(bizType)) {
+    // 判断接口是否存在，存在走更新，不存在走创建
+    if ((apiType === 'SPI' && projectSPIApiUrls.includes(bizType))
+      || ((apiType === 'RPC') && projectRPCApiUrls.includes(bizType))) {
       action = API.updateOne({ url: bizType }, { $set: {
         projectId: project._id.toString(),
         requestAutoSchema,
@@ -41,7 +54,7 @@ exports.sync = async function(model, swagger) {
       action = API.create({
         ...APISchema,
         projectId: project._id.toString(),
-        apiType: 'SPI',
+        apiType,
         url: bizType,
         requestAutoSchema,
         responseAutoSchema,

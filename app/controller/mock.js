@@ -13,6 +13,8 @@ function mockParse(mockStr, _req) {
 
   if (typeof mockStr !== 'string') return '';
   let result;
+
+  // Todo: 如果是 true 这样的字符串，也是合法的 json，这应该要支持这类情况。
   if (/^(\{|\[)(.|\n)+(\}|\])$/gmi.test(mockStr.trim())) { // 匹配完整对象或者数组
     // 将字符串代码规则执行输出结果
     result = Mock.mock(safeEval(mockStr, { Random, _req: req, Mock })); // Random, _req, Mock 默认注入

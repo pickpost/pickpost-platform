@@ -22,7 +22,7 @@ export default class Container extends React.Component {
 
   componentDidMount() {
     // 设置已访问 Cookie
-    setCookie('pickpost_home', 'visited');
+    setCookie('pickpost_home', 'visited', Infinity);
   }
 
   render() {

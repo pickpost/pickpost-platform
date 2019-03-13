@@ -14,7 +14,11 @@ import { ApiTypes } from '../../../common/constants';
 // }
 
 function refreshUrl(url, params = {}) {
-  return url + '?' + Object.keys(params).map(p => `${p}=${params[p]}`).join('&');
+  if (Object.keys(params).lenght > 0) {
+    return url + '?' + Object.keys(params).map(p => `${p}=${params[p]}`).join('&');
+  }
+
+  return url;
 }
 
 export default {
@@ -105,15 +109,18 @@ export default {
 
       const targetUrl = refreshUrl(gateway || (env + url), { ...queries });
       const authEnv = getEnvByUrl(targetUrl);
-      const cookieStr = yield call(getCookie, authStrategy, authEnv, account, password);
+      let cookieStr = '';
+      if (apiType !== 'RPC') {
+        cookieStr = yield call(getCookie, authStrategy, authEnv, account, password);
+      }
 
       const result = yield call(ajax, {
         url: `/proxy/${apiType}`,
         method: 'post',
         type: 'json',
         data: {
-          gateway, // 网关服务器
-          target: apiType === 'HTTP' ? env + url : env, // 目标地址
+          gateway: apiType === 'HTTP' ? '' : gateway, // 网关服务器
+          target: refreshUrl(apiType === 'HTTP' ? env + url : env, { ...queries }), // 目标地址
           url,
           method,
           account,

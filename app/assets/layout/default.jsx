@@ -25,4 +25,3 @@ export default connect(({ globalModel }) => {
     globalModel,
   };
 })(LayoutDefault);
-
