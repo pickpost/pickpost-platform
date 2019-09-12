@@ -32,6 +32,7 @@ logs/
 .vscode/
 deploy.js
 .history
+db/
 
 app/public/assets/
 config/manifest.json
