@@ -33,7 +33,7 @@
     "egg-view-assets": "^1.0.0",
     "egg-view-nunjucks": "^2.1.6",
     "enums": "~1.0.0",
-    "highlight.js": "^9.12.0",
+    "highlight.js": "^10.1.2",
     "history": "^4.7.2",
     "jquery": "^3.1.1",
     "js-beautify": "^1.6.14",
