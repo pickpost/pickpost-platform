@@ -42,7 +42,7 @@
     "jsonlint": "^1.6.3",
     "keymaster": "^1.6.2",
     "koa": "^2.3.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "mockjs": "^1.0.1-beta3",
     "path-to-regexp": "^1.7.0",
     "prop-types": "^15.5.10",
