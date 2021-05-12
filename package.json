@@ -16,7 +16,7 @@
     "axios": "^0.18.0",
     "babel-polyfill": "^6.23.0",
     "classnames": "^2.2.6",
-    "codemirror": "^5.39.0",
+    "codemirror": "^5.58.2",
     "cookie-parse": "^0.4.0",
     "dva": "^1.2.1",
     "dva-loading": "^2.0.6",
