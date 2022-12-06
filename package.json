@@ -92,7 +92,7 @@
     "roadhog": "^2.1.0",
     "sftp-sync-deploy": "^0.7.1",
     "should": "8",
-    "supertest": "1",
+    "supertest": "6",
     "webpack": "^2.2.0"
   },
   "scripts": {
