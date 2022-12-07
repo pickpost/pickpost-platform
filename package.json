@@ -83,7 +83,7 @@
     "eslint-config-egg": "4",
     "eslint-plugin-react": "~4.0.0",
     "husky": "^1.2.1",
-    "lint-staged": "^8.1.0",
+    "lint-staged": "^13.1.0",
     "mockjs": "^1.0.1-beta3",
     "parallel-compress": "^1.1.0",
     "react-addons-perf": "^15.4.2",
