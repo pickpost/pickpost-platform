@@ -2,8 +2,10 @@
 
 const Mock = require('mockjs');
 const safeEval = require('safer-eval');
-const Random = Mock.Random;
+const pathToRegexp = require('path-to-regexp');
 const { ApiTypes } = require('../common/constants');
+
+const Random = Mock.Random;
 
 // 处理用户填写的mock数据
 function mockParse(mockStr, _req) {
@@ -58,9 +60,18 @@ exports.mockapi = async function (ctx) {
   }
 
   try {
-    const apiResult = await API.findOne({
+    // Todo: 如果能名中 /:id 类似路径规则，也进行返回。
+    const apis = await API.find({
+      projectId: findParams.projectId,
+    });
+    let apiResult;
+    apiResult = await API.findOne({
       ...findParams,
     });
+
+    if (!apiResult) {
+      apiResult = apis.find(i => pathToRegexp(i.url).test('/' + apiUrl));
+    }
 
     if (apiResult) {
       this.body = mockParse(apiResult.responses[apiResult.responseIndex].content || '', this.request);
