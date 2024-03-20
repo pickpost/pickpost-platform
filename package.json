@@ -8,6 +8,21 @@
   "engines": {
     "node": ">=8.9.0"
   },
+  "scripts": {
+    "start": "egg-scripts start --daemon --env prod",
+    "stop": "egg-scripts stop",
+    "dev": "egg-bin dev",
+    "debug": "egg-bin debug",
+    "build": "SET_PUBLIC_PATH=true roadhog build",
+    "restart": "npm run stop && npm run start",
+    "test": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint --ext .js,.jsx .",
+    "lintfix": "eslint --fix --ext .js,.jsx .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod",
+    "precommit": "lint-staged"
+  },
   "dependencies": {
     "antd": "^3.6.5",
     "array-to-tree": "^3.3.0",
@@ -44,10 +59,12 @@
     "koa": "^2.3.0",
     "lodash": "^4.17.4",
     "mockjs": "^1.0.1-beta3",
+    "moment": "^2.30.1",
     "path-to-regexp": "^1.7.0",
     "prop-types": "^15.5.10",
     "pubsub.js": "^1.5.2",
     "query-string": "^5.0.0",
+    "rc-form": "^2.4.12",
     "react": "^15.5.4",
     "react-codemirror2": "^5.1.0",
     "react-copy-to-clipboard": "^5.0.0",
@@ -95,21 +112,7 @@
     "supertest": "1",
     "webpack": "^2.2.0"
   },
-  "scripts": {
-    "start": "egg-scripts start --daemon --env prod",
-    "stop": "egg-scripts stop",
-    "dev": "egg-bin dev",
-    "debug": "egg-bin debug",
-    "build": "SET_PUBLIC_PATH=true roadhog build",
-    "restart": "npm run stop && npm run start",
-    "test": "egg-bin test",
-    "cov": "egg-bin cov",
-    "lint": "eslint --ext .js,.jsx .",
-    "lintfix": "eslint --fix --ext .js,.jsx .",
-    "ci": "npm run lint && npm run cov",
-    "autod": "autod",
-    "precommit": "lint-staged"
-  },
+  
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
