@@ -12,6 +12,7 @@ function mockParse(mockStr, _req) {
   const req = JSON.parse(JSON.stringify(_req));
   req.query = _req.query;
   req.body = _req.body;
+  // Todo: 这里需要注入 param 路经参数
 
   if (typeof mockStr !== 'string') return '';
   let result;
