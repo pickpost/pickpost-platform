@@ -14,7 +14,7 @@ class GroupSelect extends React.PureComponent {
     return (
       <Modal
         visible={visible}
-        title="选择要移动到的产品组"
+        title="选择要移动到的分组"
         onCancel={onCancel}
         footer={null}
       >

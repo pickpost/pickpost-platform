@@ -12,7 +12,7 @@ const GroupCreate = Form.create()(
       return (
         <Modal
           visible={visible}
-          title={isEdit ? '修改产品组' : '新建产品组'}
+          title={isEdit ? '修改分组' : '新建分组'}
           okText={isEdit ? '更新' : '创建'}
           cancelText="取消"
           onCancel={onCancel}
@@ -27,7 +27,7 @@ const GroupCreate = Form.create()(
             )}
             <FormItem label="名称">
               {getFieldDecorator('name', {
-                rules: [{ required: true, message: '请填写产品组名称' }],
+                rules: [{ required: true, message: '请填写分组名称' }],
               })(
                 <Input />
               )}

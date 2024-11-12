@@ -72,7 +72,7 @@ class ProjectsPage extends React.PureComponent {
         <aside>
           <Link to={`/collections?space=${query.space}`} activeClassName="active">
             <Icon type="folder" />
-            <div>需求</div>
+            <div>集合</div>
           </Link>
           <Link to={`/projects?space=${query.space}`} activeClassName="active">
             <Icon type="appstore" />

@@ -154,7 +154,7 @@ class Index extends React.PureComponent {
         <aside>
           <Link to={`/collections?space=${query.space}`} activeClassName="active">
             <Icon type="folder" />
-            <div>需求</div>
+            <div>集合</div>
           </Link>
           <Link to={`/projects?space=${query.space}`} activeClassName="active">
             <Icon type="appstore" />
@@ -168,7 +168,7 @@ class Index extends React.PureComponent {
               tabBarExtraContent={
                 <div className="add-actions">
                   <Button onClick={this.handleShowGroupCreate} size="default" className="new-btn" type="primary" icon="plus">
-                    新建产品组
+                    新建分组
                   </Button>
                   <Button onClick={this.handleGotoCreateCollection} size="default" className="new-btn" type="primary" icon="plus">
                     新建产品

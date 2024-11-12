@@ -13,6 +13,7 @@
 ## 如何使用
 
 ### 私有服务器部署
+
 ```bash
 $ npm install
 $ npm run build
@@ -21,6 +22,7 @@ $ open http://localhost:7001
 ```
 
 ## 如何加入开发
+
 项目后端使用 [eggjs](https://eggjs.org/) 框架，数据库 ORM 使用 [mongoose](https://mongoosejs.com) ，前端框架使用 [ant-design](https://ant.design)。
 
 ### 本地开发
@@ -34,11 +36,13 @@ $ open http://localhost:7001
 ```
 
 ### 数据库设计
+
 详见：`/doc/schema.md`
 
 提交示例：`git commit -m 'feat: 接口文档功能'`
 
 ### 项目结构概览
+
 ```
 .
 ├── README.md
