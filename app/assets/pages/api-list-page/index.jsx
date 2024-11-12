@@ -7,7 +7,7 @@ import Highlighter from 'react-highlight-words';
 import pubsub from 'pubsub.js';
 import Info from '../../components/info';
 import { TypeColorMap } from '../../../common/constants';
-import Dragrow from './components/dragrow';
+// import Dragrow from './components/dragrow';
 
 import './style.less';
 
@@ -25,7 +25,7 @@ class Collection extends React.PureComponent {
       key: 'name',
       ...this.getColumnSearchProps('url'),
       render: (_, item) => (
-        <div title={item.name} style={{display: 'flex'}} className="ellipsis">
+        <div title={item.name} style={{display: 'flex', alignItems: 'center'}} className="ellipsis">
           <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
           <div>
             <div>
@@ -46,7 +46,7 @@ class Collection extends React.PureComponent {
       title: '最近更新',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      width: '100px',
+      width: '160px',
       render: updatedAt => {
         return moment(updatedAt).format('YYYY-MM-DD HH:mm');
       },
@@ -222,9 +222,9 @@ class Collection extends React.PureComponent {
   }
 
   components = {
-    body: {
-      row: Dragrow,
-    },
+    // body: {
+    //   row: Dragrow,
+    // },
   }
 
   render() {
