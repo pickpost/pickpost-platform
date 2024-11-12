@@ -52,6 +52,8 @@ module.exports = appInfo => {
   config.mongoose = {
     client: {
       url: 'mongodb://pickpost:pickpost_2024@0.0.0.0/pickpost',
+      // url: 'mongodb://pickpost:pickpost_2024@10.37.85.62:27017/pickpost',
+      // url: 'mongodb://127.0.0.1/pickpost',
       // url: 'mongodb://mongo:27017/pickpost',
       options: {},
     },
