@@ -22,34 +22,31 @@ class Collection extends React.PureComponent {
     this.apisColumns = [{
       title: '名称',
       dataIndex: 'name',
-      width: '200px',
       key: 'name',
-      render: (_, item) => (
-        <div title={item.name} className="ellipsis">
-          <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
-          {item.name}
-        </div>
-      ),
-    }, {
-      title: '唯一标识',
-      dataIndex: 'url',
-      key: 'url',
       ...this.getColumnSearchProps('url'),
       render: (_, item) => (
-        <div title={item.url} className="ellipsis item-url">
-          {item.url}
+        <div title={item.name} style={{display: 'flex'}} className="ellipsis">
+          <Tag color={TypeColorMap[item.apiType]}>{item.apiType}</Tag>
+          <div>
+            <div>
+              {item.name}
+            </div>
+            <div title={item.url} className="ellipsis item-url">
+              {item.url}
+            </div>
+          </div>
         </div>
       ),
     }, {
       title: '所属应用',
       dataIndex: 'projectName',
-      width: '130px',
+      width: '100px',
       key: 'projectName',
     }, {
       title: '最近更新',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      width: '160px',
+      width: '100px',
       render: updatedAt => {
         return moment(updatedAt).format('YYYY-MM-DD HH:mm');
       },
